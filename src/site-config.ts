@@ -24,7 +24,6 @@ export const siteConfig = {
   header: {
     logo: {
       src: '/favicon.svg',
->>>>>>> 0f51f4eafd9e90bc9787886985b623e8faa79851
       alt: 'Logo Image',
     },
     navLinks: [
@@ -52,7 +51,7 @@ export const siteConfig = {
         text: 'Notes',
         href: '/blog/notes',
       },
-     ],
+    ],
   },
   footer: {
     navLinks: [
