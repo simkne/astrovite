@@ -5,7 +5,9 @@ import { defineConfig } from 'astro/config'
 import UnoCSS from 'unocss/astro'
 
 export default defineConfig({
-  site: 'https://astro-theme-vitesse.netlify.app/',
+  site: 'https://weltkugl.net',
+  base: '/www/', // Set your base path here
+  publicDir: './pub', // Custom public directory
   server: {
     port: 1977,
   },
