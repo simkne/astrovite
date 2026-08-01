@@ -1,4 +1,5 @@
 ---
+import { render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import { type CollectionPosts } from '@/types'
 import { getPosts } from '@/utils/posts'
@@ -7,7 +8,7 @@ export async function getStaticPaths() {
   const posts = await getPosts()
   return posts.map((post) => {
     return {
-      params: { slug: post.slug },
+      params: { slug: post.id },
       props: {
         post,
       },
@@ -20,7 +21,7 @@ type Props = { post: CollectionPosts }
 const { post } = Astro.props
 const { title, image, description, date, duration, tag } = post.data
 
-const { Content } = await post.render()
+const { Content } = await render(post)
 
 function getDate(date: string) {
   return new Date(date).toISOString()

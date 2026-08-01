@@ -1,6 +1,9 @@
-import { defineCollection, z } from 'astro:content'
+import { glob } from 'astro/loaders'
+import { z } from 'astro/zod'
+import { defineCollection } from 'astro:content'
 
 const pages = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/pages' }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -14,6 +17,7 @@ const pages = defineCollection({
 })
 
 const blog = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/blog' }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -40,4 +44,14 @@ const blog = defineCollection({
   }),
 })
 
-export const collections = { pages, blog }
+const iot = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/iot' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    order: z.number().optional(),
+    draft: z.boolean().default(false).optional(),
+  }),
+})
+
+export const collections = { pages, blog, iot }

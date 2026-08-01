@@ -14,8 +14,9 @@ RewriteCond %{HTTPS} off
 RewriteCond %{HTTP_HOST} ^(www\.)?welkugl\.net$ [NC]
 RewriteRule ^(.*)$ https://www.welkugl.net/$1 [L,R=301]
 
-# 301 Redirect Directory
-RedirectMatch 301 ^/(.*)$ /www/$1
+# REMOVED: RedirectMatch 301 ^/(.*)$ /www/$1
+# This line was removed because the portal page lives at / and the wiki at /www/.
+# Astro's base: '/www' already generates correct internal links.
 
 # Block Common Bad Bots & Scrapers (User-Agent based)
 RewriteCond %{HTTP_USER_AGENT} (?:AhrefsBot|Baiduspider|BLEXBot|DotBot|MJ12bot|SemrushBot|YandexBot|wget|curl|libwww-perl|python|nikto|scan|java|winhttp|clshttp|loader|email|harvest|extract|grab|miner|httrack) [NC]

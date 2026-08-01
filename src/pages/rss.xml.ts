@@ -1,5 +1,5 @@
 import rss from '@astrojs/rss'
-import siteConfig from '@/site-config'
+import siteConfig, { withBase } from '@/site-config'
 import { getPosts } from '@/utils/posts'
 
 interface Context {
@@ -16,7 +16,7 @@ export async function GET(context: Context) {
     items: posts!.map((item) => {
       return {
         ...item.data,
-        link: `${context.site}/posts/${item.slug}/`,
+        link: new URL(withBase(`/posts/${item.id}/`), context.site).toString(),
         pubDate: new Date(item.data.date),
         content: item.body,
         author: `${siteConfig.author} <${siteConfig.email}>`,

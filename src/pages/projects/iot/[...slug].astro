@@ -1,0 +1,77 @@
+---
+import { render } from 'astro:content'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import ProjectSubnav from '@/components/ProjectSubnav.astro'
+import ListIotDocs from '@/components/ListIotDocs.vue'
+import type { CollectionIot } from '@/types'
+import iotProject from '@/projects/iot-config'
+import { getIotEntries } from '@/utils/iot'
+
+type SectionProps = { kind: 'section'; sectionSlug: string }
+type ArticleProps = { kind: 'article'; entry: CollectionIot }
+type Props = SectionProps | ArticleProps
+
+export async function getStaticPaths() {
+  const entries = await getIotEntries()
+  const paths: Array<{ params: { slug: string }; props: Props }> = []
+
+  for (const section of iotProject.sections) {
+    paths.push({
+      params: { slug: section.slug },
+      props: { kind: 'section', sectionSlug: section.slug },
+    })
+  }
+
+  for (const entry of entries.filter((e) => e.id.includes('/'))) {
+    paths.push({
+      params: { slug: entry.id },
+      props: { kind: 'article', entry },
+    })
+  }
+
+  return paths
+}
+
+const props = Astro.props as Props
+const sectionMeta = props.kind === 'section' ? iotProject.sections.find((s) => s.slug === props.sectionSlug) : undefined
+
+const sectionArticles =
+  props.kind === 'section' ? (await getIotEntries(props.sectionSlug)).filter((e) => e.id.includes('/')) : []
+
+let articleTitle = ''
+let articleDescription = ''
+let ArticleContent: Awaited<ReturnType<typeof render>>['Content'] | null = null
+
+if (props.kind === 'article') {
+  articleTitle = props.entry.data.title
+  articleDescription = props.entry.data.description ?? ''
+  const rendered = await render(props.entry)
+  ArticleContent = rendered.Content
+}
+---
+
+{
+  props.kind === 'section' && sectionMeta && (
+    <BaseLayout title={sectionMeta.title} description={sectionMeta.description}>
+      <article class="prose mb-6">
+        <h1 class="text-title">{sectionMeta.title}</h1>
+        <p>{sectionMeta.description}</p>
+      </article>
+      <ProjectSubnav links={[...iotProject.navLinks]} />
+      <ListIotDocs client:load list={sectionArticles} />
+    </BaseLayout>
+  )
+}
+
+{
+  props.kind === 'article' && ArticleContent && (
+    <BaseLayout title={articleTitle} description={articleDescription} pageType="article">
+      <ProjectSubnav links={[...iotProject.navLinks]} />
+      <article class="prose">
+        <h1>{articleTitle}</h1>
+        {articleDescription && <p op-60>{articleDescription}</p>}
+        <ArticleContent />
+      </article>
+    </BaseLayout>
+  )
+}

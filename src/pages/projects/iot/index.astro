@@ -1,0 +1,51 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import ProjectSubnav from '@/components/ProjectSubnav.astro'
+import ListIotDocs from '@/components/ListIotDocs.vue'
+import { withBase } from '@/site-config'
+import iotProject from '@/projects/iot-config'
+import { getIotEntries } from '@/utils/iot'
+
+const entries = await getIotEntries()
+const sectionEntries = entries.filter((e) => !e.id.includes('/'))
+---
+
+<BaseLayout title={iotProject.title} description={iotProject.description}>
+  <article class="prose">
+    <h1 class="text-title mb-2">{iotProject.title}</h1>
+    <p>{iotProject.description}</p>
+    <p op-70>
+      Add notes as Markdown under <code>src/content/iot/</code>. Use folders for sections, e.g.
+      <code>iot/esp32/mqtt-setup.md</code>.
+    </p>
+  </article>
+
+  <ProjectSubnav links={[...iotProject.navLinks]} />
+
+  <section mb-12>
+    <h2 class="text-2xl font-bold mb-4">Topics</h2>
+    <ul flex="~ col gap-4">
+      {
+        iotProject.sections.map((section) => (
+          <li>
+            <a nav-link text-lg font-semibold href={withBase(`/projects/iot/${section.slug}`)}>
+              {section.title}
+            </a>
+            <p op-60 text-sm mt-1>
+              {section.description}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  {
+    sectionEntries.length > 0 && (
+      <section>
+        <h2 class="text-2xl font-bold mb-4">Recent notes</h2>
+        <ListIotDocs client:load list={sectionEntries} />
+      </section>
+    )
+  }
+</BaseLayout>

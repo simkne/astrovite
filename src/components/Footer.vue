@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import siteConfig from '@/site-config'
-import { getLinkTarget } from '@/utils/link'
+import siteConfig, { withBase } from '@/site-config'
+import { getLinkTarget, isExternalLink } from '@/utils/link'
 </script>
 
 <template>
@@ -9,7 +9,7 @@ import { getLinkTarget } from '@/utils/link'
       <template v-for="(link, index) in siteConfig.footer.navLinks" :key="link.text">
         <a
           :aria-label="`${link.text}`" :target="getLinkTarget(link.href)" class="nav-link flex items-center"
-          :href="link.href"
+          :href="isExternalLink(link.href) ? link.href : withBase(link.href)"
         >
           {{ link.text }}
         </a>

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
+import { withBase } from '@/site-config'
+
 interface Post {
   id: string
-  slug: string
-  body: string
+  body?: string
   data: Record<string, any>
   collection: string
-  render: any
 }
 
 withDefaults(defineProps<{
@@ -21,7 +21,7 @@ function getDate(date: string) {
 function getHref(post: Post) {
   if (post.data.redirect)
     return post.data.redirect
-  return `/posts/${post.slug}`
+  return withBase(`/posts/${post.id}`)
 }
 
 function getTarget(post: Post) {

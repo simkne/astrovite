@@ -22,22 +22,10 @@ export const projectData: ProjectData = [
     title: 'IoT',
     projects: [
       {
-        text: 'ZenSeed',
-        description: 'Your project description information is a long piece of text.',
-        icon: 'i-carbon-campsite',
-        href: '/',
-      },
-      {
-        text: 'Project Name',
-        description: 'Your project description information is a long piece of text.',
-        icon: 'i-carbon-campsite',
-        href: '/',
-      },
-      {
-        text: 'Project Name',
-        description: 'Your project description information is a long piece of text.',
-        icon: 'i-carbon-campsite',
-        href: '/',
+        text: 'IoT knowledge base',
+        description: 'ESP32, openHAB, sensors — notes with section navigation.',
+        icon: 'i-carbon-chip',
+        href: '/projects/iot',
       },
     ],
   },

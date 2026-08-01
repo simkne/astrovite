@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useWindowScroll } from '@vueuse/core'
 import { computed, onMounted, ref, unref } from 'vue'
-import siteConfig from '@/site-config'
-import { getLinkTarget } from '@/utils/link'
+import siteConfig, { BASE_PATH, withBase } from '@/site-config'
+import { getLinkTarget, isExternalLink } from '@/utils/link'
 import ThemeToggle from './ThemeToggle.vue'
 
 const navLinks = siteConfig.header.navLinks || []
@@ -80,13 +80,13 @@ function toggleNavDrawer() {
     class="!fixed bg-transparent z-899 w-screen h-20 px-6 flex justify-between items-center relative"
   >
     <div class="flex items-center h-full">
-      <a href="/" mr-6 aria-label="Header Logo Image">
-        <img width="32" height="32" :src="siteConfig.header.logo.src" :alt="siteConfig.header.logo.alt">
+      <a :href="BASE_PATH" mr-6 aria-label="Header Logo Image">
+        <img width="32" height="32" :src="withBase(siteConfig.header.logo.src)" :alt="siteConfig.header.logo.alt">
       </a>
       <nav class="sm:flex hidden flex-wrap gap-x-6 position-initial flex-row">
         <a
           v-for="link in navLinks" :key="link.text" :aria-label="`${link.text}`" :target="getLinkTarget(link.href)"
-          nav-link :href="link.href"
+          nav-link :href="isExternalLink(link.href) ? link.href : withBase(link.href)"
         >
           {{ link.text }}
         </a>
@@ -101,7 +101,7 @@ function toggleNavDrawer() {
         :target="getLinkTarget(link.href)" :href="link.href"
       />
 
-      <a nav-link target="_blank" href="/rss.xml" i-ri-rss-line aria-label="RSS" />
+      <a nav-link target="_blank" :href="`${BASE_PATH}rss.xml`" i-ri-rss-line aria-label="RSS" />
       <ThemeToggle />
     </div>
   </header>
@@ -111,7 +111,7 @@ function toggleNavDrawer() {
     <i i-ri-menu-2-fill />
     <a
       v-for="link in navLinks" :key="link.text" :aria-label="`${link.text}`" :target="getLinkTarget(link.href)"
-      nav-link :href="link.href" @click="toggleNavDrawer()"
+      nav-link :href="isExternalLink(link.href) ? link.href : withBase(link.href)" @click="toggleNavDrawer()"
     >
       {{ link.text }}
     </a>
