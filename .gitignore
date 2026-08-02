@@ -44,3 +44,9 @@ wiki-backups/
 .tmp
 .temp
 coverage/
+DEPLOY_SETUP.md
+
+.htaccess
+.vscode/
+.vscode.bk/
+
