@@ -50,3 +50,4 @@ DEPLOY_SETUP.md
 .vscode/
 .vscode.bk/
 
+*.code-workspace
