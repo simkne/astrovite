@@ -54,7 +54,16 @@ jobs:
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          rsync -avz --delete \
-            -e "ssh -i ~/.ssh/id_deploy -o StrictHostKeyChecking=accept-new" \
-            ./dist/ \
-            "${SSH_USERNAME}@${SSH_HOST}:${DEPLOY_PATH}"
+          # If rsync is available on the server, use this (fast, supports --delete):
+          # rsync -avz --delete \
+          #   -e "ssh -i ~/.ssh/id_deploy -o StrictHostKeyChecking=accept-new" \
+          #   ./dist/ \
+          #   "${SSH_USERNAME}@${SSH_HOST}:${DEPLOY_PATH}"
+
+          # Fallback: atomic tar-over-ssh (no rsync required on server)
+          tar -czf - -C ./dist . | \
+            ssh -i ~/.ssh/id_deploy \
+                -o StrictHostKeyChecking=accept-new \
+                -o BatchMode=yes \
+                "${SSH_USERNAME}@${SSH_HOST}" \
+                "set -e; rm -rf '${DEPLOY_PATH}.new' && mkdir -p '${DEPLOY_PATH}.new' && tar -xzf - -C '${DEPLOY_PATH}.new' && rm -rf '${DEPLOY_PATH}' && mv '${DEPLOY_PATH}.new' '${DEPLOY_PATH}'"
