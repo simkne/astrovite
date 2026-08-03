@@ -8,8 +8,9 @@ import { BASE_PATH, withBase } from '@/site-config'
   <article class="prose">
     <h1 class="text-title">hi.</h1>
     <p>
-      Welcome to my knowledge base on web development, software architecture, AI, and hands-on projects like ESP32 and
-      openHAB.
+      This is my personal wiki and build log — a place where I collect what I learn, break, and figure out along the
+      way. Most of it revolves around <strong>embedded systems</strong>, <strong>home automation</strong>,
+      <strong>AI tooling</strong>, and the <strong>web stack</strong> that ties it all together.
     </p>
 
     <p>
@@ -21,32 +22,43 @@ import { BASE_PATH, withBase } from '@/site-config'
       />
     </p>
 
-    <h2>What you’ll find here</h2>
+    <h2>What’s inside</h2>
     <ul>
-      <li><strong>Web development</strong> notes, patterns, tooling, and small experiments.</li>
-      <li><strong>Software architecture</strong> ideas, trade-offs, and practical write-ups.</li>
-      <li><strong>AI</strong> learnings and applied workflows.</li>
-      <li><strong>ESP32 + openHAB</strong> build logs and integrations.</li>
+      <li>
+        <strong>ESP32 & IoT</strong> — firmware, sensors, wireless protocols, and the rough edges nobody documents.
+      </li>
+      <li>
+        <strong>openHAB</strong> — rules, bindings, persistence, and making a smart home actually
+        <em>smart</em>.
+      </li>
+      <li>
+        <strong>AI & Development</strong> — prompting strategies, local LLMs, agents, and the code that glues them to real-world
+        problems.
+      </li>
+      <li>
+        <strong>Web & Architecture</strong> — Astro, Vue, APIs, and the tooling that keeps this site (and my side projects)
+        running.
+      </li>
     </ul>
 
     <h2>Where to start</h2>
     <ul>
       <li>
-        <a prose-link href={withBase('/blog/notes')}>Notes</a>
-        <span op-60> — short, practical entries (the “knowledge base”).</span>
+        <a prose-link href={withBase('/projects')}>Projects</a>
+        <span op-60> — deep dives into builds, from schematic to deployment.</span>
       </li>
       <li>
         <a prose-link href={withBase('/blog')}>Blog</a>
-        <span op-60> — more personal opinions and longer-form thoughts.</span>
+        <span op-60> — longer write-ups, opinions, and lessons learned the hard way.</span>
       </li>
       <li>
-        <a prose-link href={withBase('/projects')}>Projects</a>
-        <span op-60> — things I’ve built and what I learned along the way.</span>
+        <a prose-link href={withBase('/blog/notes')}>Notes</a>
+        <span op-60> — quick reference, snippets, and the “how did I do that again?” archive.</span>
       </li>
     </ul>
 
     <p>
-      Questions or corrections? Email me at
+      Found a bug, have a better approach, or just want to argue about tabs vs spaces? Hit me at
       <a prose-link aria-label={siteConfig.email} href={`mailto:${siteConfig.email}`}>
         {siteConfig.email}
       </a>.
