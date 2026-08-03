@@ -8,6 +8,7 @@ import UnoCSS from 'unocss/astro'
 export default defineConfig({
   site: 'https://weltkugl.net',
   base: '/www', // Set your base path here
+  trailingSlash: 'always',
   publicDir: 'public',
   server: {
     port: 1977,

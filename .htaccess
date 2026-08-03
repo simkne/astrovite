@@ -18,6 +18,13 @@ RewriteRule ^(.*)$ https://www.welkugl.net/$1 [L,R=301]
 # This line was removed because the portal page lives at / and the wiki at /www/.
 # Astro's base: '/www' already generates correct internal links.
 
+# Astro trailingSlash: 'always' — redirect bare paths to trailing-slash URLs
+# (e.g. /www/posts/hello -> /www/posts/hello/ so Apache serves index.html)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !\.
+RewriteCond %{REQUEST_URI} !(.*)/$
+RewriteRule ^(.*)$ $1/ [L,R=301]
+
 # Block Common Bad Bots & Scrapers (User-Agent based)
 RewriteCond %{HTTP_USER_AGENT} (?:AhrefsBot|Baiduspider|BLEXBot|DotBot|MJ12bot|SemrushBot|YandexBot|wget|curl|libwww-perl|python|nikto|scan|java|winhttp|clshttp|loader|email|harvest|extract|grab|miner|httrack) [NC]
 RewriteRule ^.* - [F,L]
