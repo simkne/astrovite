@@ -48,6 +48,5 @@ DEPLOY_SETUP.md
 
 .htaccess
 .vscode/
-.vscode.bk/
-
+./.vscode.bk/
 *.code-workspace
