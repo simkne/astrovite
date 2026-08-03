@@ -38,15 +38,15 @@ export const siteConfig = {
     navLinks: [
       {
         text: 'Blog',
-        href: '/blog',
+        href: '/blog/',
       },
       {
         text: 'Notes',
-        href: '/blog/notes',
+        href: '/blog/notes/',
       },
       {
         text: 'Projects',
-        href: '/projects',
+        href: '/projects/',
       },
     ],
   },
@@ -54,11 +54,11 @@ export const siteConfig = {
     blogLinks: [
       {
         text: 'Blog',
-        href: '/blog',
+        href: '/blog/',
       },
       {
         text: 'Notes',
-        href: '/blog/notes',
+        href: '/blog/notes/',
       },
     ],
   },
@@ -66,11 +66,11 @@ export const siteConfig = {
     navLinks: [
       {
         text: 'Posts Props',
-        href: '/posts-props',
+        href: '/posts-props/',
       },
       {
         text: 'Markdown Style',
-        href: '/md-style',
+        href: '/md-style/',
       },
       {
         text: 'GitHub Repository',
