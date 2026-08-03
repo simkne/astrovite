@@ -4,10 +4,6 @@ import { onMounted } from 'vue'
 
 const isDark = useDark()
 
-function toggleDark() {
-  isDark.value = !isDark.value
-}
-
 function setDarkMode(document: Document) {
   if (isDark.value)
     document.documentElement.classList.add('dark')
@@ -27,15 +23,19 @@ function toggleTheme(event: MouseEvent) {
     Math.max(x, innerWidth - x),
     Math.max(y, innerHeight - y),
   )
+
+  // Capture direction BEFORE toggling to avoid reactivity timing issues
+  const turningDark = !isDark.value
+
   // @ts-expect-error: Transition API
   if (!document.startViewTransition) {
-    toggleDark()
+    isDark.value = turningDark
     return
   }
 
   // @ts-expect-error: Transition API
   const transition = document.startViewTransition(async () => {
-    toggleDark()
+    isDark.value = turningDark
   })
 
   transition.ready.then(() => {
@@ -45,12 +45,12 @@ function toggleTheme(event: MouseEvent) {
     ]
     document.documentElement.animate(
       {
-        clipPath: isDark.value ? [...clipPath].reverse() : clipPath,
+        clipPath: turningDark ? [...clipPath].reverse() : clipPath,
       },
       {
         duration: 400,
         easing: 'ease-in',
-        pseudoElement: isDark.value
+        pseudoElement: turningDark
           ? '::view-transition-old(root)'
           : '::view-transition-new(root)',
       },

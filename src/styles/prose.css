@@ -43,7 +43,8 @@
   content: counter(list-item, var(--list-counter-style, decimal)) '.';
   position: absolute;
   font-weight: 400;
-  color: #6b7280;
+  color: currentColor;
+  opacity: 0.5;
   left: 0;
 }
 .prose ul > li {
@@ -53,7 +54,8 @@
 .prose ul > li::before {
   content: '';
   position: absolute;
-  background-color: #d1d5db;
+  background-color: currentColor;
+  opacity: 0.35;
   border-radius: 50%;
   width: 0.375em;
   height: 0.375em;
@@ -61,7 +63,7 @@
   left: 0.25em;
 }
 .prose hr {
-  border-color: rgba(125, 125, 125, 0.3);
+  border-color: color-mix(in srgb, currentColor 20%, transparent);
   margin-top: 3em;
   margin-bottom: 3em;
 }
@@ -70,7 +72,7 @@
   font-style: italic;
   color: inherit;
   border-left-width: 0.25rem;
-  border-color: rgba(125, 125, 125, 0.3);
+  border-color: color-mix(in srgb, currentColor 25%, transparent);
   quotes: '\201C' '\201D' '\2018' '\2019';
   margin-top: 1.6em;
   margin-bottom: 1.6em;
@@ -113,7 +115,8 @@
   line-height: 1.5;
 }
 .prose figure figcaption {
-  color: #6b7280;
+  color: currentColor;
+  opacity: 0.55;
   font-size: 0.875em;
   line-height: 1.4285714;
   margin-top: 0.8571429em;
@@ -129,10 +132,9 @@
   content: '`';
 }
 .prose a code {
-  color: #111827;
+  color: inherit;
 }
 .prose pre {
-  color: #e5e7eb;
   overflow-x: auto;
   font-size: 0.875em;
   line-height: 1.7142857;
@@ -173,7 +175,7 @@
 .prose thead {
   font-weight: 600;
   border-bottom-width: 1px;
-  border-bottom-color: #8882;
+  border-bottom-color: color-mix(in srgb, currentColor 15%, transparent);
 }
 .prose thead th {
   vertical-align: bottom;
@@ -183,7 +185,7 @@
 }
 .prose tbody tr {
   border-bottom-width: 1px;
-  border-bottom-color: #8882;
+  border-bottom-color: color-mix(in srgb, currentColor 15%, transparent);
 }
 .prose tbody tr:last-child {
   border-bottom-width: 0;
