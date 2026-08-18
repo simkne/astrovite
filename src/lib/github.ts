@@ -18,6 +18,8 @@ export const DEFAULT_REPO: Repo = {
 
 export const NOTES_PATH = 'src/content/blog/notes'
 
+export const BLOG_PATH = 'src/content/blog'
+
 export interface GithubFile {
   content: string
   sha: string

@@ -5,6 +5,7 @@ import { marked } from 'marked'
 import { computed, onMounted, ref } from 'vue'
 import { githubToken, isAdmin, setGithubToken } from '@/lib/auth'
 import {
+  BLOG_PATH,
   DEFAULT_REPO,
 
   getFile,
@@ -46,6 +47,9 @@ const token = ref('')
 const hasToken = computed(() => token.value.trim() !== '')
 
 const admin = ref(false)
+
+const type = ref<'note' | 'post'>('note')
+const contentDir = computed(() => type.value === 'note' ? NOTES_PATH : BLOG_PATH)
 
 const notes = ref<FileEntry[]>([])
 const loadingNotes = ref(false)
@@ -89,7 +93,7 @@ async function loadNotes() {
   loadingNotes.value = true
   error.value = ''
   try {
-    const entries = await listFiles(DEFAULT_REPO, token.value.trim(), NOTES_PATH)
+    const entries = await listFiles(DEFAULT_REPO, token.value.trim(), contentDir.value)
     notes.value = entries.filter(entry => entry.name.endsWith('.md'))
   }
   catch (e: any) {
@@ -98,6 +102,14 @@ async function loadNotes() {
   finally {
     loadingNotes.value = false
   }
+}
+
+function setType(next: 'note' | 'post') {
+  if (type.value === next)
+    return
+  type.value = next
+  newNote()
+  loadNotes()
 }
 
 function newNote() {
@@ -199,9 +211,10 @@ async function save() {
     error.value = 'Add your GitHub token first.'
     return
   }
-  const path = editingPath.value || `${NOTES_PATH}/${form.value.date || todayISO()}-${slugify(form.value.title)}.md`
+  const path = editingPath.value || `${contentDir.value}/${form.value.date || todayISO()}-${slugify(form.value.title)}.md`
   const action = editingPath.value ? 'Update' : 'Add'
-  const message = `${action} note: ${form.value.title || 'untitled'}`
+  const label = type.value === 'note' ? 'note' : 'blog post'
+  const message = `${action} ${label}: ${form.value.title || 'untitled'}`
 
   saving.value = true
   error.value = ''
@@ -270,6 +283,20 @@ async function save() {
 
       <!-- Editor -->
       <template v-else>
+        <div class="flex gap-2">
+          <button
+            class="nav-link px-4 py-1.5 rounded border-main border text-sm" :class="{ 'opacity-100 !border-op-90': type === 'note', 'opacity-50': type !== 'note' }"
+            type="button" @click="setType('note')"
+          >
+            Note
+          </button>
+          <button
+            class="nav-link px-4 py-1.5 rounded border-main border text-sm" :class="{ 'opacity-100 !border-op-90': type === 'post', 'opacity-50': type !== 'post' }"
+            type="button" @click="setType('post')"
+          >
+            Blog post
+          </button>
+        </div>
         <div class="flex flex-wrap gap-3 items-center">
           <button class="nav-link px-4 py-2 rounded border-main border !border-op-50" type="button" @click="newNote">
             New note
