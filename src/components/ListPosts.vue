@@ -56,9 +56,15 @@ function getYear(date: Date | string | number) {
         <div flex="~ col md:row gap-2 md:items-center">
           <div flex="~ gap-2 items-center text-wrap">
             <span lh-normal>
-              <i v-if="post.data.draft" text-base vertical-mid i-ri-draft-line />
-              <i v-if="post.data.private" text-base vertical-mid i-ri-lock-line />
               {{ post.data.title }}
+            </span>
+            <span v-if="post.data.private" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs border-main border !border-op-50 opacity-70">
+              <i i-ri-lock-line />
+              Private
+            </span>
+            <span v-if="post.data.draft" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs border-main border !border-op-50 opacity-70">
+              <i i-ri-draft-line />
+              Draft
             </span>
           </div>
           <div opacity-50 text-sm ws-nowrap flex="~ gap-2 items-center">

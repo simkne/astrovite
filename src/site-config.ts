@@ -77,10 +77,6 @@ export const siteConfig = {
         href: '/editor/',
       },
       {
-        text: 'Log in',
-        href: '/login/',
-      },
-      {
         text: 'GitHub Repository',
         href: 'https://github.com/simkne/astrovite',
       },
