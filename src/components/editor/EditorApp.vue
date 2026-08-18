@@ -9,6 +9,7 @@ import {
   DEFAULT_REPO,
 
   getFile,
+  isTokenInvalid,
   listFiles,
   NOTES_PATH,
   saveFile,
@@ -97,7 +98,7 @@ async function loadNotes() {
     notes.value = entries.filter(entry => entry.name.endsWith('.md'))
   }
   catch (e: any) {
-    error.value = e.message || 'Failed to load notes.'
+    handleError(e, 'Failed to load notes.')
   }
   finally {
     loadingNotes.value = false
@@ -110,6 +111,17 @@ function setType(next: 'note' | 'post') {
   type.value = next
   newNote()
   loadNotes()
+}
+
+function handleError(e: unknown, fallback: string) {
+  if (isTokenInvalid(e)) {
+    localStorage.removeItem('astrovite_gh_token')
+    token.value = ''
+    notes.value = []
+    error.value = 'GitHub token expired or invalid — re-enter it to continue.'
+    return
+  }
+  error.value = e instanceof Error ? e.message : fallback
 }
 
 function newNote() {
@@ -154,7 +166,7 @@ async function loadNote(path: string) {
     view.value = 'edit'
   }
   catch (e: any) {
-    error.value = e.message || 'Failed to load note.'
+    handleError(e, 'Failed to load note.')
   }
   finally {
     loadingNote.value = false
@@ -244,7 +256,7 @@ async function save() {
     overwrite.value = false
   }
   catch (e: any) {
-    error.value = e.message || 'Save failed.'
+    handleError(e, 'Save failed.')
   }
   finally {
     saving.value = false

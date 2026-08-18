@@ -54,10 +54,8 @@ export async function getFile(repo: Repo, token: string, path: string): Promise<
   const res = await fetch(apiUrl(repo, path), { headers: headers(token) })
   if (res.status === 404)
     return null
-  if (!res.ok) {
-    const message = await errorMessage(res)
-    throw new Error(message)
-  }
+  if (!res.ok)
+    throw await apiError(res)
   const data = await res.json()
   return { content: decodeContent(data), sha: data.sha }
 }
@@ -66,10 +64,8 @@ export async function listFiles(repo: Repo, token: string, path: string): Promis
   const res = await fetch(apiUrl(repo, path), { headers: headers(token) })
   if (res.status === 404)
     return []
-  if (!res.ok) {
-    const message = await errorMessage(res)
-    throw new Error(message)
-  }
+  if (!res.ok)
+    throw await apiError(res)
   const data = await res.json()
   if (!Array.isArray(data))
     return []
@@ -107,11 +103,28 @@ export async function saveFile(
   if (res.status === 422)
     return { exists: true }
 
-  if (!res.ok) {
-    const message = await errorMessage(res)
-    throw new Error(message)
-  }
+  if (!res.ok)
+    throw await apiError(res)
   return { exists: false }
+}
+
+export class ApiError extends Error {
+  status: number
+
+  constructor(status: number, message: string) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+  }
+}
+
+export function isTokenInvalid(err: unknown) {
+  return err instanceof ApiError && err.status === 401
+}
+
+async function apiError(res: Response) {
+  const message = await errorMessage(res)
+  return new ApiError(res.status, message)
 }
 
 async function errorMessage(res: Response) {
