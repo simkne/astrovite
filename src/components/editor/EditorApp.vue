@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { FileEntry } from '@/lib/github'
-import matter from 'gray-matter'
 import { marked } from 'marked'
 import { computed, onMounted, ref } from 'vue'
 import { githubToken, isAdmin, setGithubToken } from '@/lib/auth'
@@ -144,13 +143,16 @@ async function loadNote(path: string) {
   loadingNote.value = true
   error.value = ''
   status.value = ''
+  // Don't keep any previous target: if the load fails, saving must create a
+  // new file rather than overwrite an existing one.
+  editingPath.value = ''
   try {
     const file = await getFile(DEFAULT_REPO, token.value.trim(), path)
     if (!file) {
       error.value = `Note not found: ${path}`
       return
     }
-    const { data, content } = matter(file.content)
+    const { data, content } = parseFrontmatter(file.content)
     form.value = {
       title: String(data.title ?? ''),
       description: String(data.description ?? ''),
@@ -164,6 +166,7 @@ async function loadNote(path: string) {
     editingPath.value = path
     overwrite.value = false
     view.value = 'edit'
+    status.value = `Loaded "${path}". Saving will update it.`
   }
   catch (e: any) {
     handleError(e, 'Failed to load note.')
@@ -199,6 +202,34 @@ function generateSharePassword() {
 
 function quote(value: string) {
   return JSON.stringify(value)
+}
+
+interface ParsedNote {
+  data: Record<string, unknown>
+  content: string
+}
+
+function parseFrontmatter(raw: string): ParsedNote {
+  const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(raw)
+  const data: Record<string, unknown> = {}
+  if (match) {
+    for (const line of match[1].split(/\r?\n/)) {
+      const idx = line.indexOf(':')
+      if (idx === -1)
+        continue
+      const key = line.slice(0, idx).trim()
+      let value = line.slice(idx + 1).trim()
+      if (value.startsWith('"') && value.endsWith('"') && value.length >= 2)
+        value = value.slice(1, -1)
+      if (value === 'true')
+        data[key] = true
+      else if (value === 'false')
+        data[key] = false
+      else
+        data[key] = value
+    }
+  }
+  return { data, content: match ? match[2] : raw }
 }
 
 function buildMarkdown() {

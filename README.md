@@ -1,21 +1,23 @@
-# weltkugl.net — Personal Wiki & Knowledge Base
+# weltkugl.net — Personal Blog & Experience Notes
 
 Built on [**astro-theme-vitesse**](https://github.com/kieranwv/astro-theme-vitesse) by Kieran Wang — a minimal, SEO-friendly Astro theme with Vue and UnoCSS.
 
-This repo powers a personal wiki and knowledge base at `https://www.weltkugl.net/www/`. The site is a static Astro build that deploys automatically from GitHub to a self-hosted Netcup server.
+This repo powers a personal blog and experience notes at `https://www.weltkugl.net/www/`. The site is a static Astro build that deploys automatically from GitHub to a self-hosted Netcup server.
 
 ---
 
 ## What This Is
 
-A living knowledge base for:
+A place for longer-form thoughts and observations from working on different projects — what I learn, break, and figure out along the way:
 
-- **IoT & Home Automation** — ESP32, openHAB, sensors, device monitoring
-- **Web Development** — patterns, tooling, experiments
-- **Software Architecture** — notes, trade-offs, practical write-ups
-- **Blog & Talks** — longer-form thoughts and presentations
+- **Project experiences** — real-world write-ups from builds and side projects
+- **Observations & opinions** — longer-form thoughts and lessons learned the hard way
+- **Talks** — presentations and talks
+- **Quick reference** — notes and snippets
 
 Content lives as plain Markdown in this repo. Push to `main` → site builds and deploys in ~60 seconds.
+
+> **A separate knowledge base is in the works** — a Nuxt-based companion for structured, reference-style documentation. It will cover IoT & home automation (ESP32, openHAB, sensors) alongside devops, software architecture, and other topics — not just IoT. This Astro blog stays focused on the experience side of things.
 
 ---
 
@@ -53,18 +55,9 @@ Content is organized in Astro collections under `src/content/`:
 | Collection | Location | Purpose |
 |-----------|----------|---------|
 | `blog` | `src/content/blog/` | Blog posts, notes, talks |
-| `iot` | `src/content/iot/` | IoT knowledge base articles |
 | `pages` | `src/content/pages/` | Static pages (e.g. `/md-style`) |
 
-### IoT Knowledge Base
-
-The IoT section has its own sub-navigation (`ProjectSubnav.astro`) with these topics:
-
-- **ESP32** — Firmware, Wi-Fi/BLE, MQTT, embedded patterns
-- **openHAB** — Rules, items, bindings, smart-home integration
-- **Sensors** — Hardware notes, calibration, data pipelines
-
-New sections are configured in `src/projects/iot-config.ts`.
+Structured, reference-style documentation lives in the separate Nuxt knowledge base (see above); this repo is focused on the blog and experience narratives. An `iot` collection still exists in code but is a legacy holdover from the old knowledge-base framing.
 
 ---
 
@@ -86,23 +79,9 @@ npm run build
 npm run preview
 ```
 
-### Tech Stack
-
-| Layer | Tool |
-|-------|------|
-| Framework | [Astro](https://astro.build/) 5.x |
-| Components | [Vue](https://vuejs.org/) 3.x SFC |
-| Styling | [UnoCSS](https://unocss.dev/) |
-| Content | Markdown + [MDX](https://mdxjs.com/) |
-| Icons | [Iconify](https://iconify.design/) |
-| Utilities | [VueUse](https://vueuse.org/), [Lodash-es](https://lodash.com/) |
-| Syntax Highlighting | [Shiki](https://shiki.style/) (github-light / github-dark) |
-
 ---
 
 ## Deployment
-
-### How it works
 
 Every push to `main` triggers `.github/workflows/deploy.yml`:
 
@@ -110,10 +89,10 @@ Every push to `main` triggers `.github/workflows/deploy.yml`:
 2. **Install** dependencies (`npm ci`)
 3. **Lint** (`npm run lint`)
 4. **Build** Astro to `dist/` (`npm run build`)
-5. **Backup** current site on the server (`~/bin/backup-wiki.sh`)
-6. **Deploy** `dist/` to server via `rsync --delete`
+5. **Backup** current site on the server
+6. **Deploy** `dist/` to the Netcup server via `rsync --delete`
 
-Backups are retained for 14 days in `~/wiki-backups/` on the server.
+Backups are retained for 14 days on the server. A full step-by-step walkthrough of this setup (deploy-only SSH key, backup/rollback scripts, and the workflow YAML) is in the blog post: **["Auto-deploy a static site from GitHub to your own server"](https://www.weltkugl.net/www/posts/deploy-strategy/)**.
 
 ### Required GitHub Secrets
 
@@ -150,10 +129,6 @@ If a deploy breaks something, SSH into the server and run:
 │   │   │   ├── notes/
 │   │   │   ├── talks/
 │   │   │   └── post-1.md
-│   │   ├── iot/
-│   │   │   ├── esp32/
-│   │   │   ├── openhab/
-│   │   │   └── sensors/
 │   │   └── pages/
 │   ├── layouts/                   # BaseLayout.astro
 │   ├── pages/                     # Astro routing
@@ -185,40 +160,6 @@ tag: web-dev
 
 Your content here.
 ```
-
-### New IoT Article
-
-Create a file in the appropriate `src/content/iot/<section>/` folder:
-
-```md
----
-title: "MQTT Setup on ESP32"
-description: "Connecting ESP32 to MQTT broker"
-order: 1
----
-
-Your content here.
-```
-
-`order` controls sort position within the section. Articles without `order` sort alphabetically by title.
-
-### New IoT Section
-
-1. Add section metadata to `src/projects/iot-config.ts`:
-
-```ts
-({
-  slug: 'newsection',
-  title: 'New Section',
-  description: 'What this section covers.',
-})
-```
-
-```ts
-({ text: 'New Section', href: '/projects/iot/newsection' })
-```
-
-3. Create `src/content/iot/newsection/overview.md`
 
 ---
 
@@ -290,6 +231,21 @@ Edit `uno.config.ts` for:
 - Color tokens (`bg-main`, `text-main`, etc.)
 - UnoCSS shortcuts
 - Font families (Inter, DM Mono)
+
+---
+
+## Tech Stack
+
+| Layer | Tool |
+|-------|------|
+| Framework | [Astro](https://astro.build/) 5.x |
+| Components | [Vue](https://vuejs.org/) 3.x SFC |
+| Styling | [UnoCSS](https://unocss.dev/) |
+| Content | Markdown + [MDX](https://mdxjs.com/) |
+| Icons | [Iconify](https://iconify.design/) |
+| Utilities | [VueUse](https://vueuse.org/), [Lodash-es](https://lodash.com/) |
+| Syntax Highlighting | [Shiki](https://shiki.style/) (github-light / github-dark) |
+| Deploy | GitHub Actions → rsync over SSH to a Netcup VPS |
 
 ---
 

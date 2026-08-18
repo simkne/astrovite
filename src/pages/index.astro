@@ -58,6 +58,15 @@ import { BASE_PATH, withBase } from '@/site-config'
       </li>
     </ul>
 
+    <h2 style="font-size:1.1em;margin-top:2.5rem">How this site deploys itself</h2>
+    <p>
+      Every push to <code>main</code> triggers GitHub Actions to lint, build, and <code>rsync</code> this site onto a self-hosted
+      Netcup server — with backups and one-command rollback. Read the full walkthrough:
+      <a prose-link href={withBase('/posts/deploy-strategy/')}
+        >Auto-deploy a static site from GitHub to your own server</a
+      >.
+    </p>
+
     <p>
       Found a bug, have a better approach, or just want to argue about tabs vs spaces? Hit me at
       <a prose-link aria-label={siteConfig.email} href={`mailto:${siteConfig.email}`}>

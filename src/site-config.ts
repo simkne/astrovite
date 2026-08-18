@@ -11,7 +11,7 @@ export const siteConfig = {
   author: 'SimKne',
   title: 'welcome to weltkugl.net',
   subtitle: 'weltkugl.net is a project by SimKne',
-  description: 'A collection of some of my projects, and resources I find useful.',
+  description: 'Experiences, observations, and longer-form thoughts from projects across IoT, web dev, and tooling.',
   image: {
     src: 'imgs/hero01.png',
     alt: 'Website Main Image',
@@ -20,7 +20,7 @@ export const siteConfig = {
   socialLinks: [
     {
       text: 'GitHub',
-      href: 'https://github.com/simkne/astro-vitesse',
+      href: 'https://github.com/simkne/astrovite',
       icon: 'i-simple-icons-github',
       header: 'i-ri-github-line',
     },

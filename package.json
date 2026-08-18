@@ -33,7 +33,6 @@
     "@unocss/astro": "^66.7.5",
     "@unocss/reset": "^66.7.5",
     "astro": "^7.1.6",
-    "gray-matter": "^4.0.3",
     "marked": "^18.0.10",
     "nprogress": "^0.2.0",
     "unocss": "^66.7.5",
