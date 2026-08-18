@@ -34,7 +34,7 @@ export async function sha256Hex(input: string) {
 
 // Replace with the SHA-256 hash of your master password.
 // Generate with: printf 'your-master-password' | shasum -a 256
-export const MASTER_PASSWORD_HASH = ''
+export const MASTER_PASSWORD_HASH = '33fc0c90afdffce520b89330f71a1cabe9fa4f91689a8f4a5898168aadc63ea3'
 
 export async function isAdmin() {
   const stored = localStorage.getItem(STORAGE_KEYS.admin)
