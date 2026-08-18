@@ -1,0 +1,11 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import LoginForm from '@/components/LoginForm.vue'
+---
+
+<BaseLayout title="Log in" description="Admin login for private content.">
+  <article class="prose">
+    <h1>Log in</h1>
+    <LoginForm client:load />
+  </article>
+</BaseLayout>

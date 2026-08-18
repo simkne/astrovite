@@ -37,6 +37,8 @@ const blog = defineCollection({
         day: 'numeric',
       })),
     draft: z.boolean().default(false).optional(),
+    private: z.boolean().default(false).optional(),
+    sharePassword: z.string().optional(),
     lang: z.string().default('en-US').optional(),
     tag: z.string().optional().optional(),
     redirect: z.string().optional(),

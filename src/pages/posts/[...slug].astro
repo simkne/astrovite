@@ -1,6 +1,7 @@
 ---
 import { render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import PrivateGate from '@/components/blog/PrivateGate.vue'
 import { type CollectionPosts } from '@/types'
 import { getPosts } from '@/utils/posts'
 
@@ -19,7 +20,7 @@ export async function getStaticPaths() {
 type Props = { post: CollectionPosts }
 
 const { post } = Astro.props
-const { title, image, description, date, duration, tag } = post.data
+const { title, image, description, date, duration, tag, private: isPrivate, sharePassword } = post.data
 
 const { Content } = await render(post)
 
@@ -43,6 +44,8 @@ function getDate(date: string) {
         </p>
       )
     }
-    <Content />
+    <PrivateGate client:load private={isPrivate} sharePassword={sharePassword} slug={post.id}>
+      <Content />
+    </PrivateGate>
   </article>
 </BaseLayout>

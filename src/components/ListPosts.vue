@@ -57,6 +57,7 @@ function getYear(date: Date | string | number) {
           <div flex="~ gap-2 items-center text-wrap">
             <span lh-normal>
               <i v-if="post.data.draft" text-base vertical-mid i-ri-draft-line />
+              <i v-if="post.data.private" text-base vertical-mid i-ri-lock-line />
               {{ post.data.title }}
             </span>
           </div>

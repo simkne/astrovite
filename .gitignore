@@ -46,6 +46,9 @@ wiki-backups/
 coverage/
 DEPLOY_SETUP.md
 
+# Handoff/agent notes (not part of the repo)
+docs
+
 .htaccess
 .vscode/
 ./.vscode.bk/

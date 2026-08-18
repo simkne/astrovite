@@ -1,31 +1,27 @@
 ---
 title: Auto-deploy a static site from GitHub to your own server
-description: How to wire GitHub Actions, SSH, rsync, and simple backup scripts so every push to main builds and deploys your Astro (or any static) site — with rollback when something breaks.
+description: How to wire GitHub Actions, SSH, and simple backup scripts so every push to main builds and deploys your Astro (or any static) site — with rollback when something breaks.
 date: 2026-08-01
 lang: en
 tag: devops
 duration: 12min
 ---
 
-Editing Markdown in a repo is only half the story. The other half is getting those changes onto a real server without FTP, manual builds, or “I’ll deploy it later.” This post walks through a self-hosted deploy pipeline: **push to `main` → CI builds → backup the live site → sync the new build over SSH**.
+Editing Markdown in a repo is only half the story. The other half is getting those changes onto a real server without FTP, manual builds, or “I’ll deploy it later.” This post walks through a self-hosted deploy pipeline: **push to** `main` **→ CI builds → backup the live site → sync the new build over SSH**.
 
 It works for Astro, Vite, Next static export, plain HTML — anything that outputs a folder of static files.
 
-<!-- IMAGE: Hero diagram — left: GitHub (edit .md / push), middle: Actions (install → lint → build), right: VPS (backup → rsync → live site). Arrows labeled “~60s”. -->
-
 ## What you end up with
 
-| Piece | Role |
-|-------|------|
-| GitHub repo | Source of truth for content and site code |
-| GitHub Actions | Builds on every push to `main` |
-| Deploy SSH key | Lets Actions log into your server without passwords |
-| `rsync` over SSH | Copies `dist/` to the web root |
-| Backup + rollback scripts | Snapshot before each deploy; restore if needed |
+| Piece                     | Role                                                |
+| ------------------------- | --------------------------------------------------- |
+| GitHub repo               | Source of truth for content and site code           |
+| GitHub Actions            | Builds on every push to `main`                      |
+| Deploy SSH key            | Lets Actions log into your server without passwords |
+| `rsync` over SSH          | Copies `dist/` to the web root                      |
+| Backup + rollback scripts | Snapshot before each deploy; restore if needed      |
 
 Visitors still hit your domain as usual. You never SSH in just to publish a typo fix.
-
-<!-- IMAGE: Before/after — “edit on GitHub → refresh browser” vs “build locally → scp → hope”. Simple two-panel sketch. -->
 
 ## Prerequisites
 
@@ -74,8 +70,6 @@ ssh -i ~/.ssh/github_deploy your-user@your-server
 # Should log in without a password prompt
 ```
 
-<!-- IMAGE: Screenshot-style mock of terminal: successful key-based login, no password prompt. -->
-
 ## 2. Backup and rollback on the server
 
 Before every deploy, snapshot the current web root. If the new build is broken, restore in one command.
@@ -102,22 +96,18 @@ Skip the backup quietly if the directory is empty — that happens on the first 
 
 Wire both scripts as executable (`chmod +x`). If your web root isn’t the default path in the scripts, edit that one variable in both places.
 
-<!-- IMAGE: Timeline graphic — Deploy N-1 (live) → backup tarball created → Deploy N syncs → optional rollback arrow back to N-1. -->
-
 ## 3. GitHub Actions secrets
 
 In the repo: **Settings → Secrets and variables → Actions**.
 
-| Secret | Meaning |
-|--------|---------|
-| `SSH_HOST` | Server IP or hostname |
-| `SSH_USERNAME` | SSH user that owns the web files |
+| Secret            | Meaning                                                     |
+| ----------------- | ----------------------------------------------------------- |
+| `SSH_HOST`        | Server IP or hostname                                       |
+| `SSH_USERNAME`    | SSH user that owns the web files                            |
 | `SSH_PRIVATE_KEY` | Full private key text (`-----BEGIN …` through `-----END …`) |
-| `DEPLOY_PATH` | Absolute path to the web root, trailing `/` recommended |
+| `DEPLOY_PATH`     | Absolute path to the web root, trailing `/` recommended     |
 
 `DEPLOY_PATH` should be the folder that receives the *built* site — often a subdirectory if a portal or other app lives at the domain root.
-
-<!-- IMAGE: Annotated GitHub UI mock — Secrets list with the four names (values blurred). -->
 
 ## 4. Watch out for blanket redirects
 
@@ -139,7 +129,7 @@ name: Build and Deploy
 on:
   push:
     branches: [main]
-  workflow_dispatch:   # manual “Run workflow” button
+  workflow_dispatch: # manual “Run workflow” button
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -155,26 +145,25 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run lint    # optional but catches breaks before ship
+      - run: npm run lint # optional but catches breaks before ship
       - run: npm run build
 
       - name: Backup on server
-        # write the private key, ssh-keyscan host, then:
-        # ssh … "bash ~/bin/backup-wiki.sh"
+      # write the private key, ssh-keyscan host, then:
+      # ssh … "bash ~/bin/backup-wiki.sh"
 
       - name: Deploy
-        # rsync -avz --delete ./dist/ user@host:$DEPLOY_PATH
+      # rsync -avz --delete ./dist/ user@host:$DEPLOY_PATH
 ```
 
 Important details:
 
-- **`concurrency` + `cancel-in-progress`** — rapid commits don’t stack stale deploys.
-- **`--delete` on rsync** — removed pages disappear from the server too. Pair that with the pre-deploy backup.
+- `concurrency` **+** `cancel-in-progress` — rapid commits don’t stack stale deploys.
+- `--delete` **on rsync** — removed pages disappear from the server too. Pair that with the pre-deploy backup.
+- **No rsync on the server?** Pipe a tarball over SSH instead: `tar -czf - -C ./dist . | ssh … 'rm -rf "$DEPLOY.new" && mkdir -p "$DEPLOY.new" && tar -xzf - -C "$DEPLOY.new" && rm -rf "$DEPLOY" && mv "$DEPLOY.new" "$DEPLOY"'`. The swap is atomic, so a failed transfer never leaves a half-deployed site.
 - **Reuse the same SSH key file** between the backup and rsync steps in one job.
 
 If you already have a lint-only CI workflow, fold lint into this job and drop the duplicate.
-
-<!-- IMAGE: GitHub Actions run screenshot (generic) — green checks: Checkout → Install → Lint → Build → Backup → Deploy. -->
 
 ## 6. First deploy checklist
 
@@ -196,21 +185,19 @@ After that, the loop is deliberately boring:
 
 No build machine required for content edits. The CI runner is the build machine.
 
-<!-- IMAGE: Short comic / three frames — pencil on GitHub → spinning Actions badge → browser with updated text. -->
-
 ## 8. When a deploy goes wrong
 
 SSH in and run the rollback script with no args (latest backup) or with a specific archive name. Confirm when prompted. The emergency snapshot means you can undo a bad rollback too.
 
 Typical failure modes:
 
-| Symptom | Likely cause |
-|---------|----------------|
-| `Permission denied (publickey)` | Secret private key ≠ public key on server |
-| `rsync: No such file or directory` | `DEPLOY_PATH` wrong or parent dir missing |
-| 404 on the app path | Web server not serving that subdirectory |
-| Lint fails in CI | Fix locally, push again — deploy never ran |
-| Homepage redirects into the app | Catch-all redirect still active |
+| Symptom                            | Likely cause                               |
+| ---------------------------------- | ------------------------------------------ |
+| `Permission denied (publickey)`    | Secret private key ≠ public key on server  |
+| `rsync: No such file or directory` | `DEPLOY_PATH` wrong or parent dir missing  |
+| 404 on the app path                | Web server not serving that subdirectory   |
+| Lint fails in CI                   | Fix locally, push again — deploy never ran |
+| Homepage redirects into the app    | Catch-all redirect still active            |
 
 ## Why this shape (and not “just use a PaaS”)
 
@@ -222,15 +209,13 @@ You trade a bit of setup for:
 - Explicit backups you can `ls` and restore by hand
 - The same mental model as classic ops: build artifact in, live tree out
 
-<!-- IMAGE: Closing architecture card — repo → Actions → [backup ring] → web root; dashed arrow “rollback”. Good as a footer summary graphic. -->
-
 ## Recap
 
-1. Deploy-only SSH key → server + GitHub secret  
-2. Backup / rollback scripts on the host  
-3. Four secrets: host, user, key, deploy path  
-4. Workflow: install → lint → build → backup → `rsync`  
-5. Fix redirects so root and app paths can coexist  
-6. Push to `main` and stop thinking about FTP  
+1. Deploy-only SSH key → server + GitHub secret
+2. Backup / rollback scripts on the host
+3. Four secrets: host, user, key, deploy path
+4. Workflow: install → lint → build → backup → `rsync`
+5. Fix redirects so root and app paths can coexist
+6. Push to `main` and stop thinking about FTP
 
 Once it’s green once, publishing is just committing Markdown — which is the whole point.

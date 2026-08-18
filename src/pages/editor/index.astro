@@ -1,0 +1,11 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import EditorApp from '@/components/editor/EditorApp.vue'
+---
+
+<BaseLayout title="Editor" description="Write and publish markdown notes.">
+  <article class="prose">
+    <h1>Editor</h1>
+    <EditorApp client:load />
+  </article>
+</BaseLayout>

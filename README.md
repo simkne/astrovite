@@ -222,7 +222,59 @@ Your content here.
 
 ---
 
-## Customization
+## Editor & Private Notes
+
+### Web-based markdown editor
+
+A browser-based editor lives at `https://www.weltkugl.net/www/editor/` (mobile-friendly). It writes notes to
+`src/content/blog/notes/` via the GitHub REST API, so saving triggers the normal push-to-main deploy.
+
+- **GitHub token:** enter a fine-grained PAT with `contents: write` on this repo once. It is stored only in the
+  browser's `localStorage` (`astrovite_gh_token`) and never sent anywhere except `api.github.com`. It is never
+  logged or committed.
+- **Create:** fill in title / description / duration, toggle Draft / Private, write markdown, hit "Save & deploy".
+  Files are named `YYYY-MM-DD-<slug>.md`. A live markdown preview is available.
+- **Edit:** pick an existing note from the dropdown to load it, edit, and save back to the same path.
+- **Speech-to-text** is planned (Web Speech API) — the editor body area is structured for it, but it is not built.
+
+### Visibility levels
+
+Blog notes have three levels, controlled by frontmatter:
+
+| Level | Frontmatter | Live site |
+|-------|-------------|-----------|
+| Public | (default) | Listed and visible |
+| Draft | `draft: true` | Not generated at build |
+| Private | `private: true` | Generated, but gated |
+
+Drafts are filtered out at build time, so they never appear on the live site (they stay in the public repo source).
+Private notes ARE built, but their content is hidden behind a client-side `<PrivateGate>`.
+
+### Privacy model (important)
+
+- **Admin login:** `/www/login/` accepts a master password. Only its SHA-256 hash is stored — as
+  `MASTER_PASSWORD_HASH` in `src/lib/auth.ts`. Set it once:
+  ```bash
+  printf 'your-master-password' | shasum -a 256
+  ```
+  Paste the hex string into `src/lib/auth.ts`. Logging in unlocks all private notes in that browser
+  (`localStorage.astrovite_admin`).
+- **Share links:** a private note with a `sharePassword` can be opened by anyone with
+  `https://www.weltkugl.net/www/posts/notes/<note>/?pw=<sharePassword>`. Unlocked notes stay open for the session
+  via `sessionStorage`.
+- **Caveat:** there is no server. Private note content is present in the page's HTML source; the gate only hides
+  it visually. Anyone who views source can read it. This is fine for personal notes, but private notes should not
+  contain true secrets. `sharePassword` values are not secrets — they are "link-only, mildly protected" access.
+- **Token & passwords in this repo:** the GitHub token never enters the repo. The master password only exists as a
+  hash. `sharePassword` values live in note frontmatter in this public repo by design.
+
+### Future: private-repo split
+
+A future option is splitting private content into a separate private repository. The GitHub client in
+`src/lib/github.ts` already accepts a `repo` parameter so it can point at a second repo with a token that has
+access to both. Not built yet.
+
+---
 
 ### Site Config
 
