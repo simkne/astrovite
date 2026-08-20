@@ -26,7 +26,7 @@ function paintGlow() {
     return
   }
   const alpha = Math.min(glowState.alpha, 1)
-  const radius = Number(getComputedStyle(document.documentElement).getPropertyValue('--dot-glow-radius').trim() || 120)
+  const radius = 120
   const mask = `radial-gradient(circle ${radius}px at ${glowState.x}px ${glowState.y}px, rgba(0,0,0,${alpha}) 0%, rgba(0,0,0,${alpha * 0.8}) 25%, rgba(0,0,0,${alpha * 0.4}) 55%, transparent 100%)`
   el.style.opacity = '1'
   el.style.maskImage = mask
@@ -38,7 +38,7 @@ function fadeGlow() {
     raf = 0
     return
   }
-  const fadeMs = Number(getComputedStyle(document.documentElement).getPropertyValue('--dot-glow-fade').trim() || 800)
+  const fadeMs = 800
   const elapsed = performance.now() - glowState.last
   glowState.alpha = 1 - Math.min(elapsed / fadeMs, 1)
   paintGlow()
@@ -90,13 +90,13 @@ onBeforeUnmount(() => {
 
 .dot-bg__layer {
   --at-apply: absolute inset-0;
-  background-image: radial-gradient(circle, var(--dot-color) 0.5px, transparent 0.5px);
+  background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
   background-size: var(--dot-step) var(--dot-step);
   background-position: calc(var(--dot-step) / 2) calc(var(--dot-step) / 2);
 }
 
 .dot-bg__layer--lit {
-  background-image: radial-gradient(circle, var(--dot-lit-color) 0.5px, transparent 0.5px);
+  background-image: radial-gradient(circle, var(--dot-lit-color) 1px, transparent 1px);
   opacity: 0;
   mask-image: linear-gradient(transparent, transparent);
   -webkit-mask-image: linear-gradient(transparent, transparent);

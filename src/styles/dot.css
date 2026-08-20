@@ -1,15 +1,11 @@
 html.dark {
-  --dot-color: #2f353c;
+  --dot-color: #3a424b;
   --dot-lit-color: #e6edf3;
   --dot-step: 24px;
-  --dot-glow-radius: 120px;
-  --dot-glow-fade: 800ms;
 }
 
 html:not(.dark) {
-  --dot-color: #a5aeb880;
+  --dot-color: #a5aeb8cc;
   --dot-lit-color: #4b5563;
   --dot-step: 24px;
-  --dot-glow-radius: 120px;
-  --dot-glow-fade: 800ms;
 }
