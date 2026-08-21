@@ -60,24 +60,21 @@ function resize() {
 function frame() {
   if (!ctx)
     return
-  // Target pulls surrounding dots tighter together while a link is hovered
-  const tx = target.active ? target.x : mouse.active ? mouse.x : -1
-  const ty = target.active ? target.y : mouse.active ? mouse.y : -1
-  const pulling = target.active || mouse.active
-
   ctx.clearRect(0, 0, width, height)
   for (const p of particles) {
+    // Converge toward a hovered link's center
     let ax = 0
     let ay = 0
-    if (pulling && tx >= 0) {
-      const dx = tx - p.x
-      const dy = ty - p.y
+    if (target.active) {
+      const dx = target.x - p.x
+      const dy = target.y - p.y
       const dist = Math.hypot(dx, dy)
       if (dist > 0 && dist < PULL_R) {
         ax += (dx / dist) * ATTRACT * (1 - dist / PULL_R)
         ay += (dy / dist) * ATTRACT * (1 - dist / PULL_R)
       }
     }
+
     // Spring back home
     ax += (p.homeX - p.x) * HOME
     ay += (p.homeY - p.y) * HOME
@@ -94,7 +91,7 @@ function frame() {
     p.x += p.vx
     p.y += p.vy
 
-    // Brighten dots near the cursor ("flashlight" glow)
+    // Brighten dots near the cursor ("flashlight" glow) — light only, no pull
     const lit = mouse.active && Math.hypot(mouse.x - p.x, mouse.y - p.y) < GLOW_R
     ctx.fillStyle = lit ? litColor : color
     ctx.fillRect(p.x - DOT_R, p.y - DOT_R, DOT_R * 2, DOT_R * 2)
