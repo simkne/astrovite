@@ -12,14 +12,14 @@ interface Particle {
   vy: number
 }
 
-const GRID = 24
+const GRID = 16
 const DOT_R = 1.2
 const GLOW_R = 140
-const PULL_R = 150
-const ATTRACT = 0.045
-const HOME = 0.04
+const PULL_R = 220
+const ATTRACT = 0.09
+const HOME = 0.045
 const FRICTION = 0.88
-const MAX_V = 6
+const MAX_V = 8
 
 let ctx: CanvasRenderingContext2D | null = null
 let particles: Particle[] = []
@@ -28,15 +28,29 @@ let running = false
 let dpr = 1
 let width = 0
 let height = 0
-let color = '#a5aeb8cc'
-let litColor = '#4b5563'
+let colorRgb: [number, number, number] = [165, 174, 184]
+let litRgb: [number, number, number] = [75, 85, 99]
 const mouse = { x: 0, y: 0, active: false }
 const target: { x: number, y: number, active: boolean } = { x: 0, y: 0, active: false }
 
+function hexToRgb(hex: string): [number, number, number] {
+  let h = hex.trim().replace('#', '')
+  if (h.length === 3)
+    h = h.split('').map(c => c + c).join('')
+  if (h.length >= 6) {
+    const r = Number.parseInt(h.slice(0, 2), 16)
+    const g = Number.parseInt(h.slice(2, 4), 16)
+    const b = Number.parseInt(h.slice(4, 6), 16)
+    if (!Number.isNaN(r) && !Number.isNaN(g) && !Number.isNaN(b))
+      return [r, g, b]
+  }
+  return [165, 174, 184]
+}
+
 function readColors() {
   const s = getComputedStyle(document.documentElement)
-  color = s.getPropertyValue('--dot-color').trim() || '#a5aeb8cc'
-  litColor = s.getPropertyValue('--dot-lit-color').trim() || '#4b5563'
+  colorRgb = hexToRgb(s.getPropertyValue('--dot-color').trim() || '#a5aeb8')
+  litRgb = hexToRgb(s.getPropertyValue('--dot-lit-color').trim() || '#4b5563')
 }
 
 function resize() {
@@ -91,9 +105,24 @@ function frame() {
     p.x += p.vx
     p.y += p.vy
 
-    // Brighten dots near the cursor ("flashlight" glow) — light only, no pull
-    const lit = mouse.active && Math.hypot(mouse.x - p.x, mouse.y - p.y) < GLOW_R
-    ctx.fillStyle = lit ? litColor : color
+    // Brighten dots near the cursor ("flashlight" glow) — smooth falloff, light only, no pull
+    if (mouse.active) {
+      const d = Math.hypot(mouse.x - p.x, mouse.y - p.y)
+      if (d < GLOW_R) {
+        const t = 1 - d / GLOW_R
+        const g = t * t * (3 - 2 * t) // smoothstep for a soft edge
+        const r = Math.round(colorRgb[0] + (litRgb[0] - colorRgb[0]) * g)
+        const g2 = Math.round(colorRgb[1] + (litRgb[1] - colorRgb[1]) * g)
+        const b = Math.round(colorRgb[2] + (litRgb[2] - colorRgb[2]) * g)
+        ctx.fillStyle = `rgb(${r},${g2},${b})`
+      }
+      else {
+        ctx.fillStyle = `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`
+      }
+    }
+    else {
+      ctx.fillStyle = `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`
+    }
     ctx.fillRect(p.x - DOT_R, p.y - DOT_R, DOT_R * 2, DOT_R * 2)
   }
   raf = requestAnimationFrame(frame)
