@@ -1,11 +1,11 @@
 html.dark {
   --dot-color: #3a424b;
   --dot-lit-color: #e6edf3;
-  --dot-step: 24px;
+  --dot-step: 16px;
 }
 
 html:not(.dark) {
   --dot-color: #a5aeb8cc;
   --dot-lit-color: #4b5563;
-  --dot-step: 24px;
+  --dot-step: 16px;
 }
