@@ -146,6 +146,9 @@ function onPointerMove(e: PointerEvent) {
   mouse.x = e.clientX
   mouse.y = e.clientY
   mouse.active = true
+  // Keep the convergence focus under the cursor while it stays over a link/button
+  target.x = e.clientX
+  target.y = e.clientY
 }
 
 function onPointerLeave() {
