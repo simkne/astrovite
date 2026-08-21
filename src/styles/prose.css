@@ -91,6 +91,9 @@
   margin-bottom: 0.8888889em;
   line-height: 1.1111111;
 }
+.prose h1.home-title {
+  font-size: 6.66em;
+}
 .prose h2 {
   font-weight: 700;
   font-size: 1.5em;
