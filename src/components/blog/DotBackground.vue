@@ -28,7 +28,7 @@ let running = false
 let dpr = 1
 let width = 0
 let height = 0
-let colorRgb: [number, number, number] = [165, 174, 184]
+let colorRgb: [number, number, number] = [74, 74, 74]
 let litRgb: [number, number, number] = [75, 85, 99]
 const mouse = { x: 0, y: 0, active: false }
 const target: { x: number, y: number, active: boolean } = { x: 0, y: 0, active: false }
@@ -44,7 +44,7 @@ function hexToRgb(hex: string): [number, number, number] {
     if (!Number.isNaN(r) && !Number.isNaN(g) && !Number.isNaN(b))
       return [r, g, b]
   }
-  return [165, 174, 184]
+  return [74, 74, 74]
 }
 
 function readColors() {
