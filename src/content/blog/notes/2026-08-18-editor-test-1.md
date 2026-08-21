@@ -7,7 +7,5 @@ draft: false
 private: false
 ---
 
-#title
-hi ya, wazzup
-#description
-all things matter
+# hi ya, wazzup
+## all things matter

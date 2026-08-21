@@ -1,110 +1,182 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
-const litLayer = ref<HTMLElement | null>(null)
+const canvas = ref<HTMLCanvasElement | null>(null)
 
+interface Particle {
+  homeX: number
+  homeY: number
+  x: number
+  y: number
+  vx: number
+  vy: number
+}
+
+const GRID = 24
+const DOT_R = 1.2
+const GLOW_R = 140
+const PULL_R = 150
+const ATTRACT = 0.045
+const HOME = 0.04
+const FRICTION = 0.88
+const MAX_V = 6
+
+let ctx: CanvasRenderingContext2D | null = null
+let particles: Particle[] = []
 let raf = 0
-let glowState: { x: number, y: number, alpha: number, last: number } | null = null
+let running = false
+let dpr = 1
+let width = 0
+let height = 0
+let color = '#a5aeb8cc'
+let litColor = '#4b5563'
+const mouse = { x: 0, y: 0, active: false }
+const target: { x: number, y: number, active: boolean } = { x: 0, y: 0, active: false }
 
-function clearGlow() {
-  const el = litLayer.value
+function readColors() {
+  const s = getComputedStyle(document.documentElement)
+  color = s.getPropertyValue('--dot-color').trim() || '#a5aeb8cc'
+  litColor = s.getPropertyValue('--dot-lit-color').trim() || '#4b5563'
+}
+
+function resize() {
+  const el = canvas.value
   if (!el)
     return
-  el.style.opacity = '0'
-  el.style.maskImage = 'none'
-  el.style.webkitMaskImage = 'none'
+  dpr = Math.min(window.devicePixelRatio || 1, 2)
+  width = el.clientWidth
+  height = el.clientHeight
+  el.width = Math.floor(width * dpr)
+  el.height = Math.floor(height * dpr)
+  ctx = el.getContext('2d')
+  ctx?.setTransform(dpr, 0, 0, dpr, 0, 0)
+  particles = []
+  for (let y = GRID / 2; y < height; y += GRID) {
+    for (let x = GRID / 2; x < width; x += GRID)
+      particles.push({ homeX: x, homeY: y, x, y, vx: 0, vy: 0 })
+  }
 }
 
-function paintGlow() {
-  const el = litLayer.value
-  if (!el || !glowState) {
-    clearGlow()
+function frame() {
+  if (!ctx)
     return
+  // Target pulls surrounding dots tighter together while a link is hovered
+  const tx = target.active ? target.x : mouse.active ? mouse.x : -1
+  const ty = target.active ? target.y : mouse.active ? mouse.y : -1
+  const pulling = target.active || mouse.active
+
+  ctx.clearRect(0, 0, width, height)
+  for (const p of particles) {
+    let ax = 0
+    let ay = 0
+    if (pulling && tx >= 0) {
+      const dx = tx - p.x
+      const dy = ty - p.y
+      const dist = Math.hypot(dx, dy)
+      if (dist > 0 && dist < PULL_R) {
+        ax += (dx / dist) * ATTRACT * (1 - dist / PULL_R)
+        ay += (dy / dist) * ATTRACT * (1 - dist / PULL_R)
+      }
+    }
+    // Spring back home
+    ax += (p.homeX - p.x) * HOME
+    ay += (p.homeY - p.y) * HOME
+
+    p.vx += ax
+    p.vy += ay
+    const v = Math.hypot(p.vx, p.vy)
+    if (v > MAX_V) {
+      p.vx = (p.vx / v) * MAX_V
+      p.vy = (p.vy / v) * MAX_V
+    }
+    p.vx *= FRICTION
+    p.vy *= FRICTION
+    p.x += p.vx
+    p.y += p.vy
+
+    // Brighten dots near the cursor ("flashlight" glow)
+    const lit = mouse.active && Math.hypot(mouse.x - p.x, mouse.y - p.y) < GLOW_R
+    ctx.fillStyle = lit ? litColor : color
+    ctx.fillRect(p.x - DOT_R, p.y - DOT_R, DOT_R * 2, DOT_R * 2)
   }
-  if (glowState.alpha <= 0.01) {
-    clearGlow()
-    return
-  }
-  const alpha = Math.min(glowState.alpha, 1)
-  const radius = 120
-  const mask = `radial-gradient(circle ${radius}px at ${glowState.x}px ${glowState.y}px, rgba(0,0,0,${alpha}) 0%, rgba(0,0,0,${alpha * 0.8}) 25%, rgba(0,0,0,${alpha * 0.4}) 55%, transparent 100%)`
-  el.style.opacity = '1'
-  el.style.maskImage = mask
-  el.style.webkitMaskImage = mask
+  raf = requestAnimationFrame(frame)
 }
 
-function fadeGlow() {
-  if (!glowState) {
-    raf = 0
+function start() {
+  if (running || matchMedia('(prefers-reduced-motion: reduce)').matches)
     return
-  }
-  const fadeMs = 800
-  const elapsed = performance.now() - glowState.last
-  glowState.alpha = 1 - Math.min(elapsed / fadeMs, 1)
-  paintGlow()
-  if (glowState.alpha > 0.01) {
-    raf = requestAnimationFrame(fadeGlow)
-    return
-  }
-  glowState = null
+  running = true
+  raf = requestAnimationFrame(frame)
+}
+
+function stop() {
+  running = false
+  if (raf)
+    cancelAnimationFrame(raf)
   raf = 0
-  clearGlow()
 }
 
-function onMove(event: MouseEvent) {
-  glowState = {
-    x: event.clientX,
-    y: event.clientY,
-    alpha: 1,
-    last: performance.now(),
-  }
-  if (!raf)
-    raf = requestAnimationFrame(fadeGlow)
+function onPointerMove(e: PointerEvent) {
+  mouse.x = e.clientX
+  mouse.y = e.clientY
+  mouse.active = true
 }
+
+function onPointerLeave() {
+  mouse.active = false
+}
+
+function onPointerOver(e: PointerEvent) {
+  const a = (e.target as Element | null)?.closest?.('a')
+  if (a) {
+    const r = a.getBoundingClientRect()
+    target.x = r.left + r.width / 2
+    target.y = r.top + r.height / 2
+    target.active = true
+  }
+}
+
+function onPointerOut(e: PointerEvent) {
+  const related = e.relatedTarget as Element | null
+  if (!related || !related.closest('a'))
+    target.active = false
+}
+
+let colorObserver: MutationObserver | null = null
 
 onMounted(() => {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches)
-    return
-  window.addEventListener('mousemove', onMove, { passive: true })
+  readColors()
+  resize()
+  window.addEventListener('resize', resize)
+  window.addEventListener('pointermove', onPointerMove, { passive: true })
+  window.addEventListener('pointerout', onPointerOut)
+  window.addEventListener('pointerover', onPointerOver)
+  document.documentElement.addEventListener('mouseleave', onPointerLeave)
+  start()
+
+  // Re-read colors when the theme (dark/light) class changes
+  colorObserver = new MutationObserver(readColors)
+  colorObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('mousemove', onMove)
-  if (raf)
-    cancelAnimationFrame(raf)
+  stop()
+  window.removeEventListener('resize', resize)
+  window.removeEventListener('pointermove', onPointerMove)
+  window.removeEventListener('pointerout', onPointerOut)
+  window.removeEventListener('pointerover', onPointerOver)
+  document.documentElement.removeEventListener('mouseleave', onPointerLeave)
+  colorObserver?.disconnect()
 })
 </script>
 
 <template>
-  <div class="dot-bg" aria-hidden="true">
-    <div class="dot-bg__layer" />
-    <div ref="litLayer" class="dot-bg__layer dot-bg__layer--lit" />
-  </div>
+  <canvas ref="canvas" class="dot-bg" aria-hidden="true" />
 </template>
 
 <style scoped>
 .dot-bg {
-  --at-apply: fixed inset-0 block overflow-hidden pointer-events-none;
+  --at-apply: fixed inset-0 block w-full h-full overflow-hidden pointer-events-none;
   z-index: 0;
-}
-
-.dot-bg__layer {
-  --at-apply: absolute inset-0;
-  background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
-  background-size: var(--dot-step) var(--dot-step);
-  background-position: calc(var(--dot-step) / 2) calc(var(--dot-step) / 2);
-}
-
-.dot-bg__layer--lit {
-  background-image: radial-gradient(circle, var(--dot-lit-color) 1px, transparent 1px);
-  opacity: 0;
-  mask-image: linear-gradient(transparent, transparent);
-  -webkit-mask-image: linear-gradient(transparent, transparent);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dot-bg__layer--lit {
-    opacity: 0;
-  }
 }
 </style>
