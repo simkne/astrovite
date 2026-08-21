@@ -12,7 +12,7 @@ interface Particle {
   vy: number
 }
 
-const GRID = 14
+const GRID = 10
 const DOT_R = 1.2
 const GLOW_R = 140
 const PULL_R = 260

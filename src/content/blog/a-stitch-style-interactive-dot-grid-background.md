@@ -46,9 +46,9 @@ That's a reasonable particle effect — but it's **not** what stitch actually do
 - A `mousemove` handler that updates a **`mask-image: radial-gradient(...)`** on the bright layer, revealing brighter dots only within a radius of the cursor
 - A fade driven by `requestAnimationFrame`, so the glow dies down after you stop moving
 
-No canvas. No particle array. No `ctx.arc()`. The browser's gradient rasterizer does all the work, and JS only tweaks a mask position. That's the classic "ask an AI, then verify against reality" lesson — the model pattern-matched to a generic particle effect instead of the actual site.
+Note the nuance: **stitch itself is canvas-free.** No particle array, no `ctx.arc()`. The browser's gradient rasterizer does all the work, and JS only tweaks a mask position. That's the classic "ask an AI, then verify against reality" lesson — the model pattern-matched to a generic particle effect instead of the actual site.
 
-So I built the CSS+mask version first. It looked right … until I wanted to make the dots move.
+So my first shot at this site reproduced stitch **without canvas** — a CSS+mask version. It looked right … until I wanted to make the dots move.
 
 ## Where CSS hits a wall: repeating background patterns
 
@@ -86,7 +86,7 @@ Trivial physics, but it's the whole effect. The grid particles have a `homeX/hom
 
 A few things broke in ways that initially looked mysterious — all mundane, all punishing:
 
-**1. Minified CSS units broke my parsing.** The first canvas version read tuning values out of CSS custom properties at runtime (`--dot-glow-fade: 800ms;`), then did `Number(...)`. In the production build the CSS minifier rewrote `800ms` as `.8s`. `parseFloat(".8s")` → `0.8` — so the "800ms fade" completed in under a millisecond. The glow appeared and vanished instantly. Lesson: don't parse units out of minified CSS; keep numeric tuning in JS.
+**1. Minified CSS units broke my parsing.** The first interactive version read tuning values out of CSS custom properties at runtime (`--dot-glow-fade: 800ms;`), then did `Number(...)`. In the production build the CSS minifier rewrote `800ms` as `.8s`. `parseFloat(".8s")` → `0.8` — so the "800ms fade" completed in under a millisecond. The glow appeared and vanished instantly. Lesson: don't parse units out of minified CSS; keep numeric tuning in JS. (This was the CSS+mask version — the same pitfall applies regardless of rendering approach.)
 
 **2. A hard glow cutoff looks like a solid circle.** The first canvas version did `isInRadius ? litColor : baseColor`. The result was a clean-edged disc of brighter dots; the original effect fades. Fix: blend by distance with a **smoothstep** falloff:
 
