@@ -13,7 +13,7 @@ interface Particle {
 }
 
 const GRID = 10
-const DOT_R = 1.2
+const DOT_R = 1
 const GLOW_R = 140
 const PULL_R = 260
 const ATTRACT = 0.20
