@@ -92,7 +92,7 @@ onBeforeUnmount(() => {
   --at-apply: absolute inset-0;
   background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
   background-size: var(--dot-step) var(--dot-step);
-  background-position: calc(var(--dot-step) / 2) calc(var(--dot-step) / 2);
+  background-position: calc(var(--dot-step) / 1.4) calc(var(--dot-step) / 1.4);
 }
 
 .dot-bg__layer--lit {
