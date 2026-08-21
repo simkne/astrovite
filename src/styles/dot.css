@@ -5,7 +5,7 @@ html.dark {
 }
 
 html:not(.dark) {
-  --dot-color: #a5aeb8cc;
+  --dot-color: #c3ccd6;
   --dot-lit-color: #4b5563;
   --dot-step: 16px;
 }

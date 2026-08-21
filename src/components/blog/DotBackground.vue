@@ -15,11 +15,11 @@ interface Particle {
 const GRID = 16
 const DOT_R = 1.2
 const GLOW_R = 140
-const PULL_R = 220
-const ATTRACT = 0.09
-const HOME = 0.045
-const FRICTION = 0.88
-const MAX_V = 8
+const PULL_R = 260
+const ATTRACT = 0.20
+const HOME = 0.04
+const FRICTION = 0.92
+const MAX_V = 9
 
 let ctx: CanvasRenderingContext2D | null = null
 let particles: Particle[] = []
@@ -153,9 +153,9 @@ function onPointerLeave() {
 }
 
 function onPointerOver(e: PointerEvent) {
-  const a = (e.target as Element | null)?.closest?.('a')
-  if (a) {
-    const r = a.getBoundingClientRect()
+  const actionable = (e.target as Element | null)?.closest?.('a, button, [role="button"], input, select, textarea')
+  if (actionable) {
+    const r = actionable.getBoundingClientRect()
     target.x = r.left + r.width / 2
     target.y = r.top + r.height / 2
     target.active = true
@@ -164,7 +164,7 @@ function onPointerOver(e: PointerEvent) {
 
 function onPointerOut(e: PointerEvent) {
   const related = e.relatedTarget as Element | null
-  if (!related || !related.closest('a'))
+  if (!related || !related.closest('a, button, [role="button"], input, select, textarea'))
     target.active = false
 }
 
