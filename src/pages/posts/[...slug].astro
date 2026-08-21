@@ -2,8 +2,9 @@
 import { render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PrivateGate from '@/components/blog/PrivateGate.vue'
+import { withBase } from '@/site-config'
 import { type CollectionPosts } from '@/types'
-import { getPosts } from '@/utils/posts'
+import { getPosts, getTags } from '@/utils/posts'
 
 export async function getStaticPaths() {
   const posts = await getPosts()
@@ -20,7 +21,8 @@ export async function getStaticPaths() {
 type Props = { post: CollectionPosts }
 
 const { post } = Astro.props
-const { title, image, description, date, duration, tag, private: isPrivate, sharePassword } = post.data
+const { title, image, description, date, duration, private: isPrivate, sharePassword } = post.data
+const tags = getTags(post)
 
 const { Content } = await render(post)
 
@@ -29,18 +31,30 @@ function getDate(date: string) {
 }
 ---
 
-<BaseLayout title={title} description={description} pageType="article">
+<BaseLayout title={title} description={description} image={image} pageType="article">
   <article class="prose">
     <h1>{title}</h1>
     <p op-50>
       {date && <time datetime={getDate(date)}>{date.split(',')}</time>}
       {duration && <span>· {duration}</span>}
-      {tag && <span>· {tag}</span>}
+      {
+        tags.length > 0 && (
+          <span>
+            ·
+            {tags.map((tag, i) => (
+              <a nav-link href={withBase(`/blog/tag/${encodeURIComponent(tag)}/`)}>
+                #{tag}
+                {i < tags.length - 1 ? ', ' : ''}
+              </a>
+            ))}
+          </span>
+        )
+      }
     </p>
     {
       image && (
         <p>
-          <img width="640" height="360" src={image.src} alt={image.alt || ''} />
+          <img width="640" height="360" src={withBase(image.src)} alt={image.alt || ''} />
         </p>
       )
     }

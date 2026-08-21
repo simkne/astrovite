@@ -1,0 +1,31 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import ListPosts from '@/components/ListPosts.vue'
+import { withBase } from '@/site-config'
+import { getAllTags, getPosts, getTags } from '@/utils/posts'
+
+export async function getStaticPaths() {
+  const posts = await getPosts()
+  const tags = getAllTags(posts)
+  return tags.map(({ tag }) => ({
+    params: { tag },
+    props: { tag },
+  }))
+}
+
+const { tag } = Astro.props
+const allPosts = await getPosts()
+const posts = allPosts.filter((post) => getTags(post).includes(tag))
+---
+
+<BaseLayout title={`Posts tagged “${tag}”`} description={`Blog posts and notes tagged with ${tag}.`}>
+  <a nav-link class="inline-flex items-center gap-1 mb-4 opacity-60 hover:opacity-100" href={withBase('/blog/')}>
+    <i i-ri-arrow-left-line></i>
+    <span>All posts</span>
+  </a>
+  <h1 class="text-title mb-2">#{tag}</h1>
+  <p class="opacity-70 mb-8">
+    {posts.length} post{posts.length === 1 ? '' : 's'} tagged with <strong>{tag}</strong>.
+  </p>
+  <ListPosts list={posts} />
+</BaseLayout>

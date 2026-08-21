@@ -3,7 +3,7 @@ title: Auto-deploy a static site from GitHub to your own server
 description: How to wire GitHub Actions, SSH, and simple backup scripts so every push to main builds and deploys your Astro (or any static) site — with rollback when something breaks.
 date: 2026-08-01
 lang: en
-tag: devops
+tags: [devops]
 duration: 12min
 ---
 

@@ -3,8 +3,11 @@ title: "Is it safe to rely on GitHub (Actions) for my builds?"
 description: "Evaluating the risk of depending on GitHub Actions for building this site, and comparing it against compiling on the Netcup VPS, a server-side git repo, or self-hosted CI."
 date: 2026-08-20
 lang: en
-tag: devops
+tags: [devops]
 duration: 10min
+image:
+  src: imgs/github_deploy_header.jpg
+  alt: Pipeline from Markdown through GitHub Actions to a live deploy
 ---
 
 This is not a conclusion. It is a working document for deciding whether I keep building this site on GitHub Actions or

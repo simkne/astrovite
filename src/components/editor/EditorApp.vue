@@ -23,6 +23,7 @@ interface NoteForm {
   draft: boolean
   private: boolean
   sharePassword: string
+  tags: string[]
   body: string
 }
 
@@ -39,6 +40,7 @@ function emptyForm(): NoteForm {
     draft: false,
     private: false,
     sharePassword: '',
+    tags: [],
     body: '',
   }
 }
@@ -63,6 +65,13 @@ const view = ref<'edit' | 'preview'>('edit')
 const overwrite = ref(false)
 
 const previewHtml = computed(() => marked.parse(form.value.body, { async: false }) as string)
+
+const tagInput = computed({
+  get: () => form.value.tags.join(', '),
+  set: (value: string) => {
+    form.value.tags = value.split(',').map(t => t.trim()).filter(Boolean)
+  },
+})
 
 onMounted(async () => {
   admin.value = await isAdmin()
@@ -161,6 +170,7 @@ async function loadNote(path: string) {
       draft: !!data.draft,
       private: !!data.private,
       sharePassword: String(data.sharePassword ?? ''),
+      tags: normalizeTags(data.tags ?? data.tag),
       body: content.trim(),
     }
     editingPath.value = path
@@ -204,6 +214,31 @@ function quote(value: string) {
   return JSON.stringify(value)
 }
 
+function normalizeTags(value: unknown): string[] {
+  if (Array.isArray(value))
+    return value.map(String).filter(Boolean)
+  if (typeof value === 'string')
+    return value.split(',').map(t => t.trim()).filter(Boolean)
+  return []
+}
+
+function parseArray(value: string): string[] | undefined {
+  if (!value.startsWith('[') || !value.endsWith(']'))
+    return undefined
+  const inner = value.slice(1, -1).trim()
+  if (!inner)
+    return []
+  return inner
+    .split(',')
+    .map(v => v.trim())
+    .map((v) => {
+      if (v.startsWith('"') && v.endsWith('"') && v.length >= 2)
+        return v.slice(1, -1)
+      return v
+    })
+    .filter(Boolean)
+}
+
 interface ParsedNote {
   data: Record<string, unknown>
   content: string
@@ -219,6 +254,11 @@ function parseFrontmatter(raw: string): ParsedNote {
         continue
       const key = line.slice(0, idx).trim()
       let value = line.slice(idx + 1).trim()
+      const array = parseArray(value)
+      if (array) {
+        data[key] = array
+        continue
+      }
       if (value.startsWith('"') && value.endsWith('"') && value.length >= 2)
         value = value.slice(1, -1)
       if (value === 'true')
@@ -245,6 +285,8 @@ function buildMarkdown() {
   ]
   if (form.value.private)
     lines.push(`sharePassword: ${quote(form.value.sharePassword)}`)
+  if (form.value.tags.length)
+    lines.push(`tags: [${form.value.tags.map(quote).join(', ')}]`)
   lines.push('---')
   return `${lines.join('\n')}\n\n${form.value.body.trim()}\n`
 }
@@ -390,6 +432,13 @@ async function save() {
               <input
                 v-model="form.duration" type="text" class="px-3 py-2 rounded border-main border bg-main text-main"
                 placeholder="5 min"
+              >
+            </label>
+            <label class="flex flex-col gap-1 sm:col-span-2">
+              <span class="text-sm opacity-60">Tags (comma-separated)</span>
+              <input
+                v-model="tagInput" type="text" class="px-3 py-2 rounded border-main border bg-main text-main"
+                placeholder="devops, personal, trivial"
               >
             </label>
           </div>

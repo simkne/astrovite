@@ -3,7 +3,7 @@ title: Setting up an online knowledge base
 description: Why I’m building a personal IoT knowledge base with Astro — as a notepad first, a public wiki second — and how the stack and publishing flow fit together.
 date: 2026-05-25
 lang: en
-tag: meta
+tags: [meta]
 duration: 5min
 ---
 

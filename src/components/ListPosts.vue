@@ -37,6 +37,14 @@ function isSameYear(a: Date | string | number, b: Date | string | number) {
 function getYear(date: Date | string | number) {
   return new Date(date).getFullYear()
 }
+
+function getTags(post: Post): string[] {
+  return post.data.tags ?? (post.data.tag ? [post.data.tag] : [])
+}
+
+function tagHref(tag: string) {
+  return withBase(`/blog/tag/${encodeURIComponent(tag)}/`)
+}
 </script>
 
 <template>
@@ -72,8 +80,15 @@ function getYear(date: Date | string | number) {
             <i v-if="post.data.recording || post.data.video" text-base i-ri:film-line />
             <time v-if="post.data.date" :datetime="getDate(post.data.date)">{{ post.data.date.split(',')[0] }}</time>
             <span v-if="post.data.duration">· {{ post.data.duration }}</span>
-            <span v-if="post.data.tag">· {{ post.data.tag }}</span>
             <span v-if="post.data.lang && post.data.lang.includes('zh')">· 中文</span>
+          </div>
+          <div v-if="getTags(post).length" flex="~ gap-2 flex-wrap">
+            <a
+              v-for="tag in getTags(post)" :key="tag" :href="tagHref(tag)" nav-link
+              class="inline-flex items-center px-1.5 py-0.5 rounded text-xs border-main border !border-op-50 opacity-80 hover:opacity-100"
+            >
+              #{{ tag }}
+            </a>
           </div>
         </div>
         <div opacity-50 text-sm>{{ post.data.description }}</div>
