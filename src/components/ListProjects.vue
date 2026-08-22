@@ -24,6 +24,7 @@ defineProps<{
       <a
         flex items-center
         class="min-w-0 flex-1"
+        style="text-wrap: auto"
         :target="getLinkTarget(project.href)"
         :href="isExternalLink(project.href) ? project.href : withBase(project.href)"
         :aria-label="project.text"
