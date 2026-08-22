@@ -9,7 +9,7 @@ const latest = (await getPosts()).slice(0, 2)
 const latestEntries = latest.map((entry) => ({
   text: entry.data.title,
   description: entry.data.description,
-  icon: 'i-ri-file-text-line',
+  image: '/imgs/article-arrow.svg',
   href: `/posts/${entry.id}/`,
 }))
 ---
