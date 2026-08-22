@@ -1,0 +1,50 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+---
+
+<BaseLayout
+  title="ZenSoria"
+  description="A small Vue-powered OpenWeather dashboard — live conditions, forecast, and weather-data management."
+>
+  <article class="prose">
+    <h1 class="text-title mt-0">ZenSoria</h1>
+    <p>
+      <a prose-link href="https://weltkugl.net/zensoria/dash25/">weltkugl.net/zensoria/dash25/</a>
+    </p>
+
+    <h2>What it is</h2>
+    <p>
+      ZenSoria is a small weather dashboard built in <strong>Vue 3</strong>. It pulls live conditions and forecasts from
+      the <strong>OpenWeather API</strong> and presents them in a clean, self-contained page — no build tools required to
+      run it beyond the frontend bundle.
+    </p>
+
+    <h2>Features</h2>
+    <ul>
+      <li><strong>Live dashboard</strong> — current conditions for the configured locations.</li>
+      <li><strong>Forecast views</strong> — upcoming weather at a glance.</li>
+      <li><strong>Manage data</strong> — save, edit, and delete weather locations.</li>
+      <li><strong>About view</strong> — a simple info screen for the app.</li>
+    </ul>
+
+    <h2>Stack & how it works</h2>
+    <p>
+      The frontend is a Vue single-page app (DashView, AboutView, ManageData). Behind it a thin <strong>PHP API</strong>
+      proxies requests to OpenWeather and handles persistence:
+    </p>
+    <ul>
+      <li><code>get-weather.php</code> — fetch current / forecast data from the API.</li>
+      <li><code>save-weather.php</code> — store a location.</li>
+      <li><code>delete-weather.php</code> — remove a stored location.</li>
+      <li><code>display-weather.php</code> — serve the stored locations to the dashboard.</li>
+    </ul>
+    <p>Keeping the OpenWeather calls server-side means the API key never ships in the browser bundle.</p>
+
+    <h2>Notes</h2>
+    <p>
+      This is a personal side project that lives on the same server as this site, under the root portal — it isn’t part
+      of the blog itself. The code and assets were put together by hand (and a fair bit of experimenting) rather than
+      from a template.
+    </p>
+  </article>
+</BaseLayout>
