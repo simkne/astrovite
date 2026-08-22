@@ -13,7 +13,7 @@ export const projectData: ProjectData = [
       {
         text: 'ZenSoria',
         description: 'Vue + OpenWeather dashboard — live conditions, forecasts, weather management.',
-        icon: 'i-carbon-cloud',
+        image: '/imgs/zensoria_thumb.png',
         href: '/projects/zensoria',
       },
     ],
