@@ -15,6 +15,7 @@ interface Particle {
 const GRID = 8
 const DOT_R = 0.6
 const GLOW_R = 100
+const GLOW_FADE_MS = 800
 const PULL_R = 200
 const ATTRACT = 0.20
 const HOME = 0.04
@@ -30,6 +31,8 @@ let width = 0
 let height = 0
 let colorRgb: [number, number, number] = [74, 74, 74]
 let litRgb: [number, number, number] = [75, 85, 99]
+let glowIntensity = 0
+let lastMoveAt = 0
 const mouse = { x: 0, y: 0, active: false }
 const target: { x: number, y: number, active: boolean } = { x: 0, y: 0, active: false }
 
@@ -98,6 +101,11 @@ function frame() {
   if (!ctx)
     return
   ctx.clearRect(0, 0, width, height)
+  // Fade the glow out after the cursor stops moving
+  if (mouse.active) {
+    const elapsed = performance.now() - lastMoveAt
+    glowIntensity = Math.max(0, 1 - elapsed / GLOW_FADE_MS)
+  }
   for (const p of particles) {
     // Converge toward the pointer while hovering a link/button, otherwise
     // toward the persistent focus (the active page in the nav).
@@ -131,19 +139,19 @@ function frame() {
     p.y += p.vy
 
     // Brighten dots near the cursor ("flashlight" glow) — smooth falloff, light only, no pull
-    if (mouse.active) {
+    let intensity = 0
+    if (mouse.active && glowIntensity > 0.01) {
       const d = Math.hypot(mouse.x - p.x, mouse.y - p.y)
       if (d < GLOW_R) {
         const t = 1 - d / GLOW_R
-        const g = t * t * (3 - 2 * t) // smoothstep for a soft edge
-        const r = Math.round(colorRgb[0] + (litRgb[0] - colorRgb[0]) * g)
-        const g2 = Math.round(colorRgb[1] + (litRgb[1] - colorRgb[1]) * g)
-        const b = Math.round(colorRgb[2] + (litRgb[2] - colorRgb[2]) * g)
-        ctx.fillStyle = `rgb(${r},${g2},${b})`
+        intensity = t * t * (3 - 2 * t) * glowIntensity // smoothstep, scaled by idle fade
       }
-      else {
-        ctx.fillStyle = `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`
-      }
+    }
+    if (intensity > 0.01) {
+      const r = Math.round(colorRgb[0] + (litRgb[0] - colorRgb[0]) * intensity)
+      const g2 = Math.round(colorRgb[1] + (litRgb[1] - colorRgb[1]) * intensity)
+      const b = Math.round(colorRgb[2] + (litRgb[2] - colorRgb[2]) * intensity)
+      ctx.fillStyle = `rgb(${r},${g2},${b})`
     }
     else {
       ctx.fillStyle = `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`
@@ -171,6 +179,7 @@ function onPointerMove(e: PointerEvent) {
   mouse.x = e.clientX
   mouse.y = e.clientY
   mouse.active = true
+  lastMoveAt = performance.now()
   // Keep the convergence focus under the cursor while it stays over a link/button
   target.x = e.clientX
   target.y = e.clientY
