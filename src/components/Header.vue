@@ -8,6 +8,21 @@ import ThemeToggle from './ThemeToggle.vue'
 
 const navLinks = siteConfig.header.navLinks || []
 
+function dispatchActivePage() {
+  const path = `${location.pathname}/`
+  const active = navLinks
+    .map((link) => {
+      return { link, href: withBase(link.href) }
+    })
+    .filter(({ href }) => path.startsWith(href))
+    .sort((a, b) => b.href.length - a.href.length)[0]
+
+  const el = active
+    ? (document.querySelector(`header nav a[href="${active.href}"]`) as HTMLElement | null)
+    : null
+  window.dispatchEvent(new CustomEvent('dot:focus', { detail: { el } }))
+}
+
 const loggedIn = ref(false)
 
 async function checkAdmin() {
@@ -40,6 +55,8 @@ const oldScroll = ref(unref(scroll))
 
 onMounted(() => {
   checkAdmin()
+  dispatchActivePage()
+  document.addEventListener('astro:page-load', dispatchActivePage)
 
   const navMask = document.querySelector('.nav-drawer-mask') as HTMLElement
 

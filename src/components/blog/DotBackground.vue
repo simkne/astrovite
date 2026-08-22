@@ -33,6 +33,29 @@ let litRgb: [number, number, number] = [75, 85, 99]
 const mouse = { x: 0, y: 0, active: false }
 const target: { x: number, y: number, active: boolean } = { x: 0, y: 0, active: false }
 
+let focusEl: Element | null = null
+let focusHref = ''
+
+function onFocusEvent(e: Event) {
+  const detail = (e as CustomEvent).detail
+  focusEl = detail?.el ?? null
+  focusHref = focusEl?.getAttribute('href') || ''
+}
+
+function resolveFocus(): { x: number, y: number } | null {
+  if (!focusEl && !focusHref)
+    return null
+  // After a view transition the stored node may be detached; re-query by href.
+  if (!focusEl?.isConnected && focusHref)
+    focusEl = document.querySelector(`header nav a[href="${focusHref}"]`)
+  if (!focusEl || !focusEl.isConnected)
+    return null
+  const r = focusEl.getBoundingClientRect()
+  if (!r.width || !r.height)
+    return null
+  return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+}
+
 function hexToRgb(hex: string): [number, number, number] {
   let h = hex.trim().replace('#', '')
   if (h.length === 3)
@@ -76,12 +99,14 @@ function frame() {
     return
   ctx.clearRect(0, 0, width, height)
   for (const p of particles) {
-    // Converge toward a hovered link's center
+    // Converge toward the pointer while hovering a link/button, otherwise
+    // toward the persistent focus (the active page in the nav).
     let ax = 0
     let ay = 0
-    if (target.active) {
-      const dx = target.x - p.x
-      const dy = target.y - p.y
+    const pull = target.active ? target : resolveFocus()
+    if (pull) {
+      const dx = pull.x - p.x
+      const dy = pull.y - p.y
       const dist = Math.hypot(dx, dy)
       if (dist > 0 && dist < PULL_R) {
         ax += (dx / dist) * ATTRACT * (1 - dist / PULL_R)
@@ -181,6 +206,7 @@ onMounted(() => {
   window.addEventListener('pointerout', onPointerOut)
   window.addEventListener('pointerover', onPointerOver)
   document.documentElement.addEventListener('mouseleave', onPointerLeave)
+  window.addEventListener('dot:focus', onFocusEvent)
   start()
 
   // Re-read colors when the theme (dark/light) class changes
@@ -195,6 +221,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('pointerout', onPointerOut)
   window.removeEventListener('pointerover', onPointerOver)
   document.documentElement.removeEventListener('mouseleave', onPointerLeave)
+  window.removeEventListener('dot:focus', onFocusEvent)
   colorObserver?.disconnect()
 })
 </script>
