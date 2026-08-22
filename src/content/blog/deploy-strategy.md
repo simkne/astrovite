@@ -150,7 +150,7 @@ jobs:
 
       - name: Backup on server
       # write the private key, ssh-keyscan host, then:
-      # ssh … "bash ~/bin/backup-wiki.sh"
+      # ssh … "mkdir -p ~/site-backups && tar -czf ~/site-backups/$(date +%Y%m%d-%H%M%S).tar.gz -C '$DEPLOY_PATH' ."
 
       - name: Deploy
       # rsync -avz --delete ./dist/ user@host:$DEPLOY_PATH

@@ -36,16 +36,18 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_deploy
           chmod 600 ~/.ssh/id_deploy
           ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          DEPLOY_DIR="${DEPLOY_PATH%/}"
           ssh -i ~/.ssh/id_deploy \
               -o StrictHostKeyChecking=accept-new \
               -o BatchMode=yes \
               "$SSH_USERNAME@$SSH_HOST" \
-              "bash \$HOME/scripts/backup-wiki.sh"
+              "set -e; if [ -d '${DEPLOY_DIR}' ]; then mkdir -p \$HOME/site-backups && TS=\$(date +%Y%m%d-%H%M%S) && tar -czf \"\$HOME/site-backups/\$TS.tar.gz\" -C '${DEPLOY_DIR}' . && find \$HOME/site-backups -name '*.tar.gz' -mtime +14 -delete; else echo 'No site yet at ${DEPLOY_DIR} - skipping backup.'; fi"
 
       - name: Deploy to Netcup server
         env:

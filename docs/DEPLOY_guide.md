@@ -64,7 +64,9 @@ ssh -i ~/.ssh/github_deploy your-user@your-server-ip
 
 ---
 
-## 4. Create Server-Side Scripts
+## 4. Server-Side Backup & Rollback (optional)
+
+The deploy workflow is **self-contained** — it snapshots the site to `~/site-backups/` before each deploy, so no server-side backup script is required. The helpers below are optional conveniences.
 
 On your Netcup server, create the scripts directory:
 
@@ -72,108 +74,58 @@ On your Netcup server, create the scripts directory:
 mkdir -p ~/bin
 ```
 
-### 4.1 Save `~/bin/backup-wiki.sh`
+### 4.1 What the workflow does for backups
+
+Each deploy snapshots the live site **before** the new build is swapped in, using `DEPLOY_PATH` (so it follows whatever the site path is — no hardcoded wiki folder):
 
 ```bash
-cat > ~/bin/backup-wiki.sh << 'EOF'
-#!/bin/bash
-set -e
-
-# Config
-WIKI_PATH="/var/www/weltkugl.net/www"
-BACKUP_DIR="$HOME/wiki-backups"
-RETAIN_DAYS=14
-
-# Ensure backup dir exists
-mkdir -p "$BACKUP_DIR"
-
-# Timestamp
-TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-BACKUP_NAME="wiki-${TIMESTAMP}.tar.gz"
-BACKUP_PATH="$BACKUP_DIR/$BACKUP_NAME"
-
-# Only backup if wiki dir exists and has content
-if [ ! -d "$WIKI_PATH" ] || [ -z "$(ls -A "$WIKI_PATH" 2>/dev/null)" ]; then
-    echo "Wiki directory is empty or missing. Skipping backup."
-    exit 0
-fi
-
-# Create compressed backup
-echo "Backing up $WIKI_PATH → $BACKUP_PATH"
-tar -czf "$BACKUP_PATH" -C "$(dirname "$WIKI_PATH")" "$(basename "$WIKI_PATH")"
-
-# Show size
-ls -lh "$BACKUP_PATH"
-
-# Prune backups older than retain days
-echo "Pruning backups older than $RETAIN_DAYS days..."
-find "$BACKUP_DIR" -maxdepth 1 -name 'wiki-*.tar.gz' -mtime +$RETAIN_DAYS -delete
-
-# List remaining backups
-echo "Current backups:"
-ls -lht "$BACKUP_DIR"
-EOF
-chmod +x ~/bin/backup-wiki.sh
+# runs on the server, invoked by the workflow:
+mkdir -p ~/site-backups
+TS=$(date +%Y%m%d-%H%M%S)
+tar -czf "$HOME/site-backups/$TS.tar.gz" -C "$DEPLOY_PATH" .
+find ~/site-backups -name '*.tar.gz' -mtime +14 -delete
 ```
 
-### 4.2 Save `~/bin/rollback-wiki.sh`
+Backups land in `~/site-backups/` and are retained for 14 days.
+
+### 4.2 Optional manual rollback helper
+
+If you'd like a one-command restore, save this to `~/bin/rollback-site.sh` (edit `DEPLOY_PATH` to your real path):
 
 ```bash
-cat > ~/bin/rollback-wiki.sh << 'EOF'
+cat > ~/bin/rollback-site.sh << 'EOF'
 #!/bin/bash
 set -e
 
-WIKI_PATH="/var/www/weltkugl.net/www"
-BACKUP_DIR="$HOME/wiki-backups"
+DEPLOY_PATH="/var/www/weltkugl.net/www"
+BACKUP_DIR="$HOME/site-backups"
 
-# Show available backups
 echo "Available backups:"
-ls -lht "$BACKUP_DIR"/wiki-*.tar.gz 2>/dev/null || { echo "No backups found."; exit 1; }
+ls -lht "$BACKUP_DIR"/*.tar.gz 2>/dev/null || { echo "No backups found."; exit 1; }
 
-# If no argument provided, use the most recent backup
-if [ -z "$1" ]; then
-    BACKUP_FILE=$(ls -t "$BACKUP_DIR"/wiki-*.tar.gz 2>/dev/null | head -n 1)
-    echo "No backup specified. Using latest: $(basename "$BACKUP_FILE")"
-else
-    BACKUP_FILE="$BACKUP_DIR/$1"
-    if [ ! -f "$BACKUP_FILE" ]; then
-        echo "Backup not found: $BACKUP_FILE"
-        exit 1
-    fi
-fi
+BACKUP_FILE="${1:-$(ls -t "$BACKUP_DIR"/*.tar.gz 2>/dev/null | head -n 1)}"
+if [ ! -f "$BACKUP_FILE" ]; then BACKUP_FILE="$BACKUP_DIR/$BACKUP_FILE"; fi
+[ -f "$BACKUP_FILE" ] || { echo "Backup not found."; exit 1; }
 
-echo ""
-read -p "This will WIPE $WIKI_PATH and restore from $(basename "$BACKUP_FILE"). Continue? [y/N] " confirm
-if [[ "$confirm" != [yY] ]]; then
-    echo "Aborted."
-    exit 0
-fi
+echo "This will WIPE $DEPLOY_PATH and restore from $(basename "$BACKUP_FILE"). Continue? [y/N]"
+read -r confirm
+if [[ "$confirm" != [yY] ]]; then echo "Aborted."; exit 0; fi
 
-# Safety backup of current state just in case
-if [ -d "$WIKI_PATH" ] && [ -n "$(ls -A "$WIKI_PATH" 2>/dev/null)" ]; then
-    EMERGENCY="$BACKUP_DIR/pre-rollback-$(date +%Y%m%d-%H%M%S).tar.gz"
-    echo "Creating emergency snapshot → $(basename "$EMERGENCY")"
-    tar -czf "$EMERGENCY" -C "$(dirname "$WIKI_PATH")" "$(basename "$WIKI_PATH")"
-fi
-
-# Wipe and restore
-echo "Restoring..."
-rm -rf "$WIKI_PATH"
-mkdir -p "$WIKI_PATH"
-tar -xzf "$BACKUP_FILE" -C "$(dirname "$WIKI_PATH")" --strip-components=1
-
-echo "Done. Restored from $(basename "$BACKUP_FILE")"
+rm -rf "$DEPLOY_PATH"
+mkdir -p "$DEPLOY_PATH"
+tar -xzf "$BACKUP_FILE" -C "$DEPLOY_PATH"
+echo "Restored from $(basename "$BACKUP_FILE")"
 EOF
-chmod +x ~/bin/rollback-wiki.sh
+chmod +x ~/bin/rollback-site.sh
 ```
 
-**Verify the scripts exist:**
+**Verify the helper exists (optional):**
 
 ```bash
-ls -la ~/bin/
+ls -la ~/bin/rollback-site.sh
 ```
 
-**If your web root is NOT `/var/www/weltkugl.net/www`**, edit both files now and change `WIKI_PATH` to your actual path.
+**Note:** the workflow itself does not need `~/bin/` scripts — it creates the backup snapshot inline using `DEPLOY_PATH`.
 
 ---
 
@@ -282,16 +234,18 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_deploy
           chmod 600 ~/.ssh/id_deploy
           ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          DEPLOY_DIR="${DEPLOY_PATH%/}"
           ssh -i ~/.ssh/id_deploy \
               -o StrictHostKeyChecking=accept-new \
               -o BatchMode=yes \
               "$SSH_USERNAME@$SSH_HOST" \
-              "bash ~/bin/backup-wiki.sh"
+              "set -e; if [ -d '${DEPLOY_DIR}' ]; then mkdir -p \$HOME/site-backups && TS=\$(date +%Y%m%d-%H%M%S) && tar -czf \"\$HOME/site-backups/\$TS.tar.gz\" -C '${DEPLOY_DIR}' . && find \$HOME/site-backups -name '*.tar.gz' -mtime +14 -delete; else echo 'No site yet at ${DEPLOY_DIR} - skipping backup.'; fi"
 
       - name: Deploy to Netcup server
         env:
@@ -347,7 +301,7 @@ ssh your-user@your-server-ip
 ls -la /var/www/weltkugl.net/www/
 # Should show index.html, _astro/, posts/, projects/, etc.
 
-ls -la ~/wiki-backups/
+ls -la ~/site-backups/
 # Should show a new tar.gz backup from the deploy
 ```
 
@@ -379,18 +333,28 @@ If a deploy breaks something, SSH into your Netcup server:
 ```bash
 ssh your-user@your-server-ip
 
-# Roll back to the most recent backup
-~/bin/rollback-wiki.sh
+# List available backups
+ls -la ~/site-backups/
+
+# Restore the most recent backup
+~/bin/rollback-site.sh
 
 # Or specify a specific backup
-~/bin/rollback-wiki.sh wiki-20250801-143022.tar.gz
+~/bin/rollback-site.sh 20260822-143022.tar.gz
 ```
 
-The script:
+The helper:
 1. Lists available backups
 2. Asks for confirmation
-3. Creates an emergency snapshot of the current broken state
-4. Wipes and restores from the chosen backup
+3. Wipes and restores from the chosen backup
+
+You can also restore by hand:
+
+```bash
+rm -rf /var/www/weltkugl.net/www
+mkdir -p /var/www/weltkugl.net/www
+tar -xzf ~/site-backups/20260822-143022.tar.gz -C /var/www/weltkugl.net/www
+```
 
 ---
 
@@ -401,7 +365,7 @@ The script:
 | "Permission denied (publickey)" in Actions | The private key in `SSH_PRIVATE_KEY` secret doesn't match the public key on the server. Re-copy the public key. |
 | `rsync` says "No such file or directory" | `DEPLOY_PATH` secret is wrong or the parent directory doesn't exist. Create it manually: `mkdir -p /var/www/weltkugl.net/www/` |
 | Site shows 404 at `/www/` | Apache might not serve from that subdir. Check your Apache vhost config allows subdirectories. |
-| Backup step says "Wiki directory is empty" | This is normal on the **first** deploy — there's nothing to backup yet. |
+| Backup step says "No site yet at" | This is normal on the **first** deploy — there's nothing to backup yet. |
 | Lint fails in Actions | Fix the lint error locally (`npm run lint:fix`) and push again. |
 | Portal page redirects to `/www/` | You forgot to remove the `RedirectMatch` line from `.htaccess`. Fix and push. |
 
@@ -424,11 +388,10 @@ After setup, your server should look like this:
 
 /home/your-user/
 ├── bin/
-│   ├── backup-wiki.sh
-│   └── rollback-wiki.sh
-└── wiki-backups/
-    ├── wiki-20250801-120000.tar.gz
-    ├── wiki-20250801-130000.tar.gz
+│   └── rollback-site.sh          # optional manual restore helper
+└── site-backups/                  # created by the render workflow
+    ├── 20260822-120000.tar.gz
+    ├── 20260822-130000.tar.gz
     └── ...
 ```
 

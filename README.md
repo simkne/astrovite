@@ -89,8 +89,8 @@ Every push to `main` triggers `.github/workflows/deploy.yml`:
 2. **Install** dependencies (`npm ci`)
 3. **Lint** (`npm run lint`)
 4. **Build** Astro to `dist/` (`npm run build`)
-5. **Backup** current site on the server
-6. **Deploy** `dist/` to the Netcup server via `rsync --delete`
+5. **Backup** current site on the server (snapshot of `DEPLOY_PATH` → `~/site-backups/`)
+6. **Deploy** `dist/` to the Netcup server via atomic tar-over-SSH
 
 Backups are retained for 14 days on the server. A full step-by-step walkthrough of this setup (deploy-only SSH key, backup/rollback scripts, and the workflow YAML) is in the blog post: **["Auto-deploy a static site from GitHub to your own server"](https://www.weltkugl.net/www/posts/deploy-strategy/)**.
 
@@ -101,18 +101,15 @@ Backups are retained for 14 days on the server. A full step-by-step walkthrough 
 | `SSH_HOST` | Netcup server IP or domain |
 | `SSH_USERNAME` | SSH user for deployment |
 | `SSH_PRIVATE_KEY` | Private SSH key (ed25519) |
-| `DEPLOY_PATH` | Absolute server path to `www/` (e.g. `/var/www/weltkugl.net/www/`) |
+| `DEPLOY_PATH` | Absolute server path to the site root (e.g. `/var/www/weltkugl.net/www/`) |
 
 ### Manual Rollback (Server)
 
-If a deploy breaks something, SSH into the server and run:
+Backups are timestamped tarballs in `~/site-backups/` on the server. If a deploy breaks something, SSH in and restore one:
 
 ```bash
-# Roll back to most recent backup
-~/bin/rollback-wiki.sh
-
-# Or specify a specific backup
-~/bin/rollback-wiki.sh wiki-20250801-120000.tar.gz
+ls ~/site-backups/                    # see available snapshots
+tar -xzf ~/site-backups/20260822-121500.tar.gz -C /path/to/DEPLOY_PATH
 ```
 
 ---
