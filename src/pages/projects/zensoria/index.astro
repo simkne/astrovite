@@ -1,5 +1,11 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import { withBase } from '@/site-config'
+
+const featuredImage = {
+  src: withBase('/imgs/zensoria-screenshot.png'),
+  alt: 'ZenSoria weather dashboard',
+}
 ---
 
 <BaseLayout
@@ -7,6 +13,9 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
   description="A small Vue-powered OpenWeather dashboard — live conditions, forecast, and weather-data management."
 >
   <article class="prose">
+    <p>
+      <img width="640" height="290" class="rd-2" src={featuredImage.src} alt={featuredImage.alt} />
+    </p>
     <h1 class="text-title mt-0">ZenSoria</h1>
     <p>
       <a prose-link href="https://weltkugl.net/zensoria/dash25/">weltkugl.net/zensoria/dash25/</a>
