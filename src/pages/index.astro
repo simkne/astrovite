@@ -1,10 +1,17 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import ListProjects from '@/components/ListProjects.vue'
 import siteConfig from '@/site-config'
 import { BASE_PATH, withBase } from '@/site-config'
 import { getPosts } from '@/utils/posts'
 
 const latest = (await getPosts()).slice(0, 2)
+const latestEntries = latest.map((entry) => ({
+  text: entry.data.title,
+  description: entry.data.description,
+  icon: 'i-ri-file-text-line',
+  href: `/posts/${entry.id}/`,
+}))
 ---
 
 <BaseLayout description={siteConfig.description}>
@@ -64,18 +71,7 @@ const latest = (await getPosts()).slice(0, 2)
     </ul>
 
     <h2>Latest entries</h2>
-    <ul class="not-prose">
-      {
-        latest.map((entry) => (
-          <li class="mb-2">
-            <a prose-link href={withBase(`/posts/${entry.id}/`)}>
-              {entry.data.title}
-            </a>
-            <span op-60> · {entry.data.date.split(',')[0]}</span>
-          </li>
-        ))
-      }
-    </ul>
+    <ListProjects list={latestEntries} />
 
     <h2 style="font-size:1.1em;margin-top:2.5rem">How this site deploys itself</h2>
     <p>
