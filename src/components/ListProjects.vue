@@ -14,13 +14,13 @@ defineProps<{
 </script>
 
 <template>
-  <ul grid="~ cols-1 sm:cols-2 gap-4">
+  <ul grid="~ cols-1 sm:cols-2 gap-4" class="not-prose">
     <template v-if="!list || list.length === 0">
       <div py10 opacity-50 text-lg>
         nothing here yet.
       </div>
     </template>
-    <li v-for="project in list" :key="project.text" container-link w-full flex items-center rd-2>
+    <li v-for="project in list" :key="project.text" class="not-prose container-link w-full flex items-center rd-2">
       <a
         flex items-center
         :target="getLinkTarget(project.href)"
@@ -36,7 +36,7 @@ defineProps<{
         </div>
         <div font-normal lh-tight>
           <div text-lg hover:text-main>{{ project.text }}</div>
-          <div opacity-50 text-sm>{{ project.description }}</div>
+          <div class="opacity-50 text-sm line-clamp-2">{{ project.description }}</div>
         </div>
       </a>
     </li>

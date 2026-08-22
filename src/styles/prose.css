@@ -51,7 +51,7 @@
   position: relative;
   padding-left: 1.75em;
 }
-.prose ul > li::before {
+.prose ul > li:not(.not-prose)::before {
   content: '';
   position: absolute;
   background-color: currentColor;
@@ -61,6 +61,11 @@
   height: 0.375em;
   top: calc(0.875em - 0.1875em);
   left: 0.25em;
+}
+.prose ul > li.not-prose {
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 .prose hr {
   border-color: color-mix(in srgb, currentColor 20%, transparent);
@@ -235,6 +240,12 @@
   margin-top: 1.25em;
   margin-bottom: 1.25em;
   list-style-type: none;
+}
+.prose ul.not-prose,
+.prose ul.not-prose > li {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0;
 }
 .prose li {
   margin-top: 0.5em;
