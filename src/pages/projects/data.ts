@@ -6,9 +6,9 @@ export const projectData: ProjectData = [
     projects: [
       {
         text: 'Snorefree',
-        description: 'Your project description information is a long piece of text.',
+        description: 'Stop-snoring therapy app — logopedic exercises, DiGA & BSI TR-03161.',
         icon: 'i-carbon-campsite',
-        href: '/',
+        href: '/projects/schnarchfrei',
       },
       {
         text: 'minimalsoul.com',

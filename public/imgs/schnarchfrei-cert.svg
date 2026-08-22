@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="SchnarchFrei certification placeholder">
+  <rect width="1200" height="630" fill="#10351f"/>
+  <path d="M600 140l90 34v88c0 96-38 148-90 192-52-44-90-96-90-192v-88z" fill="none" stroke="#5eead4" stroke-width="3" opacity="0.7"/>
+  <circle cx="600" cy="250" r="24" fill="#5eead4" opacity="0.85"/>
+  <rect x="80" y="360" width="1040" height="4" rx="2" fill="#5eead4" opacity="0.4"/>
+  <rect x="80" y="380" width="760" height="4" rx="2" fill="#ffffff" opacity="0.25"/>
+  <rect x="80" y="400" width="560" height="4" rx="2" fill="#ffffff" opacity="0.16"/>
+  <text x="600" y="470" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="800" fill="#ffffff">DiGA · BSI TR-03161</text>
+  <text x="600" y="520" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="22" fill="#a9d8c8">Certification &amp; security — project image placeholder</text>
+</svg>

@@ -110,12 +110,13 @@ function toggleNavDrawer() {
       </div>
     </div>
     <div class="flex gap-x-6">
+      <a nav-link href="https://weltkugl.net/" target="_blank" i-ri-global-line aria-label="weltkugl.net" />
+
       <a
         v-for="link in socialLinks" :key="link.text" :aria-label="`${link.text}`" :class="link.icon" nav-link
         :target="getLinkTarget(link.href)" :href="link.href"
       />
 
-      <a nav-link href="https://weltkugl.net/" target="_blank" i-ri-global-line aria-label="weltkugl.net" />
       <a
         v-if="loggedIn" nav-link aria-label="Log out" title="Log out" href="#login" i-ri-logout-box-r-line
         @click.stop.prevent="logout"

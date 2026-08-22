@@ -1,0 +1,80 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { withBase } from '@/site-config'
+
+const featuredImage = {
+  src: withBase('/imgs/schnarchfrei-app.svg'),
+  alt: 'SchnarchFrei — the anti-snoring therapy app',
+}
+const certImage = {
+  src: withBase('/imgs/schnarchfrei-cert.svg'),
+  alt: 'SchnarchFrei — DiGA and BSI TR-03161 certification',
+}
+---
+
+<BaseLayout
+  title="SchnarchFrei"
+  description="First stop-snoring training app with medically proven logopedic exercises — DiGA certification in progress, BSI TR-03161 passed."
+>
+  <article class="prose">
+    <p>
+      <img width="640" height="336" class="rd-2" src={featuredImage.src} alt={featuredImage.alt} />
+    </p>
+    <h1 class="text-title mt-0">SchnarchFrei</h1>
+    <p>
+      <a prose-link href="https://schnarchfrei.de/en/med-en-startsite/">schnarchfrei.de</a>
+    </p>
+
+    <h2>What it is</h2>
+    <p>
+      SchnarchFrei is the first stop-snoring training app with medically proven logopedic exercises. It treats the root
+      cause of snoring and mild sleep apnea by strengthening the oral and throat tissue through speech-therapy muscle
+      training — a gentle, natural alternative to CPAP masks. The app ships dozens of guided video exercises across
+      difficulty levels, a personalized daily training plan, sleep tracking, and educational content on sleep hygiene.
+    </p>
+
+    <h2>The therapy behind the app</h2>
+    <p>
+      The exercises are logopedic (speech-therapy) muscle training. Around 15 minutes per day, and the majority of users
+      report a noticeable reduction in snoring within a few weeks. Because the app addresses the underlying tissue
+      weakness rather than the symptom, it can be used on its own or alongside CPAP therapy.
+    </p>
+
+    <h2>Regulatory journey: the German DiGA</h2>
+    <p>
+      SchnarchFrei is a <strong>class 1 medical device</strong> under the MDR, and it is currently going through the German
+      <strong>DiGA</strong> (digitale Gesundheitsanwendung) certification — the route that lets doctors prescribe digital
+      health apps and have the costs covered by statutory health insurance.
+    </p>
+    <p>
+      A DiGA (Digitale Gesundheitsanwendung) is a medical app that has been approved by the German Federal Institute for
+      Drugs and Medical Devices (BfArM). Apps in the DiGA directory can be prescribed by physicians and are reimbursed
+      by German health insurers. To get there an app has to prove it is safe, its data protection is sound, and — for a
+      permanent listing — that it delivers measurable medical benefit.
+    </p>
+
+    <h2>My role</h2>
+    <p>
+      I work as <strong>Tech Lead</strong> and <strong>Deputy CTO</strong>. Over the past months my focus has been on
+      the engineering and security side of the certification work:
+    </p>
+    <ul>
+      <li>
+        <strong>DiGA submission support</strong> — coordinating the technical evidence, data protection documentation, and
+        device documentation needed for the BfArM assessment.
+      </li>
+      <li>
+        <strong>BSI TR-03161 supervision</strong> — overseeing and driving the successful passing of the German Federal Office
+        for Information Security's <strong>TR-03161</strong> certification for digital health applications, covering authentication,
+        encryption, secure communication, and overall IT security of the app ecosystem.
+      </li>
+      <li>
+        <strong>Community + team leadership</strong> — leading the development team day to day and standing in for the CTO.
+      </li>
+    </ul>
+
+    <p>
+      <img width="640" height="336" class="rd-2" src={certImage.src} alt={certImage.alt} />
+    </p>
+  </article>
+</BaseLayout>
