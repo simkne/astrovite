@@ -18,6 +18,7 @@ export type ProjectData = Array<{
     text: string
     description?: string
     icon?: string
+    image?: string
     href: string
   }>
 }>

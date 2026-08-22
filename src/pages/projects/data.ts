@@ -7,7 +7,7 @@ export const projectData: ProjectData = [
       {
         text: 'Snorefree',
         description: 'Stop-snoring therapy app — logopedic exercises, DiGA & BSI TR-03161.',
-        icon: 'i-carbon-campsite',
+        image: '/imgs/schnarchfrei-logo.svg',
         href: '/projects/schnarchfrei',
       },
       {
