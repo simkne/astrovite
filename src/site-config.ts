@@ -65,20 +65,8 @@ export const siteConfig = {
   footer: {
     navLinks: [
       {
-        text: 'Posts Props',
-        href: '/posts-props/',
-      },
-      {
-        text: 'Markdown Style',
-        href: '/md-style/',
-      },
-      {
         text: 'Editor',
         href: '/editor/',
-      },
-      {
-        text: 'GitHub Repository',
-        href: 'https://github.com/simkne/astrovite',
       },
     ],
   },

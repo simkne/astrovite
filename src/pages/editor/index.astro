@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import EditorApp from '@/components/editor/EditorApp.vue'
+import { withBase } from '@/site-config'
 ---
 
 <BaseLayout title="Editor" description="Write and publish markdown notes.">
@@ -8,4 +9,8 @@ import EditorApp from '@/components/editor/EditorApp.vue'
     <h1>Editor</h1>
     <EditorApp client:load />
   </article>
+  <div class="mt-8 flex flex-wrap gap-4">
+    <a prose-link href={withBase('/posts-props/')}>Posts Props</a>
+    <a prose-link href={withBase('/md-style/')}>Markdown Style</a>
+  </div>
 </BaseLayout>

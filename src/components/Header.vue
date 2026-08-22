@@ -1,11 +1,23 @@
 <script lang="ts" setup>
 import { useWindowScroll } from '@vueuse/core'
 import { computed, onMounted, ref, unref } from 'vue'
+import { isAdmin, logoutAdmin } from '@/lib/auth'
 import siteConfig, { BASE_PATH, withBase } from '@/site-config'
 import { getLinkTarget, isExternalLink } from '@/utils/link'
 import ThemeToggle from './ThemeToggle.vue'
 
 const navLinks = siteConfig.header.navLinks || []
+
+const loggedIn = ref(false)
+
+async function checkAdmin() {
+  loggedIn.value = await isAdmin()
+}
+
+function logout() {
+  logoutAdmin()
+  loggedIn.value = false
+}
 
 const socialLinks = computed(() => {
   return siteConfig.socialLinks.filter((link: Record<string, any>) => {
@@ -27,6 +39,8 @@ const { y: scroll } = useWindowScroll()
 const oldScroll = ref(unref(scroll))
 
 onMounted(() => {
+  checkAdmin()
+
   const navMask = document.querySelector('.nav-drawer-mask') as HTMLElement
 
   navMask?.addEventListener('touchmove', (event) => {
@@ -101,7 +115,14 @@ function toggleNavDrawer() {
         :target="getLinkTarget(link.href)" :href="link.href"
       />
 
-      <a nav-link target="_blank" :href="`${BASE_PATH}rss.xml`" i-ri-rss-line aria-label="RSS" />
+      <a nav-link href="https://weltkugl.net/" target="_blank" i-ri-global-line aria-label="weltkugl.net" />
+      <a
+        v-if="loggedIn" nav-link aria-label="Log out" title="Log out" href="#login" i-ri-logout-box-r-line
+        @click.stop.prevent="logout"
+      />
+      <a
+        v-else nav-link aria-label="Log in" title="Log in" :href="withBase('/login/')" i-ri-login-box-line
+      />
       <ThemeToggle />
     </div>
   </header>
