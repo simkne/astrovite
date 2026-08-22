@@ -4,11 +4,15 @@ import { withBase } from '@/site-config'
 
 const featuredImage = {
   src: withBase('/imgs/app-en-screen-arrangement.png'),
-  alt: 'SchnarchFrei logo',
+  alt: 'SchnarchFrei screen',
 }
 const certImage = {
   src: withBase('/imgs/schnarchfrei-cert.svg'),
   alt: 'SchnarchFrei — DiGA and BSI TR-03161 certification',
+}
+const logoImage = {
+  src: withBase('/imgs/schnarchfrei-logo.svg'),
+  alt: 'SchnarchFrei logo',
 }
 ---
 
@@ -18,11 +22,14 @@ const certImage = {
 >
   <article class="prose">
     <p class="flex justify-center">
-      <img width="120" height="120" class="rd-2" src={featuredImage.src} alt={featuredImage.alt} />
+      <img width="80%" height="120" class="rd-2" src={featuredImage.src} alt={featuredImage.alt} />
     </p>
     <h1 class="text-title mt-0">SchnarchFrei</h1>
     <p>
-      <a prose-link href="https://schnarchfrei.de/en/med-en-startsite/">schnarchfrei.de</a>
+      <img width="80%" height="120" class="rd-2" src={logoImage.src} alt={logoImage.alt} /><a
+        prose-link
+        href="https://schnarchfrei.de/en/med-en-startsite/">schnarchfrei.de</a
+      >
     </p>
 
     <h2>What it is</h2>

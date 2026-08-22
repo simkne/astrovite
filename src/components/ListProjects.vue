@@ -29,7 +29,7 @@ defineProps<{
       >
         <div ml-2 mr-4 pt-2 flex items-center justify-center>
           <img
-            v-if="project.image" width="48" height="48" class="rd-1.5" :src="withBase(project.image)"
+            v-if="project.image" width="82" height="82" class="rd-1.5" :src="withBase(project.image)"
             :alt="project.text"
           >
           <i v-else text-4xl inline-block :class="project.icon || 'i-carbon-unknown'" />
