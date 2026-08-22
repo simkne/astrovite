@@ -8,17 +8,23 @@ import ThemeToggle from './ThemeToggle.vue'
 
 const navLinks = siteConfig.header.navLinks || []
 
-function dispatchActivePage() {
+function currentHref() {
   const path = `${location.pathname}/`
-  const active = navLinks
-    .map((link) => {
-      return { link, href: withBase(link.href) }
-    })
-    .filter(({ href }) => path.startsWith(href))
-    .sort((a, b) => b.href.length - a.href.length)[0]
+  return navLinks
+    .map(link => withBase(link.href))
+    .filter(href => path.startsWith(href))
+    .sort((a, b) => b.length - a.length)[0] ?? ''
+}
 
-  const el = active
-    ? (document.querySelector(`header nav a[href="${active.href}"]`) as HTMLElement | null)
+const activeHref = computed(() => currentHref())
+
+function isActive(link: { href: string }) {
+  return withBase(link.href) === activeHref.value
+}
+
+function dispatchActivePage() {
+  const el = activeHref.value
+    ? (document.querySelector(`header nav a[href="${activeHref.value}"]`) as HTMLElement | null)
     : null
   window.dispatchEvent(new CustomEvent('dot:focus', { detail: { el } }))
 }
@@ -117,7 +123,8 @@ function toggleNavDrawer() {
       <nav class="sm:flex hidden flex-wrap gap-x-6 position-initial flex-row">
         <a
           v-for="link in navLinks" :key="link.text" :aria-label="`${link.text}`" :target="getLinkTarget(link.href)"
-          nav-link :href="isExternalLink(link.href) ? link.href : withBase(link.href)"
+          nav-link :class="{ 'nav-active': isActive(link) }"
+          :href="isExternalLink(link.href) ? link.href : withBase(link.href)"
         >
           {{ link.text }}
         </a>
@@ -162,6 +169,12 @@ function toggleNavDrawer() {
 .header-hide {
   transform: translateY(-100%);
   transition: transform 0.4s ease;
+}
+
+.nav-active {
+  opacity: 1;
+  transform: translateY(-1px);
+  filter: drop-shadow(0 0 6px var(--hover-glow, rgba(66, 133, 244, 0.5)));
 }
 
 .header-bg-blur {
