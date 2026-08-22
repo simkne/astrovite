@@ -8,7 +8,9 @@ import ThemeToggle from './ThemeToggle.vue'
 
 const navLinks = siteConfig.header.navLinks || []
 
-function currentHref() {
+function getActiveHref() {
+  if (typeof location === 'undefined')
+    return ''
   const path = `${location.pathname}/`
   return navLinks
     .map(link => withBase(link.href))
@@ -16,15 +18,17 @@ function currentHref() {
     .sort((a, b) => b.length - a.length)[0] ?? ''
 }
 
-const activeHref = computed(() => currentHref())
-
-function isActive(link: { href: string }) {
-  return withBase(link.href) === activeHref.value
+function refreshActivePage() {
+  const active = getActiveHref()
+  document.querySelectorAll('header nav a').forEach((a) => {
+    a.classList.toggle('nav-active', a.getAttribute('href') === active)
+  })
+  dispatchActivePage()
 }
 
 function dispatchActivePage() {
-  const el = activeHref.value
-    ? (document.querySelector(`header nav a[href="${activeHref.value}"]`) as HTMLElement | null)
+  const el = getActiveHref()
+    ? (document.querySelector(`header nav a[href="${getActiveHref()}"]`) as HTMLElement | null)
     : null
   window.dispatchEvent(new CustomEvent('dot:focus', { detail: { el } }))
 }
@@ -61,8 +65,8 @@ const oldScroll = ref(unref(scroll))
 
 onMounted(() => {
   checkAdmin()
-  dispatchActivePage()
-  document.addEventListener('astro:page-load', dispatchActivePage)
+  refreshActivePage()
+  document.addEventListener('astro:page-load', refreshActivePage)
 
   const navMask = document.querySelector('.nav-drawer-mask') as HTMLElement
 
@@ -123,8 +127,7 @@ function toggleNavDrawer() {
       <nav class="sm:flex hidden flex-wrap gap-x-6 position-initial flex-row">
         <a
           v-for="link in navLinks" :key="link.text" :aria-label="`${link.text}`" :target="getLinkTarget(link.href)"
-          nav-link :class="{ 'nav-active': isActive(link) }"
-          :href="isExternalLink(link.href) ? link.href : withBase(link.href)"
+          nav-link :href="isExternalLink(link.href) ? link.href : withBase(link.href)"
         >
           {{ link.text }}
         </a>
