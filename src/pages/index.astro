@@ -2,6 +2,9 @@
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import siteConfig from '@/site-config'
 import { BASE_PATH, withBase } from '@/site-config'
+import { getPosts } from '@/utils/posts'
+
+const latest = (await getPosts()).slice(0, 2)
 ---
 
 <BaseLayout description={siteConfig.description}>
@@ -58,6 +61,20 @@ import { BASE_PATH, withBase } from '@/site-config'
         <a prose-link href={withBase('/blog/notes')}>Notes</a>
         <span op-60> — quick reference, snippets, and the “how did I do that again?” archive.</span>
       </li>
+    </ul>
+
+    <h2>Latest entries</h2>
+    <ul class="not-prose">
+      {
+        latest.map((entry) => (
+          <li class="mb-2">
+            <a prose-link href={withBase(`/posts/${entry.id}/`)}>
+              {entry.data.title}
+            </a>
+            <span op-60> · {entry.data.date.split(',')[0]}</span>
+          </li>
+        ))
+      }
     </ul>
 
     <h2 style="font-size:1.1em;margin-top:2.5rem">How this site deploys itself</h2>
