@@ -137,6 +137,7 @@ function toggleNavDrawer() {
       </div>
     </div>
     <div class="flex gap-x-6">
+      <a nav-link :href="withBase('/about/')" i-ri-question-line aria-label="About" title="About" />
       <a nav-link href="https://weltkugl.net/" target="_blank" i-ri-global-line aria-label="weltkugl.net" />
 
       <a

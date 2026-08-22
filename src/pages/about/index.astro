@@ -1,0 +1,112 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import siteConfig, { withBase } from '@/site-config'
+
+const placeholderBlocks = [
+  {
+    icon: 'i-ri-user-heart-line',
+    title: 'hi, I’m SimKne',
+    text: 'A short intro about who I am, what I do, and what this site is about. This is placeholder copy.',
+  },
+  {
+    icon: 'i-ri-code-box-line',
+    title: 'What I build',
+    text: 'Embedded systems, IoT, web apps, and everything in between. Placeholder for a real summary.',
+  },
+  {
+    icon: 'i-ri-sun-line',
+    title: 'Beyond the code',
+    text: 'A bit about hobbies, interests, or whatever makes the person behind the projects tick.',
+  },
+]
+---
+
+<BaseLayout title="About" description={`About ${siteConfig.author} — a placeholder introduction.`} pageType="website">
+  <article class="not-prose">
+    <!-- Hero -->
+    <div class="flex flex-col items-center gap-6 mb-14 mt-2">
+      <img
+        width="120"
+        height="120"
+        class="rounded-full border border-main !border-op-40 object-cover"
+        src={withBase(siteConfig.header.logo.src)}
+        alt={siteConfig.header.logo.alt}
+      />
+      <div class="text-center">
+        <h1 class="home-title mb-2">about me</h1>
+        <p class="opacity-70 max-w-xl mx-auto">
+          {siteConfig.subtitle} — placeholder bio that will be replaced with a real introduction.
+        </p>
+      </div>
+    </div>
+
+    <!-- Intro -->
+    <div class="mb-14">
+      <h2 class="text-xl font-700 mb-4 flex items-center gap-2">
+        <i class="i-ri-hand-heart-line text-2xl"></i>
+        A quick introduction
+      </h2>
+      <p class="opacity-80 leading-7">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. This is placeholder text for a short personal
+        introduction. It will describe what I care about, why I run this site, and what readers can expect to find here.
+      </p>
+      <p class="opacity-80 leading-7 mt-4">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua.
+      </p>
+    </div>
+
+    <!-- Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-14">
+      {
+        placeholderBlocks.map((block) => (
+          <div class="container-link rounded-lg border border-main !border-op-20 bg-main p-6 flex flex-col gap-3 transition-all hover:!border-op-50">
+            <i class={`${block.icon} text-3xl opacity-70`} />
+            <h3 class="font-700 text-lg">{block.title}</h3>
+            <p class="opacity-70 text-sm leading-6">{block.text}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Experience placeholder -->
+    <div class="mb-14">
+      <h2 class="text-xl font-700 mb-6 flex items-center gap-2">
+        <i class="i-ri-file-list-3-line text-2xl"></i>
+        Experience
+      </h2>
+      <ol class="flex flex-col gap-6 border-l border-main !border-op-30 pl-6">
+        <li>
+          <div class="opacity-50 text-sm mb-1">2022 — Present · Placeholder role</div>
+          <div class="font-600">A role at a company</div>
+          <p class="opacity-70 text-sm mt-1 leading-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </li>
+        <li>
+          <div class="opacity-50 text-sm mb-1">2019 — 2022 · Placeholder role</div>
+          <div class="font-600">Another role</div>
+          <p class="opacity-70 text-sm mt-1 leading-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </li>
+        <li>
+          <div class="opacity-50 text-sm mb-1">2016 — 2019 · Placeholder role</div>
+          <div class="font-600">Earlier role</div>
+          <p class="opacity-70 text-sm mt-1 leading-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Contact -->
+    <div class="rounded-lg border border-main !border-op-20 bg-main p-8 text-center">
+      <h2 class="text-xl font-700 mb-3">Get in touch</h2>
+      <p class="opacity-70 mb-6 max-w-md mx-auto leading-6">
+        Have a question or just want to say hi? Lorem ipsum dolor sit amet.
+      </p>
+      <a
+        href={`mailto:${siteConfig.email}`}
+        class="inline-flex items-center gap-2 px-5 py-2 rounded border border-main !border-op-50 hover:!border-op-100"
+      >
+        <i class="i-ri-mail-line"></i>
+        {siteConfig.email}
+      </a>
+    </div>
+  </article>
+</BaseLayout>
