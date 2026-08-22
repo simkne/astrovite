@@ -3,8 +3,8 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import { withBase } from '@/site-config'
 
 const featuredImage = {
-  src: withBase('/imgs/schnarchfrei-app.svg'),
-  alt: 'SchnarchFrei — the anti-snoring therapy app',
+  src: withBase('/imgs/schnarchfrei-logo.svg'),
+  alt: 'SchnarchFrei logo',
 }
 const certImage = {
   src: withBase('/imgs/schnarchfrei-cert.svg'),
@@ -17,8 +17,8 @@ const certImage = {
   description="First stop-snoring training app with medically proven logopedic exercises — DiGA certification in progress, BSI TR-03161 passed."
 >
   <article class="prose">
-    <p>
-      <img width="640" height="336" class="rd-2" src={featuredImage.src} alt={featuredImage.alt} />
+    <p class="flex justify-center">
+      <img width="120" height="120" class="rd-2" src={featuredImage.src} alt={featuredImage.alt} />
     </p>
     <h1 class="text-title mt-0">SchnarchFrei</h1>
     <p>
