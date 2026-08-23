@@ -9,25 +9,35 @@ const latest = (await getPosts()).slice(0, 2)
 const latestEntries = latest.map((entry) => ({
   text: entry.data.title,
   description: entry.data.description,
-  image: '/imgs/article-arrow.svg',
+  // image: '/imgs/article-arrow.svg',
   href: `/posts/${entry.id}/`,
+  icon: 'i-arcticons-blorp',
+  icon: 'i-arcticons-brain-test',
+  icon: 'i-arcticons-brilliant',
 }))
 
 const startBlocks = [
   {
-    icon: 'i-ri-rocket-2-line',
+    // icon: 'i-ri-rocket-2-line',
+    icon: 'i-game-icons-alien-fire',
+    icon: 'i-arcticons-spacenow',
     title: 'Projects',
     text: 'Deep dives into builds, from schematic to deployment.',
     href: '/projects/',
   },
   {
-    icon: 'i-ri-article-line',
+    // icon: 'i-game-icons-alien-skull',
+    // icon: 'i-arcticons-webspace',
+    icon: 'i-arcticons-mind-space',
     title: 'Blog',
     text: 'Longer write-ups, opinions, and lessons learned the hard way.',
     href: '/blog/',
   },
   {
-    icon: 'i-ri-sticky-note-line',
+    // icon: 'i-solar-notes-outline',
+    // icon: 'i-game-icons-chemical-bolt',
+    // icon: 'i-game-icons-abstract-097',
+    icon: 'i-arcticons:atom-meditation',
     title: 'Notes',
     text: 'Quick reference, snippets, and the “how did I do that again?” archive.',
     href: '/blog/notes/',
@@ -65,7 +75,7 @@ const startBlocks = [
             href={withBase(block.href)}
             class="container-link h-full rounded-lg border border-main !border-op-20 bg-main p-6 flex flex-col justify-between gap-3 transition-all hover:!border-op-50 decoration-none"
           >
-            <i class={`${block.icon} text-3xl opacity-70`} />
+            <i class={`${block.icon} text-6xl opacity-70 items-center`} />
             <h3 class="font-700 text-lg text-link">{block.title}</h3>
             <p class="opacity-70 text-sm leading-6 text-wrap justify-block line-clamp-3">{block.text}</p>
           </a>

@@ -53,7 +53,11 @@ export default defineConfig({
         display: 'inline-block',
       },
     }),
-    presetTypography(),
+    presetTypography({
+      cssExtend: {
+        'max-width': '74ch',
+      },
+    }),
   ],
   transformers: [transformerDirectives(), transformerVariantGroup()],
   safelist: [

@@ -1,5 +1,5 @@
 .prose {
-  --at-apply: text-base mb-16 max-w-none min-h-38vh sm: min-h-50vh;
+  --at-apply: text-base mb-16 min-h-38vh sm: min-h-50vh;
   line-height: 1.75;
 }
 .prose a {

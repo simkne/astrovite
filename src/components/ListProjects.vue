@@ -34,7 +34,7 @@ defineProps<{
             v-if="project.image" width="82" height="82" class="rd-1.5" :src="withBase(project.image)"
             :alt="project.text"
           >
-          <i v-else text-4xl inline-block :class="project.icon || 'i-carbon-unknown'" />
+          <i v-else text-6xl inline-block :class="project.icon || 'i-carbon-unknown'" />
         </div>
         <div class="font-normal lh-tight min-w-0">
           <div text-lg hover:text-main>{{ project.text }}</div>
