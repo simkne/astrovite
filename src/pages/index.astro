@@ -12,6 +12,27 @@ const latestEntries = latest.map((entry) => ({
   image: '/imgs/article-arrow.svg',
   href: `/posts/${entry.id}/`,
 }))
+
+const startBlocks = [
+  {
+    icon: 'i-ri-rocket-2-line',
+    title: 'Projects',
+    text: 'Deep dives into builds, from schematic to deployment.',
+    href: '/projects/',
+  },
+  {
+    icon: 'i-ri-article-line',
+    title: 'Blog',
+    text: 'Longer write-ups, opinions, and lessons learned the hard way.',
+    href: '/blog/',
+  },
+  {
+    icon: 'i-ri-sticky-note-line',
+    title: 'Notes',
+    text: 'Quick reference, snippets, and the “how did I do that again?” archive.',
+    href: '/blog/notes/',
+  },
+]
 ---
 
 <BaseLayout description={siteConfig.description}>
@@ -57,20 +78,20 @@ const latestEntries = latest.map((entry) => ({
       </li>
     </ul>
     <h2>Where to start</h2>
-    <ul>
-      <li>
-        <a prose-link href={withBase('/projects')}>Projects</a>
-        <span op-60> — deep dives into builds, from schematic to deployment.</span>
-      </li>
-      <li>
-        <a prose-link href={withBase('/blog')}>Blog</a>
-        <span op-60> — longer write-ups, opinions, and lessons learned the hard way.</span>
-      </li>
-      <li>
-        <a prose-link href={withBase('/blog/notes')}>Notes</a>
-        <span op-60> — quick reference, snippets, and the “how did I do that again?” archive.</span>
-      </li>
-    </ul>
+    <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+      {
+        startBlocks.map((block) => (
+          <a
+            href={withBase(block.href)}
+            class="container-link rounded-lg border border-main !border-op-20 bg-main p-6 flex flex-col gap-3 transition-all hover:!border-op-50 decoration-none"
+          >
+            <i class={`${block.icon} text-3xl opacity-70`} />
+            <h3 class="font-700 text-lg text-link">{block.title}</h3>
+            <p class="opacity-70 text-sm leading-6">{block.text}</p>
+          </a>
+        ))
+      }
+    </div>
 
     <!--
     <h2 style="font-size:1.1em;margin-top:2.5rem">How this site deploys itself</h2>
