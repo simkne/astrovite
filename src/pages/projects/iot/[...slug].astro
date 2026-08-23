@@ -1,6 +1,7 @@
 ---
 import { render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import EditLink from '@/components/EditLink.vue'
 import ProjectSubnav from '@/components/ProjectSubnav.astro'
 import ListIotDocs from '@/components/ListIotDocs.vue'
 import type { CollectionIot } from '@/types'
@@ -71,6 +72,7 @@ if (props.kind === 'article') {
         <h1>{articleTitle}</h1>
         {articleDescription && <p op-60>{articleDescription}</p>}
         <ArticleContent />
+        <EditLink client:load path={`src/content/iot/${props.entry.id}.md`} />
       </article>
     </BaseLayout>
   )

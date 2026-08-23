@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import EditLink from '@/components/EditLink.vue'
 import type { CollectionPages } from '@/types'
 
 export async function getStaticPaths() {
@@ -32,5 +33,6 @@ const { Content } = await render(page)
       )
     }
     <Content />
+    <EditLink client:load path={`src/content/pages/${page.id}.md`} />
   </article>
 </BaseLayout>

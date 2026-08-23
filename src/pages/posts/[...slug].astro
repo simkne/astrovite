@@ -1,6 +1,7 @@
 ---
 import { render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import EditLink from '@/components/EditLink.vue'
 import PrivateGate from '@/components/blog/PrivateGate.vue'
 import { withBase } from '@/site-config'
 import { type CollectionPosts } from '@/types'
@@ -61,5 +62,6 @@ function getDate(date: string) {
     <PrivateGate client:load private={isPrivate} sharePassword={sharePassword} slug={post.id}>
       <Content />
     </PrivateGate>
+    <EditLink client:load path={`src/content/blog/${post.id}.md`} />
   </article>
 </BaseLayout>

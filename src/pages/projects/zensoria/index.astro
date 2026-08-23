@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import EditLink from '@/components/EditLink.vue'
 import { withBase } from '@/site-config'
 
 const featuredImage = {
@@ -55,5 +56,6 @@ const featuredImage = {
       of the blog itself. The code and assets were put together by hand (and a fair bit of experimenting) rather than
       from a template.
     </p>
+    <EditLink client:load path="src/pages/projects/zensoria/index.astro" />
   </article>
 </BaseLayout>

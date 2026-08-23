@@ -19,7 +19,7 @@ export async function getStaticPaths() {
 
 const { path } = Astro.params
 
-const posts = await getPosts(path)
+const posts = (await getPosts(path)).filter((post) => path || !post.id.startsWith('notes/'))
 
 function activeLink(pathname: string) {
   return Astro.url.pathname.replace(/\/+/g, '/').replace(/\/$/, '') === pathname

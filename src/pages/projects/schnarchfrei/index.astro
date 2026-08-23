@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import EditLink from '@/components/EditLink.vue'
 import { withBase } from '@/site-config'
 
 const featuredImage = {
@@ -83,5 +84,6 @@ const logoImage = {
     <p>
       <img width="640" height="336" class="rd-2" src={certImage.src} alt={certImage.alt} />
     </p>
+    <EditLink client:load path="src/pages/projects/schnarchfrei/index.astro" />
   </article>
 </BaseLayout>
