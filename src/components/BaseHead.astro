@@ -1,5 +1,5 @@
 ---
-import siteConfig from '@/site-config'
+import siteConfig, { withBase } from '@/site-config'
 import '@/styles/global.css'
 import '@/styles/prose.css'
 import '@/styles/dot.css'
@@ -39,9 +39,10 @@ function formatCanonicalURL(url: string | URL) {
 <meta name="generator" content={Astro.generator} />
 
 <!-- Low Priority Global Metadata -->
-<link rel="icon" type="image/svg+xml" href="favicon.ico" />
-<link rel="sitemap" href="/sitemap-index.xml" />
-<link rel="alternate" type="application/rss+xml" href="/rss.xml" title="RSS" />
+<link rel="icon" href={withBase('favicon.ico')} sizes="48x48" />
+<link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
+<link rel="sitemap" href={withBase('sitemap-index.xml')} />
+<link rel="alternate" type="application/rss+xml" href={withBase('rss.xml')} title="RSS" />
 
 <!-- Page Metadata -->
 <link rel="canonical" href={formatCanonicalURL(canonicalURL)} />

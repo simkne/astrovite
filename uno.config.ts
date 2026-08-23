@@ -4,7 +4,6 @@ import {
   presetIcons,
   presetTypography,
   presetUno,
-  presetWebFonts,
   transformerDirectives,
   transformerVariantGroup,
 } from 'unocss'
@@ -12,6 +11,10 @@ import {
 export default defineConfig({
 
   theme: {
+    fontFamily: {
+      sans: 'Manrope, ui-sans-serif, system-ui, sans-serif',
+      mono: '"DM Mono", ui-monospace, monospace',
+    },
     fontSize: {
       lg: ['1.1rem', '1.45rem', '-0.025em'], // [font-size, line-height]
     },
@@ -51,12 +54,6 @@ export default defineConfig({
       },
     }),
     presetTypography(),
-    presetWebFonts({
-      fonts: {
-        sans: 'Manrope:400,600,800',
-        mono: 'DM Mono:400,600',
-      },
-    }),
   ],
   transformers: [transformerDirectives(), transformerVariantGroup()],
   safelist: [

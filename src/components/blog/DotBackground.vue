@@ -101,10 +101,15 @@ function frame() {
   if (!ctx)
     return
   ctx.clearRect(0, 0, width, height)
-  // Fade the glow out after the cursor stops moving
+  // Fade the glow out after the cursor stops moving — unless it's over a link/button
   if (mouse.active) {
-    const elapsed = performance.now() - lastMoveAt
-    glowIntensity = Math.max(0, 1 - elapsed / GLOW_FADE_MS)
+    if (target.active) {
+      glowIntensity = 1
+    }
+    else {
+      const elapsed = performance.now() - lastMoveAt
+      glowIntensity = Math.max(0, 1 - elapsed / GLOW_FADE_MS)
+    }
   }
   for (const p of particles) {
     // Converge toward the pointer while hovering a link/button, otherwise
@@ -201,8 +206,11 @@ function onPointerOver(e: PointerEvent) {
 
 function onPointerOut(e: PointerEvent) {
   const related = e.relatedTarget as Element | null
-  if (!related || !related.closest('a, button, [role="button"], input, select, textarea'))
+  if (!related || !related.closest('a, button, [role="button"], input, select, textarea')) {
     target.active = false
+    // Resume the idle fade from full rather than jumping mid-fade
+    lastMoveAt = performance.now()
+  }
 }
 
 let colorObserver: MutationObserver | null = null
