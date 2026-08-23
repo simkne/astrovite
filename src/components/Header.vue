@@ -138,10 +138,10 @@ function toggleNavDrawer() {
     </div>
     <div class="flex gap-x-6">
       <a nav-link :href="withBase('/about/')" i-ri-question-line aria-label="About" title="About" />
-      <a nav-link href="https://weltkugl.net/" target="_blank" i-ri-global-line aria-label="weltkugl.net" />
+      <a nav-link href="https://weltkugl.net/" target="_blank" i-ri-global-line aria-label="weltkugl.net" title="weltkugl.net" />
 
       <a
-        v-for="link in socialLinks" :key="link.text" :aria-label="`${link.text}`" :class="link.icon" nav-link
+        v-for="link in socialLinks" :key="link.text" :aria-label="`${link.text}`" :title="`${link.text}`" :class="link.icon" nav-link
         :target="getLinkTarget(link.href)" :href="link.href"
       />
 
@@ -178,7 +178,7 @@ function toggleNavDrawer() {
 .nav-active {
   opacity: 1;
   transform: translateY(-1px);
-  filter: drop-shadow(0 0 6px var(--hover-glow, rgba(66, 133, 244, 0.5)));
+  filter: drop-shadow(0 0 6px var(--hover-glow));
 }
 
 .header-bg-blur {

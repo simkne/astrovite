@@ -33,7 +33,7 @@ function logout() {
       <p class="opacity-70">
         You are logged in as admin. All private notes are unlocked.
       </p>
-      <button class="nav-link self-start px-4 py-2 rounded border-main border !border-op-50" type="button" @click="logout">
+      <button class="nav-link self-start px-4 py-2 rounded card-border" type="button" @click="logout">
         Log out
       </button>
     </template>
@@ -42,11 +42,11 @@ function logout() {
         <input
           v-model="password"
           type="password"
-          class="px-3 py-2 rounded border-main border bg-main text-main"
+          class="px-3 py-2 rounded input-main"
           placeholder="Master password"
           autocomplete="current-password"
         >
-        <button class="nav-link self-start px-4 py-2 rounded border-main border !border-op-50" type="submit">
+        <button class="nav-link self-start px-4 py-2 rounded card-border" type="submit">
           Log in
         </button>
       </form>

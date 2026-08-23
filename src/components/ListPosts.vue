@@ -56,7 +56,7 @@ function tagHref(tag: string) {
     </template>
     <li v-for="(post, index) in list " :key="post.data.title" mb-8>
       <div v-if="!isSameYear(post.data.date, list[index - 1]?.data.date)" select-none relative h18 pointer-events-none>
-        <span text-7em color-transparent font-bold text-stroke-2 text-stroke-hex-aaa op14 absolute top--0.2em>
+        <span watermark text-7em op14 top--0.2em>
           {{ getYear(post.data.date) }}
         </span>
       </div>
@@ -66,11 +66,11 @@ function tagHref(tag: string) {
             <span lh-normal>
               {{ post.data.title }}
             </span>
-            <span v-if="post.data.private" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs border-main border !border-op-50 opacity-70">
+            <span v-if="post.data.private" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs card-border opacity-70">
               <i i-ri-lock-line />
               Private
             </span>
-            <span v-if="post.data.draft" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs border-main border !border-op-50 opacity-70">
+            <span v-if="post.data.draft" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs card-border opacity-70">
               <i i-ri-draft-line />
               Draft
             </span>
@@ -85,7 +85,7 @@ function tagHref(tag: string) {
           <div v-if="getTags(post).length" flex="~ gap-2 flex-wrap">
             <a
               v-for="tag in getTags(post)" :key="tag" :href="tagHref(tag)" nav-link
-              class="inline-flex items-center px-1.5 py-0.5 rounded text-xs border-main border !border-op-50 opacity-80 hover:opacity-100"
+              class="inline-flex items-center px-1.5 py-0.5 rounded text-xs card-border opacity-80 hover:opacity-100"
             >
               #{{ tag }}
             </a>

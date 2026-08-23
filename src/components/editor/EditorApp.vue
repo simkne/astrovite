@@ -339,7 +339,7 @@ async function save() {
 
 <template>
   <div class="flex flex-col gap-6">
-    <div v-if="!admin" class="border-main border !border-op-50 rounded p-6 flex flex-col gap-4">
+    <div v-if="!admin" class="card-border rounded p-6 flex flex-col gap-4">
       <p class="opacity-70">
         The editor is only available to the admin. <a class="prose-link" :href="withBase('/login/')">Log in</a> to
         continue.
@@ -347,7 +347,7 @@ async function save() {
     </div>
     <template v-else>
       <!-- Token setup -->
-      <div v-if="!hasToken" class="border-main border !border-op-50 rounded p-6 flex flex-col gap-4">
+      <div v-if="!hasToken" class="card-border rounded p-6 flex flex-col gap-4">
         <h2 class="text-xl font-700">
           GitHub token
         </h2>
@@ -357,10 +357,10 @@ async function save() {
         </p>
         <form class="flex flex-col gap-2 sm:flex-row" @submit.prevent="saveToken">
           <input
-            v-model="token" type="password" class="px-3 py-2 rounded border-main border bg-main text-main flex-1"
+            v-model="token" type="password" class="px-3 py-2 rounded input-main flex-1"
             placeholder="github_pat_..." autocomplete="off"
           >
-          <button class="nav-link px-4 py-2 rounded border-main border !border-op-50" type="submit">
+          <button class="btn-main" type="submit">
             Save token
           </button>
         </form>
@@ -370,24 +370,24 @@ async function save() {
       <template v-else>
         <div class="flex gap-2">
           <button
-            class="nav-link px-4 py-1.5 rounded border-main border text-sm" :class="{ 'opacity-100 !border-op-90': type === 'note', 'opacity-50': type !== 'note' }"
+            class="nav-link px-4 py-1.5 rounded card-border text-sm" :class="{ 'opacity-100 !border-op-90': type === 'note', 'opacity-50': type !== 'note' }"
             type="button" @click="setType('note')"
           >
             Note
           </button>
           <button
-            class="nav-link px-4 py-1.5 rounded border-main border text-sm" :class="{ 'opacity-100 !border-op-90': type === 'post', 'opacity-50': type !== 'post' }"
+            class="nav-link px-4 py-1.5 rounded card-border text-sm" :class="{ 'opacity-100 !border-op-90': type === 'post', 'opacity-50': type !== 'post' }"
             type="button" @click="setType('post')"
           >
             Blog post
           </button>
         </div>
         <div class="flex flex-wrap gap-3 items-center">
-          <button class="nav-link px-4 py-2 rounded border-main border !border-op-50" type="button" @click="newNote">
+          <button class="btn-main" type="button" @click="newNote">
             New note
           </button>
           <select
-            class="px-3 py-2 rounded border-main border bg-main text-main max-w-48" aria-label="Existing notes"
+            class="px-3 py-2 rounded input-main max-w-48" aria-label="Existing notes"
             @change="onSelectNote"
           >
             <option value="" disabled selected>
@@ -410,34 +410,34 @@ async function save() {
             <label class="flex flex-col gap-1">
               <span class="text-sm opacity-60">Title</span>
               <input
-                v-model="form.title" type="text" class="px-3 py-2 rounded border-main border bg-main text-main"
+                v-model="form.title" type="text" class="px-3 py-2 rounded input-main"
                 placeholder="Note title"
               >
             </label>
             <label class="flex flex-col gap-1">
               <span class="text-sm opacity-60">Date</span>
               <input
-                v-model="form.date" type="date" class="px-3 py-2 rounded border-main border bg-main text-main"
+                v-model="form.date" type="date" class="px-3 py-2 rounded input-main"
               >
             </label>
             <label class="flex flex-col gap-1">
               <span class="text-sm opacity-60">Description</span>
               <input
-                v-model="form.description" type="text" class="px-3 py-2 rounded border-main border bg-main text-main"
+                v-model="form.description" type="text" class="px-3 py-2 rounded input-main"
                 placeholder="Short summary"
               >
             </label>
             <label class="flex flex-col gap-1">
               <span class="text-sm opacity-60">Duration</span>
               <input
-                v-model="form.duration" type="text" class="px-3 py-2 rounded border-main border bg-main text-main"
+                v-model="form.duration" type="text" class="px-3 py-2 rounded input-main"
                 placeholder="5 min"
               >
             </label>
             <label class="flex flex-col gap-1 sm:col-span-2">
               <span class="text-sm opacity-60">Tags (comma-separated)</span>
               <input
-                v-model="tagInput" type="text" class="px-3 py-2 rounded border-main border bg-main text-main"
+                v-model="tagInput" type="text" class="px-3 py-2 rounded input-main"
                 placeholder="devops, personal, trivial"
               >
             </label>
@@ -456,7 +456,7 @@ async function save() {
               <label class="flex flex-col gap-1 sm:flex-row sm:items-center">
                 <span class="text-sm opacity-60">Share password</span>
                 <input
-                  v-model="form.sharePassword" type="text" class="px-3 py-2 rounded border-main border bg-main text-main flex-1"
+                  v-model="form.sharePassword" type="text" class="px-3 py-2 rounded input-main flex-1"
                   autocomplete="off"
                 >
                 <button class="nav-link text-sm" type="button" @click="generateSharePassword">
@@ -487,7 +487,7 @@ async function save() {
             <!-- speech-to-text button plugs in here later (Web Speech API) -->
             <textarea
               v-if="view === 'edit'" v-model="form.body" rows="16"
-              class="px-3 py-2 rounded border-main border bg-main text-main w-full font-mono"
+              class="px-3 py-2 rounded input-main w-full font-mono"
               placeholder="Write in markdown…"
             />
             <div v-else class="prose" v-html="previewHtml" />
@@ -495,7 +495,7 @@ async function save() {
 
           <div class="flex flex-col gap-2">
             <button
-              class="nav-link self-start px-6 py-3 rounded border-main border !border-op-50 text-lg" type="submit"
+              class="nav-link self-start px-6 py-3 rounded card-border text-lg" type="submit"
               :disabled="saving"
             >
               {{ saving ? 'Saving…' : overwrite ? 'Overwrite existing' : 'Save & deploy' }}

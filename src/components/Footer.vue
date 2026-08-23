@@ -20,7 +20,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <footer class="w-full mt-18 pt-6 pb-8 max-w-3xl text-sm flex flex-col gap-4 border-main border-t !border-op-50 text-dark dark:text-white">
+  <footer
+    class="w-full mt-18 pt-6 pb-8 max-w-3xl text-sm flex flex-col gap-4 border-main border-t !border-op-50 text-dark dark:text-white"
+  >
     <div v-if="navLinks.length > 0" class="flex flex-wrap gap-4">
       <template v-for="(link, index) in navLinks" :key="link.text">
         <a
@@ -32,17 +34,23 @@ onMounted(async () => {
         <span v-if="index < navLinks.length - 1" op-70> / </span>
       </template>
     </div>
-    <div class="flex flex-wrap items-center gap-4">
-      <a
-        v-for="link in socialLinks" :key="link.text" :aria-label="`${link.text}`" nav-link
-        :target="getLinkTarget(link.href)" :href="link.href" :class="link.icon"
-      />
-      <a nav-link :href="`${withBase('/')}rss.xml`" i-ri-rss-line aria-label="RSS" />
-    </div>
-    <div flex>
-      <a nav-link href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a>
-      <span op-70>&nbsp;&nbsp;&copy;&nbsp;&nbsp;{{ new Date().getFullYear() }}&nbsp;&nbsp;{{ siteConfig.author
-      }}.</span>
+
+    <div flex gap-4 justify-between>
+      <div class="flex flex-wrap gap-4">
+        <a
+          v-for="link in socialLinks" :key="link.text" :aria-label="`${link.text}`" nav-link
+          :target="getLinkTarget(link.href)" :href="link.href" :class="link.icon"
+        />
+        <a nav-link :href="`${withBase('/')}rss.xml`" i-ri-rss-line aria-label="RSS" />
+      </div>
+      <div flex>
+        <a
+          nav-link href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+          target="_blank"
+        >CC BY-NC-SA 4.0</a>
+        <span op-70>&nbsp;&nbsp;&copy;&nbsp;&nbsp;{{ new Date().getFullYear() }}&nbsp;&nbsp;{{ siteConfig.title
+        }}.</span>
+      </div>
     </div>
   </footer>
 </template>

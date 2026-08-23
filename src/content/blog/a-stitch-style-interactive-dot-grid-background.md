@@ -1,5 +1,5 @@
 ---
-title: "A stitch-style interactive dot grid background"
+title: "This interactive dot grid background"
 description: "How I built the dot-grid background on this site — soft cursor glow, dots that bunch together over links, and why the final version is a canvas particle system you can drop into any project."
 date: 2026-08-21
 lang: en

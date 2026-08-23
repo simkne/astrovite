@@ -8,7 +8,7 @@ export function withBase(path: string) {
 }
 
 export const siteConfig = {
-  author: 'SimKne',
+  author: 'Simon Knebel',
   title: 'welcome to weltkugl.net',
   subtitle: 'weltkugl.net is a project by SimKne',
   description: 'Experiences, observations, and longer-form thoughts from projects across IoT, web dev, and tooling.',
@@ -16,7 +16,7 @@ export const siteConfig = {
     src: 'imgs/hero01.png',
     alt: 'Website Main Image',
   },
-  email: 'noesi.net',
+  email: 'smonk@weltkugl.net',
   socialLinks: [
     {
       text: 'GitHub',

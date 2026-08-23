@@ -35,25 +35,27 @@ const latestEntries = latest.map((entry) => ({
 
     </p>  -->
 
+    <h2>Latest entries</h2>
+    <ListProjects list={latestEntries} />
     <h2>What’s inside</h2>
     <ul>
       <li>
-        <strong>ESP32 & IoT</strong> — firmware, sensors, wireless protocols, and the rough edges nobody documents.
-      </li>
-      <li>
-        <strong>openHAB</strong> — rules, bindings, persistence, and making a smart home actually
-        <em>smart</em>.
-      </li>
-      <li>
-        <strong>AI & Development</strong> — prompting strategies, local LLMs, agents, and the code that glues them to real-world
-        problems.
+        <strong>Personal view points</strong> — My personal views on the world, my thoughts, and my opinions. deeply into
+        geopolotics, and music ;) running.
       </li>
       <li>
         <strong>Web & Architecture</strong> — Astro, Vue, APIs, and the tooling that keeps this site (and my side projects)
         running.
       </li>
-    </ul>
 
+      <li>
+        <strong>AI & Development</strong> — prompting strategies, local LLMs, agents, and the code that glues them to real-world
+        problems.
+      </li>
+      <li>
+        <strong>ESP32 & IoT & openHAB</strong> — firmware, sensors, wireless protocols, and the rough edges nobody documents.
+      </li>
+    </ul>
     <h2>Where to start</h2>
     <ul>
       <li>
@@ -70,23 +72,19 @@ const latestEntries = latest.map((entry) => ({
       </li>
     </ul>
 
-    <h2>Latest entries</h2>
-    <ListProjects list={latestEntries} />
-
+    <!--
     <h2 style="font-size:1.1em;margin-top:2.5rem">How this site deploys itself</h2>
-    <p>
+   <p>
       Every push to <code>main</code> triggers GitHub Actions to lint, build, and <code>rsync</code> this site onto a self-hosted
       Netcup server — with backups and one-command rollback. Read the full walkthrough:
       <a prose-link href={withBase('/posts/deploy-strategy/')}
         >Auto-deploy a static site from GitHub to your own server</a
       >.
-    </p>
+    </p> -->
 
     <p>
       Found a bug, have a better approach, or just want to argue about tabs vs spaces? Hit me at
-      <a prose-link aria-label={siteConfig.email} href={`mailto:${siteConfig.email}`}>
-        {siteConfig.email}
-      </a>.
+      <a prose-link aria-label={siteConfig.email} href={`mailto:${siteConfig.email}`}> www@weltkugl.net </a>.
     </p>
   </article>
 </BaseLayout>

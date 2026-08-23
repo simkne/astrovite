@@ -77,7 +77,7 @@ async function copyShareLink() {
 <template>
   <div>
     <div v-if="isPrivate" class="flex items-center gap-2 mb-4">
-      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs border-main border !border-op-50 opacity-70">
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs card-border opacity-70">
         <i i-ri-lock-line /> Private
       </span>
       <button v-if="unlocked && canShare" class="nav-link text-sm" type="button" @click="copyShareLink">
@@ -94,7 +94,7 @@ async function copyShareLink() {
       <slot />
     </div>
 
-    <div v-if="isPrivate && !unlocked" class="border-main border !border-op-50 rounded p-6 flex flex-col gap-4">
+    <div v-if="isPrivate && !unlocked" class="card-border rounded p-6 flex flex-col gap-4">
       <div class="flex items-center gap-2 opacity-70">
         <i i-ri-lock-2-line text-xl />
         <span class="font-600">This note is private</span>
@@ -110,11 +110,11 @@ async function copyShareLink() {
           <input
             v-model="input"
             type="password"
-            class="px-3 py-2 rounded border-main border bg-main text-main flex-1"
+            class="px-3 py-2 rounded input-main flex-1"
             placeholder="Password"
             autocomplete="off"
           >
-          <button class="nav-link px-4 py-2 rounded border-main border !border-op-50" type="submit">
+          <button class="btn-main" type="submit">
             Unlock
           </button>
         </form>

@@ -1,5 +1,5 @@
 ---
-title: "Is it safe to rely on GitHub (Actions) for my builds?"
+title: "Is it safe to rely on GitHub too much?"
 description: "Evaluating the risk of depending on GitHub Actions for building this site, and comparing it against compiling on the Netcup VPS, a server-side git repo, or self-hosted CI."
 date: 2026-08-20
 lang: en
