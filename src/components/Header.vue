@@ -45,18 +45,13 @@ function logout() {
 }
 
 const socialLinks = computed(() => {
-  return siteConfig.socialLinks.filter((link: Record<string, any>) => {
-    if (link.header && typeof link.header === 'boolean') {
+  return siteConfig.socialLinks
+    .filter((link: Record<string, any>) => !!link.header)
+    .map((link: Record<string, any>) => {
+      if (typeof link.header === 'string' && link.header.includes('i-'))
+        return { ...link, icon: link.header }
       return link
-    }
-    else if (link.header && typeof link.header === 'string') {
-      link.icon = link.header.includes('i-') ? link.header : link.icon
-      return link
-    }
-    else {
-      return false
-    }
-  })
+    })
 })
 
 const { y: scroll } = useWindowScroll()

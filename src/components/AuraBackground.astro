@@ -1,10 +1,10 @@
 ---
-// Pure-CSS animated aura background — rendered on the home page only.
+// Pure-CSS animated aura background — rendered on every page.
 // Sits between the body background/dot grid and the DotBackground canvas
 // (canvas is fixed z-0, this layer is fixed z--1).
 ---
 
-<div class="aura" aria-hidden="true">
+<div class="aura" aria-hidden="true" transition:persist="aura">
   <div class="blob blob-violet"></div>
   <div class="blob blob-cyan"></div>
   <div class="blob blob-pink"></div>
@@ -17,7 +17,7 @@
     z-index: -1;
     overflow: hidden;
     pointer-events: none;
-    --aura-opacity: 0.4;
+    --aura-opacity: 0.6;
     --aura-blur: 70px;
   }
 
@@ -35,7 +35,7 @@
     left: -10vw;
     background: radial-gradient(circle at 35% 35%, var(--aura-violet), transparent 70%);
     opacity: var(--aura-opacity);
-    animation: aura-drift-a 26s ease-in-out infinite alternate;
+    animation: aura-drift-a 12s ease infinite alternate;
   }
 
   .blob-cyan {
@@ -45,7 +45,7 @@
     right: -12vw;
     background: radial-gradient(circle at 60% 40%, var(--aura-cyan), transparent 70%);
     opacity: var(--aura-opacity);
-    animation: aura-drift-b 22s ease-in-out infinite alternate;
+    animation: aura-drift-b 10s ease infinite alternate;
   }
 
   .blob-pink {
@@ -55,7 +55,7 @@
     left: 15vw;
     background: radial-gradient(circle at 45% 55%, var(--aura-pink), transparent 72%);
     opacity: calc(var(--aura-opacity) * 0.9);
-    animation: aura-drift-c 30s ease-in-out infinite alternate;
+    animation: aura-drift-c 14s ease infinite alternate;
   }
 
   @keyframes aura-drift-a {
@@ -86,9 +86,9 @@
   }
 
   :global(html:not(.dark)) .aura {
-    --aura-violet: hsl(258 70% 82%);
-    --aura-cyan: hsl(190 80% 80%);
-    --aura-pink: hsl(330 65% 84%);
+    --aura-violet: hsl(258 75% 74%);
+    --aura-cyan: hsl(190 85% 72%);
+    --aura-pink: hsl(330 75% 76%);
   }
 
   :global(html.dark) .aura {
