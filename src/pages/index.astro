@@ -19,7 +19,7 @@ const latestEntries = latest.map((entry) => ({
 const startBlocks = [
   {
     // icon: 'i-ri-rocket-2-line',
-    icon: 'i-game-icons-alien-fire',
+    // icon: 'i-game-icons-alien-fire',
     icon: 'i-arcticons-spacenow',
     title: 'Projects',
     text: 'Deep dives into builds, from schematic to deployment.',
@@ -51,7 +51,11 @@ const startBlocks = [
     <p>
       This is my personal wiki and build log — a place where I collect what I learn, break, and figure out along the
       way. Most of it revolves around <strong>embedded systems</strong>, <strong>home automation</strong>,
-      <strong>AI tooling</strong>, and the <strong>web stack</strong> that ties it all together.
+      <strong>AI tooling</strong>, and the <strong>web stack</strong> that ties it all together. <a
+        prose-link
+        href={withBase('/about/')}
+        title="find out more">find out more</a
+      >
     </p>
     <blockquote>
       <h4>please be aware. This is work in progress, and might be incomplete, or sometimes just nonsense.</h4>
@@ -114,7 +118,7 @@ const startBlocks = [
 
     <p>
       Found a bug, have a better approach, or just want to argue about tabs vs spaces? Hit me at
-      <a prose-link aria-label={siteConfig.email} href={`mailto:${siteConfig.email}`}> www@weltkugl.net </a>.
+      <a prose-link aria-label={siteConfig.email} href={`mailto:${siteConfig.email}`}> weltkugl </a>.
     </p>
   </article>
 </BaseLayout>
