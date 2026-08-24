@@ -32,8 +32,6 @@ And then hearing it all again, live, 30 years later, in their hometown, at the A
 
 here some impressions:
 
-<iframe width="560" height="315" src="https://www.youtube.com/watch?v=nYUKzZqZk_k"
-  title="K&D Arena Wien" frameborder="0"
-  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/nYUKzZqZk_k?si=nHvg7P_Cx0AAEi0v" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 More to come.
