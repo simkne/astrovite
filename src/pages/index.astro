@@ -66,23 +66,7 @@ const startBlocks = [
 
     </p>  -->
     <h2>Latest entries</h2>
-    <ListProjects list={latestEntries} />
-    <h2>Where to start</h2>
-    <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
-      {
-        startBlocks.map((block) => (
-          <a
-            href={withBase(block.href)}
-            class="container-link h-full rounded-lg border border-main !border-op-20 bg-main p-6 flex flex-col justify-between gap-3 transition-all hover:!border-op-50 decoration-none"
-          >
-            <i class={`${block.icon} text-6xl opacity-70 items-center`} />
-            <h3 class="font-700 text-lg text-link">{block.title}</h3>
-            <p class="opacity-70 text-sm leading-6 text-wrap justify-block line-clamp-3">{block.text}</p>
-          </a>
-        ))
-      }
-    </div>
-    <h2>What’s inside</h2>
+    <ListProjects list={latestEntries} /># <h2>What’s inside</h2>
     <ul>
       <li>
         <strong>Personal view points</strong> — My personal views on the world, my thoughts, and my opinions. deeply into
@@ -101,6 +85,21 @@ const startBlocks = [
         <strong>ESP32 & IoT & openHAB</strong> — firmware, sensors, wireless protocols, and the rough edges nobody documents.
       </li>
     </ul>
+    <h2>Where to start</h2>
+    <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+      {
+        startBlocks.map((block) => (
+          <a
+            href={withBase(block.href)}
+            class="container-link h-full rounded-lg border border-main !border-op-20 bg-main p-6 flex flex-col justify-between gap-3 transition-all hover:!border-op-50 decoration-none"
+          >
+            <i class={`${block.icon} text-6xl opacity-70 items-center`} />
+            <h3 class="font-700 text-lg text-link">{block.title}</h3>
+            <p class="opacity-70 text-sm leading-6 text-wrap justify-block line-clamp-3">{block.text}</p>
+          </a>
+        ))
+      }
+    </div>
 
     <!--
     <h2 style="font-size:1.1em;margin-top:2.5rem">How this site deploys itself</h2>
