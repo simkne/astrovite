@@ -38,7 +38,7 @@ defineProps<{
         </div>
         <div class="font-normal lh-tight min-w-0">
           <div text-lg hover:text-main>{{ project.text }}</div>
-          <div class="opacity-50 text-sm line-clamp-2 overflow-hidden">{{ project.description }}</div>
+          <div class="opacity-50 text-sm line-clamp-3 overflow-hidden">{{ project.description }}</div>
         </div>
       </a>
     </li>
