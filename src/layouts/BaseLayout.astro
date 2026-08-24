@@ -2,12 +2,13 @@
 import { fade } from 'astro:transitions'
 import { ClientRouter } from 'astro:transitions'
 import BaseHead from '@/components/BaseHead.astro'
+import AuraBackground from '@/components/AuraBackground.astro'
 import DotBackground from '@/components/blog/DotBackground.vue'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import ScrollToTop from '@/components/ScrollToTop.vue'
 
-const { ...head } = Astro.props
+const { aura = false, ...head } = Astro.props
 ---
 
 <!doctype html>
@@ -17,6 +18,7 @@ const { ...head } = Astro.props
     <ClientRouter />
   </head>
   <body class="bg-main text-main min-h-screen font-sans w-full bg-dot">
+    {aura && <AuraBackground />}
     <DotBackground client:load />
     <Header client:load />
     <main

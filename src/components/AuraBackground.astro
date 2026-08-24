@@ -1,0 +1,112 @@
+---
+// Pure-CSS animated aura background — rendered on the home page only.
+// Sits between the body background/dot grid and the DotBackground canvas
+// (canvas is fixed z-0, this layer is fixed z--1).
+---
+
+<div class="aura" aria-hidden="true">
+  <div class="blob blob-violet"></div>
+  <div class="blob blob-cyan"></div>
+  <div class="blob blob-pink"></div>
+</div>
+
+<style>
+  .aura {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    --aura-opacity: 0.4;
+    --aura-blur: 70px;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(var(--aura-blur));
+    will-change: transform;
+  }
+
+  .blob-violet {
+    width: 55vw;
+    height: 55vw;
+    top: -15vw;
+    left: -10vw;
+    background: radial-gradient(circle at 35% 35%, var(--aura-violet), transparent 70%);
+    opacity: var(--aura-opacity);
+    animation: aura-drift-a 26s ease-in-out infinite alternate;
+  }
+
+  .blob-cyan {
+    width: 45vw;
+    height: 45vw;
+    top: 20vh;
+    right: -12vw;
+    background: radial-gradient(circle at 60% 40%, var(--aura-cyan), transparent 70%);
+    opacity: var(--aura-opacity);
+    animation: aura-drift-b 22s ease-in-out infinite alternate;
+  }
+
+  .blob-pink {
+    width: 50vw;
+    height: 50vw;
+    bottom: -18vw;
+    left: 15vw;
+    background: radial-gradient(circle at 45% 55%, var(--aura-pink), transparent 72%);
+    opacity: calc(var(--aura-opacity) * 0.9);
+    animation: aura-drift-c 30s ease-in-out infinite alternate;
+  }
+
+  @keyframes aura-drift-a {
+    from {
+      transform: translate(0, 0) scale(1);
+    }
+    to {
+      transform: translate(8vw, 6vh) scale(1.15);
+    }
+  }
+
+  @keyframes aura-drift-b {
+    from {
+      transform: translate(0, 0) scale(1);
+    }
+    to {
+      transform: translate(-7vw, 10vh) scale(0.9);
+    }
+  }
+
+  @keyframes aura-drift-c {
+    from {
+      transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+    to {
+      transform: translate(-5vw, -8vh) scale(1.2) rotate(25deg);
+    }
+  }
+
+  :global(html:not(.dark)) .aura {
+    --aura-violet: hsl(258 70% 82%);
+    --aura-cyan: hsl(190 80% 80%);
+    --aura-pink: hsl(330 65% 84%);
+  }
+
+  :global(html.dark) .aura {
+    --aura-opacity: 0.55;
+    --aura-violet: hsl(258 85% 62%);
+    --aura-cyan: hsl(190 100% 58%);
+    --aura-pink: hsl(330 82% 62%);
+  }
+
+  @media (max-width: 640px) {
+    .aura {
+      --aura-blur: 50px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blob {
+      animation: none;
+    }
+  }
+</style>
