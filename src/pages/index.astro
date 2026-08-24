@@ -2,41 +2,31 @@
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import ListProjects from '@/components/ListProjects.vue'
 import siteConfig from '@/site-config'
-import { BASE_PATH, withBase } from '@/site-config'
+import { withBase } from '@/site-config'
 import { getPosts } from '@/utils/posts'
 
 const latest = (await getPosts()).slice(0, 2)
-const latestEntries = latest.map((entry) => ({
+const latestEntries = latest.map((entry, i) => ({
   text: entry.data.title,
   description: entry.data.description,
-  // image: '/imgs/article-arrow.svg',
   href: `/posts/${entry.id}/`,
-  icon: 'i-arcticons-blorp',
-  icon: 'i-arcticons-brain-test',
-  icon: 'i-arcticons-brilliant',
+  icon: i === 0 ? 'i-arcticons-brain-test' : 'i-arcticons-mind-space',
 }))
 
 const startBlocks = [
   {
-    // icon: 'i-ri-rocket-2-line',
-    // icon: 'i-game-icons-alien-fire',
     icon: 'i-arcticons-spacenow',
     title: 'Projects',
     text: 'Deep dives into builds, from schematic to deployment.',
     href: '/projects/',
   },
   {
-    // icon: 'i-game-icons-alien-skull',
-    // icon: 'i-arcticons-webspace',
     icon: 'i-arcticons-mind-space',
     title: 'Blog',
     text: 'Longer write-ups, opinions, and lessons learned the hard way.',
     href: '/blog/',
   },
   {
-    // icon: 'i-solar-notes-outline',
-    // icon: 'i-game-icons-chemical-bolt',
-    // icon: 'i-game-icons-abstract-097',
     icon: 'i-arcticons:atom-meditation',
     title: 'Notes',
     text: 'Quick reference, snippets, and the “how did I do that again?” archive.',
@@ -47,80 +37,134 @@ const startBlocks = [
 
 <BaseLayout description={siteConfig.description}>
   <article class="prose">
-    <h1 class="home-title">hi.</h1>
-    <p>
-      This is my personal wiki and build log — a place where I collect what I learn, break, and figure out along the
-      way. Most of it revolves around <strong>embedded systems</strong>, <strong>home automation</strong>,
-      <strong>AI tooling</strong>, and the <strong>web stack</strong> that ties it all together. <a
-        prose-link
-        href={withBase('/about/')}
-        title="find out more">find out more</a
-      >
-    </p>
-    <blockquote>
-      <h4>please be aware. This is work in progress, and might be incomplete, or sometimes just nonsense.</h4>
-    </blockquote>
-    <!--  <p>
-     <img
-        width="640"
-        height="360"
-        src={withBase(siteConfig.image?.src || 'imgs/hero01.png')}
-        alt={siteConfig.image?.alt || 'Hero image'}
-      />
-
-    </p>  -->
+    <header class="hero">
+      <h1 class="home-title">hi.</h1>
+      <p class="hero-lead">
+        I’m Simon. This is my personal wiki and build log — where I collect what I learn, break, and figure out along
+        the way.
+      </p>
+      <p class="hero-sub">
+        <strong>Embedded systems</strong> · <strong>home automation</strong> · <strong>AI tooling</strong> · <strong
+          >the web stack</strong
+        >
+      </p>
+    </header>
 
     <h2>Where to start</h2>
-    <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+    <div class="cards not-prose" role="list">
       {
         startBlocks.map((block) => (
-          <a
-            href={withBase(block.href)}
-            class="container-link h-full rounded-lg border border-main !border-op-20 bg-main p-6 flex flex-col justify-between gap-3 transition-all hover:!border-op-50 decoration-none"
-          >
-            <i class={`${block.icon} text-6xl opacity-70 items-center`} />
-            <h3 class="font-700 text-lg text-link">{block.title}</h3>
-            <p class="opacity-70 text-sm leading-6 text-wrap justify-block line-clamp-3">{block.text}</p>
+          <a class="card" role="listitem" href={withBase(block.href)}>
+            <i class={`${block.icon} card-icon`} data-icon={block.icon} />
+            <div>
+              <h3 class="card-title">{block.title}</h3>
+              <p class="card-text">{block.text}</p>
+            </div>
           </a>
         ))
       }
     </div>
-    <h2>What’s inside</h2>
-    <ul>
-      <li>
-        <strong>Personal view points</strong> — My personal views on the world, my thoughts, and my opinions. deeply into
-        geopolotics, and music ;) running.
-      </li>
-      <li>
-        <strong>Web & Architecture</strong> — Astro, Vue, APIs, and the tooling that keeps this site (and my side projects)
-        running.
-      </li>
-
-      <li>
-        <strong>AI & Development</strong> — prompting strategies, local LLMs, agents, and the code that glues them to real-world
-        problems.
-      </li>
-      <li>
-        <strong>ESP32 & IoT & openHAB</strong> — firmware, sensors, wireless protocols, and the rough edges nobody documents.
-      </li>
-    </ul>
 
     <h2>Latest entries</h2>
     <ListProjects list={latestEntries} />
 
-    <!--
-    <h2 style="font-size:1.1em;margin-top:2.5rem">How this site deploys itself</h2>
-   <p>
-      Every push to <code>main</code> triggers GitHub Actions to lint, build, and <code>rsync</code> this site onto a self-hosted
-      Netcup server — with backups and one-command rollback. Read the full walkthrough:
-      <a prose-link href={withBase('/posts/deploy-strategy/')}
-        >Auto-deploy a static site from GitHub to your own server</a
-      >.
-    </p> -->
-
-    <p>
+    <p class="closing">
       Found a bug, have a better approach, or just want to argue about tabs vs spaces? Hit me at
-      <a prose-link aria-label={siteConfig.email} href={`mailto:${siteConfig.email}`}> weltkugl </a>.
+      <a prose-link aria-label={siteConfig.email} href={`mailto:${siteConfig.email}`}> weltkugl</a>.
+      <span class="note">Work in progress — sometimes it really is just nonsense.</span>
     </p>
   </article>
 </BaseLayout>
+
+<style>
+  .hero {
+    margin-bottom: 2.5rem;
+  }
+
+  .hero .home-title {
+    margin-bottom: 0.2em;
+  }
+
+  .hero-lead {
+    font-size: 1.075rem;
+    max-width: 60ch;
+    margin-bottom: 0.4rem;
+  }
+
+  .hero-sub {
+    opacity: 0.7;
+    max-width: 60ch;
+    margin-top: 0.4rem;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin: 0 0 2.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    background: color-mix(in srgb, currentColor 4%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    text-decoration: none;
+    opacity: 0.72;
+    transition:
+      opacity 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease,
+      background 0.2s ease;
+  }
+
+  .card:hover {
+    opacity: 1;
+    border-color: color-mix(in srgb, currentColor 32%, transparent);
+    background: color-mix(in srgb, currentColor 8%, transparent);
+    transform: translateY(-3px);
+  }
+
+  .card-icon {
+    font-size: 4.2rem;
+    line-height: 1;
+    opacity: 0.85;
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 0.2rem;
+  }
+
+  .card-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    opacity: 0.75;
+    margin: 0;
+    text-wrap: auto;
+  }
+
+  .closing {
+    margin-top: 2.75rem;
+  }
+
+  .note {
+    display: block;
+    margin-top: 0.85rem;
+    font-size: 0.8rem;
+    font-style: italic;
+    opacity: 0.5;
+  }
+</style>

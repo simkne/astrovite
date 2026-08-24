@@ -110,3 +110,24 @@
     }
   }
 </style>
+
+<script>
+  // The aura persists across Astro view-transition navigations (transition:persist),
+  // but the browser resets the CSS animation clock when the node is moved. Re-anchor
+  // each blob's animation to wall-clock time so the drift is continuous between pages.
+  // Cycle = 2 × duration (position pattern repeats every full back-and-forth).
+  const CYCLES = [24000, 20000, 28000] // ms — 2 × the 12s/10s/14s drift durations
+
+  function syncAura() {
+    const blobs = document.querySelectorAll('.aura .blob')
+    blobs.forEach((el, i) => {
+      const anim = el.getAnimations().find((a) => a.animationName?.startsWith('aura-drift'))
+      if (anim) {
+        anim.currentTime = performance.now() % (CYCLES[i] ?? 24000)
+      }
+    })
+  }
+
+  document.addEventListener('astro:after-swap', syncAura)
+  syncAura()
+</script>
