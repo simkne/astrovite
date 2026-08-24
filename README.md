@@ -29,7 +29,7 @@ Content lives as plain Markdown in this repo. Push to `main` → site builds and
 │  (this repo)│                       │  - npm ci        │
 │  .md files  │                       │  - npm run build │
 │  Astro code │                       │  - backup server │
-└─────────────┘                       │  - rsync dist/   │
+└─────────────┘                       │  - tar deploy    │
                                       └────────┬─────────┘
                                                │
                                                ▼
@@ -134,8 +134,7 @@ tar -xzf ~/site-backups/20260822-121500.tar.gz -C /path/to/DEPLOY_PATH
 │   └── utils/                     # Content helpers
 ├── public/                        # Static assets (images)
 ├── astro.config.ts                # Astro config (base: '/www')
-├── uno.config.ts                  # UnoCSS shortcuts & presets
-└── DEPLOY_SETUP.md                # Detailed server setup guide
+└── uno.config.ts                  # UnoCSS shortcuts & presets
 ```
 
 ---
@@ -227,7 +226,7 @@ Edit `src/site-config.ts` for:
 Edit `uno.config.ts` for:
 - Color tokens (`bg-main`, `text-main`, etc.)
 - UnoCSS shortcuts
-- Font families (Inter, DM Mono)
+- Font families (Manrope, DM Mono)
 
 ---
 

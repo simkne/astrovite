@@ -18,8 +18,8 @@ It works for Astro, Vite, Next static export, plain HTML — anything that outpu
 | GitHub repo               | Source of truth for content and site code           |
 | GitHub Actions            | Builds on every push to `main`                      |
 | Deploy SSH key            | Lets Actions log into your server without passwords |
-| `rsync` over SSH          | Copies `dist/` to the web root                      |
-| Backup + rollback scripts | Snapshot before each deploy; restore if needed      |
+| Tar-over-SSH deploy       | Atomically swaps the new build onto the web root    |
+| Pre-deploy backup         | Snapshot of the live site, kept for 14 days         |
 
 Visitors still hit your domain as usual. You never SSH in just to publish a typo fix.
 
@@ -70,31 +70,31 @@ ssh -i ~/.ssh/github_deploy your-user@your-server
 # Should log in without a password prompt
 ```
 
-## 2. Backup and rollback on the server
+## 2. Backups without server scripts
 
-Before every deploy, snapshot the current web root. If the new build is broken, restore in one command.
-
-Create `~/bin` on the server and add two small scripts.
-
-### Backup
-
-Conceptually:
+You don't need to install anything on the server for this. Before every deploy, the workflow itself snapshots the current web root into `~/site-backups/`:
 
 1. Point at your web root (e.g. `/var/www/example.com/public`)
 2. Write a timestamped `.tar.gz` into `~/site-backups/`
-3. Delete archives older than N days (14 is a sensible default)
+3. Delete archives older than 14 days
 
-Skip the backup quietly if the directory is empty — that happens on the first deploy.
+If the web root doesn't exist yet — the first-deploy case — the backup is skipped quietly instead of failing the run.
 
-### Rollback
+### Rolling back
 
-1. List available archives
-2. Default to the newest if you don’t pass a name
-3. Confirm interactively
-4. Snapshot the *current* (broken) state as an emergency archive
-5. Wipe the web root and extract the chosen backup
+SSH in, list what's there, and put an archive back:
 
-Wire both scripts as executable (`chmod +x`). If your web root isn’t the default path in the scripts, edit that one variable in both places.
+```bash
+ls -lt ~/site-backups/
+# restore (adjust paths):
+tar -xzf ~/site-backups/20260822-121500.tar.gz -C /var/www/example.com/public
+```
+
+Because the archives sit on the server's own disk, a rollback works even when GitHub or CI is having a bad day. If you want belt-and-braces, copy the current (broken) state aside before restoring:
+
+```bash
+cp -r /var/www/example.com/public ~/broken-$(date +%Y%m%d-%H%M%S)
+```
 
 ## 3. GitHub Actions secrets
 
@@ -105,7 +105,7 @@ In the repo: **Settings → Secrets and variables → Actions**.
 | `SSH_HOST`        | Server IP or hostname                                       |
 | `SSH_USERNAME`    | SSH user that owns the web files                            |
 | `SSH_PRIVATE_KEY` | Full private key text (`-----BEGIN …` through `-----END …`) |
-| `DEPLOY_PATH`     | Absolute path to the web root, trailing `/` recommended     |
+| `DEPLOY_PATH`     | Absolute path to the web root (a trailing `/` is fine; it gets stripped) |
 
 `DEPLOY_PATH` should be the folder that receives the *built* site — often a subdirectory if a portal or other app lives at the domain root.
 
@@ -121,7 +121,7 @@ Same idea on Nginx: location blocks, not a single catch-all that swallows the ho
 
 ## 5. The workflow
 
-Create `.github/workflows/deploy.yml`. The shape looks like this:
+Create `.github/workflows/deploy.yml`. The shape looks like this (wire `SSH_HOST`, `SSH_USERNAME`, `SSH_PRIVATE_KEY`, and `DEPLOY_PATH` to repo secrets via the steps' `env:`):
 
 ```yaml
 name: Build and Deploy
@@ -148,20 +148,35 @@ jobs:
       - run: npm run lint # optional but catches breaks before ship
       - run: npm run build
 
-      - name: Backup on server
-      # write the private key, ssh-keyscan host, then:
-      # ssh … "mkdir -p ~/site-backups && tar -czf ~/site-backups/$(date +%Y%m%d-%H%M%S).tar.gz -C '$DEPLOY_PATH' ."
+      - name: Backup current site on server
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_deploy && chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh -i ~/.ssh/id_deploy "$SSH_USERNAME@$SSH_HOST" "
+            set -e
+            if [ -d '$DEPLOY_PATH' ]; then
+              mkdir -p ~/site-backups
+              tar -czf \"\$HOME/site-backups/\$(date +%Y%m%d-%H%M%S).tar.gz\" -C '$DEPLOY_PATH' .
+              find ~/site-backups -name '*.tar.gz' -mtime +14 -delete
+            else echo 'No site yet — skipping backup.'; fi"
 
-      - name: Deploy
-      # rsync -avz --delete ./dist/ user@host:$DEPLOY_PATH
+      - name: Deploy (atomic tar-over-ssh)
+        run: |
+          tar -czf - -C ./dist . | \
+            ssh -i ~/.ssh/id_deploy "$SSH_USERNAME@$SSH_HOST" "
+              set -e
+              rm -rf '$DEPLOY_PATH.new' && mkdir -p '$DEPLOY_PATH.new'
+              tar -xzf - -C '$DEPLOY_PATH.new'
+              rm -rf '$DEPLOY_PATH' && mv '$DEPLOY_PATH.new' '$DEPLOY_PATH'"
 ```
 
 Important details:
 
 - `concurrency` **+** `cancel-in-progress` — rapid commits don’t stack stale deploys.
-- `--delete` **on rsync** — removed pages disappear from the server too. Pair that with the pre-deploy backup.
-- **No rsync on the server?** Pipe a tarball over SSH instead: `tar -czf - -C ./dist . | ssh … 'rm -rf "$DEPLOY.new" && mkdir -p "$DEPLOY.new" && tar -xzf - -C "$DEPLOY.new" && rm -rf "$DEPLOY" && mv "$DEPLOY.new" "$DEPLOY"'`. The swap is atomic, so a failed transfer never leaves a half-deployed site.
-- **Reuse the same SSH key file** between the backup and rsync steps in one job.
+- **The two-step swap** — extract into a `.new` sibling directory, then `mv` it into place. A failed transfer never leaves a half-deployed site.
+- **Reuse the same key file** (`~/.ssh/id_deploy`) between the backup and deploy steps in one job.
+- **Got rsync on the server?** The deploy step can be a plain `rsync -avz --delete ./dist/ user@host:$DEPLOY_PATH` — removed pages then disappear from the server too. Pair that with the pre-deploy backup either way.
 
 If you already have a lint-only CI workflow, fold lint into this job and drop the duplicate.
 
@@ -187,14 +202,14 @@ No build machine required for content edits. The CI runner is the build machine.
 
 ## 8. When a deploy goes wrong
 
-SSH in and run the rollback script with no args (latest backup) or with a specific archive name. Confirm when prompted. The emergency snapshot means you can undo a bad rollback too.
+SSH in, list `~/site-backups/`, and extract the archive you want over the web root (see *Rolling back* in step 2). If you're not sure which snapshot you want, copy the current state aside first — then a bad restore is itself undoable.
 
 Typical failure modes:
 
 | Symptom                            | Likely cause                               |
 | ---------------------------------- | ------------------------------------------ |
 | `Permission denied (publickey)`    | Secret private key ≠ public key on server  |
-| `rsync: No such file or directory` | `DEPLOY_PATH` wrong or parent dir missing  |
+| `tar: … No such file or directory` | `DEPLOY_PATH` wrong or parent dir missing  |
 | 404 on the app path                | Web server not serving that subdirectory   |
 | Lint fails in CI                   | Fix locally, push again — deploy never ran |
 | Homepage redirects into the app    | Catch-all redirect still active            |
@@ -212,9 +227,9 @@ You trade a bit of setup for:
 ## Recap
 
 1. Deploy-only SSH key → server + GitHub secret
-2. Backup / rollback scripts on the host
+2. Automatic pre-deploy backups in `~/site-backups/` (14-day retention)
 3. Four secrets: host, user, key, deploy path
-4. Workflow: install → lint → build → backup → `rsync`
+4. Workflow: install → lint → build → backup → atomic tar swap
 5. Fix redirects so root and app paths can coexist
 6. Push to `main` and stop thinking about FTP
 
