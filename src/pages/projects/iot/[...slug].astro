@@ -3,7 +3,9 @@ import { render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import EditLink from '@/components/EditLink.vue'
 import ProjectSubnav from '@/components/ProjectSubnav.astro'
+import HeroImage from '@/components/HeroImage.astro'
 import ListIotDocs from '@/components/ListIotDocs.vue'
+import { withBase } from '@/site-config'
 import type { CollectionIot } from '@/types'
 import iotProject from '@/projects/iot-config'
 import { getIotEntries } from '@/utils/iot'
@@ -41,11 +43,13 @@ const sectionArticles =
 
 let articleTitle = ''
 let articleDescription = ''
+let articleImage: { src: string; alt: string } | undefined
 let ArticleContent: Awaited<ReturnType<typeof render>>['Content'] | null = null
 
 if (props.kind === 'article') {
   articleTitle = props.entry.data.title
   articleDescription = props.entry.data.description ?? ''
+  articleImage = props.entry.data.image
   const rendered = await render(props.entry)
   ArticleContent = rendered.Content
 }
@@ -68,9 +72,21 @@ if (props.kind === 'article') {
   props.kind === 'article' && ArticleContent && (
     <BaseLayout title={articleTitle} description={articleDescription} pageType="article">
       <ProjectSubnav links={[...iotProject.navLinks]} />
+      {articleImage && (
+        <HeroImage
+          src={withBase(articleImage.src)}
+          alt={articleImage.alt}
+          title={articleTitle}
+          description={articleDescription}
+        />
+      )}
       <article class="prose">
-        <h1>{articleTitle}</h1>
-        {articleDescription && <p op-60>{articleDescription}</p>}
+        {!articleImage && (
+          <>
+            <h1>{articleTitle}</h1>
+            {articleDescription && <p op-60>{articleDescription}</p>}
+          </>
+        )}
         <ArticleContent />
         <EditLink client:load path={`src/content/iot/${props.entry.id}.md`} />
       </article>

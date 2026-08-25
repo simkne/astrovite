@@ -52,6 +52,12 @@ const iot = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
+    image: z
+      .object({
+        src: z.string(),
+        alt: z.string(),
+      })
+      .optional(),
     order: z.number().optional(),
     draft: z.boolean().default(false).optional(),
   }),
