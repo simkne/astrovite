@@ -2,9 +2,24 @@
 // Pure-CSS animated aura background — rendered on every page.
 // Sits between the body background/dot grid and the DotBackground canvas
 // (canvas is fixed z-0, this layer is fixed z--1).
+
+interface Props {
+  violet?: string
+  cyan?: string
+  pink?: string
+}
+
+const { violet, cyan, pink } = Astro.props
+
+// only render custom vars that are actually set — an empty inline custom property
+// would otherwise resolve to the @property initial-value (transparent) instead of
+// falling back to the CSS light/dark defaults.
+const auraStyle = [violet && `--aura-violet:${violet}`, cyan && `--aura-cyan:${cyan}`, pink && `--aura-pink:${pink}`]
+  .filter(Boolean)
+  .join(';')
 ---
 
-<div class="aura" aria-hidden="true" transition:persist="aura">
+<div class="aura" aria-hidden="true" transition:persist="aura" style={auraStyle || undefined}>
   <div class="blob blob-violet"></div>
   <div class="blob blob-cyan"></div>
   <div class="blob blob-pink"></div>
@@ -19,6 +34,17 @@
     pointer-events: none;
     --aura-opacity: 0.6;
     --aura-blur: 70px;
+    /* transition is OFF until the first sync — otherwise the blobs animate from
+       the @property initial-value (transparent) on every fresh page load */
+    transition: none;
+  }
+
+  /* enabled after initial sync so only cross-page palette changes fade in */
+  .aura--ready {
+    transition:
+      --aura-violet 2.5s ease-in-out,
+      --aura-cyan 2.5s ease-in-out,
+      --aura-pink 2.5s ease-in-out;
   }
 
   .blob {
@@ -128,6 +154,46 @@
     })
   }
 
-  document.addEventListener('astro:after-swap', syncAura)
-  syncAura()
+  // Apply the current page's custom aura palette (set on <body> via BaseLayout) to the
+  // persisted .aura node. Registering vars with @property lets the change transition in.
+  function syncColors() {
+    const aura = document.querySelector('.aura')
+    if (!aura) {
+      return
+    }
+    const body = document.body
+    const values = [
+      ['--aura-violet', body.dataset.auraViolet],
+      ['--aura-cyan', body.dataset.auraCyan],
+      ['--aura-pink', body.dataset.auraPink],
+    ] as const
+    for (const [prop, value] of values) {
+      if (value && value.trim()) {
+        aura.style.setProperty(prop, value)
+        continue
+      }
+      aura.style.removeProperty(prop)
+    }
+  }
+
+  function sync() {
+    syncAura()
+    syncColors()
+    // enable the color transition after the first sync: on initial load the palette
+    // is already correct (transition would cause a transparent→color flash); from now
+    // on any change (navigation) fades smoothly.
+    const aura = document.querySelector('.aura')
+    if (aura) {
+      aura.classList.add('aura--ready')
+    }
+  }
+
+  // `astro:after-swap` fires synchronously right after the DOM swap — changing the
+  // colors in that same tick means the browser batches old+new into one style recalc
+  // and the CSS transition is skipped (jump). Defer one frame so the persisted node
+  // first gets its "before" palette computed, then the change animates smoothly.
+  document.addEventListener('astro:after-swap', () => {
+    requestAnimationFrame(sync)
+  })
+  sync()
 </script>

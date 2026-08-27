@@ -8,7 +8,7 @@ import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import ScrollToTop from '@/components/ScrollToTop.vue'
 
-const { ...head } = Astro.props
+const { aura, ...head } = Astro.props
 ---
 
 <!doctype html>
@@ -17,8 +17,13 @@ const { ...head } = Astro.props
     <BaseHead {...head} />
     <ClientRouter />
   </head>
-  <body class="bg-main text-main min-h-screen font-sans w-full bg-dot">
-    <AuraBackground />
+  <body
+    class="bg-main text-main min-h-screen font-sans w-full bg-dot"
+    data-aura-violet={aura?.violet ?? ''}
+    data-aura-cyan={aura?.cyan ?? ''}
+    data-aura-pink={aura?.pink ?? ''}
+  >
+    <AuraBackground violet={aura?.violet} cyan={aura?.cyan} pink={aura?.pink} />
     <DotBackground client:load />
     <Header client:load />
     <main

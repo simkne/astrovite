@@ -1,6 +1,26 @@
 @import '@fontsource/dm-mono/latin-400.css';
 @import '@fontsource/dm-mono/latin-500.css';
 
+/* Registered color properties — lets the aura gradient colors transition/fade
+   when a page overrides them (CSS cannot animate unregistered custom properties). */
+@property --aura-violet {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --aura-cyan {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --aura-pink {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+
 @font-face {
   font-family: 'Manrope';
   src: url('/www/manrope/Manrope-VariableFont_wght.woff2') format('woff2-variations');
