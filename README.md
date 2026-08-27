@@ -17,7 +17,7 @@ A place for longer-form thoughts and observations from working on different proj
 
 Content lives as plain Markdown in this repo. Push to `main` → site builds and deploys in ~60 seconds.
 
-> **A separate knowledge base is in the works** — a Nuxt-based companion for structured, reference-style documentation. It will cover IoT & home automation (ESP32, openHAB, sensors) alongside devops, software architecture, and other topics — not just IoT. This Astro blog stays focused on the experience side of things.
+> **IoT & home-automation reference docs live in this repo** — `src/content/iot/`, published at `/projects/iot/`. A separate Nuxt-based companion for broader structured, reference-style documentation (devops, software architecture, and other topics) is still in the works. This Astro site focuses on the experience side of things.
 
 ---
 
@@ -56,8 +56,9 @@ Content is organized in Astro collections under `src/content/`:
 |-----------|----------|---------|
 | `blog` | `src/content/blog/` | Blog posts, notes, talks |
 | `pages` | `src/content/pages/` | Static pages (e.g. `/md-style`) |
+| `iot` | `src/content/iot/` | IoT / home-automation reference docs (published at `/projects/iot/`) |
 
-Structured, reference-style documentation lives in the separate Nuxt knowledge base (see above); this repo is focused on the blog and experience narratives. An `iot` collection still exists in code but is a legacy holdover from the old knowledge-base framing.
+All three collections are actively used. The `iot` collection is the reference-style docs hub rendered by `src/pages/projects/iot/[...slug].astro`. A separate Nuxt knowledge base for broader reference topics is still in the works (see above).
 
 ---
 
@@ -124,11 +125,11 @@ tar -xzf ~/site-backups/20260822-121500.tar.gz -C /path/to/DEPLOY_PATH
 │   ├── content/                   # Markdown content collections
 │   │   ├── blog/
 │   │   │   ├── notes/
-│   │   │   ├── talks/
-│   │   │   └── post-1.md
+│   │   │   └── post-*.md
+│   │   ├── iot/
 │   │   └── pages/
 │   ├── layouts/                   # BaseLayout.astro
-│   ├── pages/                     # Astro routing
+│   ├── pages/                     # Astro routing (incl. /projects/*)
 │   ├── projects/                  # Section configs (iot-config.ts)
 │   ├── styles/                    # prose.css, global.css, dot.css
 │   └── utils/                     # Content helpers
@@ -234,14 +235,14 @@ Edit `uno.config.ts` for:
 
 | Layer | Tool |
 |-------|------|
-| Framework | [Astro](https://astro.build/) 5.x |
+| Framework | [Astro](https://astro.build/) 7.x |
 | Components | [Vue](https://vuejs.org/) 3.x SFC |
 | Styling | [UnoCSS](https://unocss.dev/) |
 | Content | Markdown + [MDX](https://mdxjs.com/) |
 | Icons | [Iconify](https://iconify.design/) |
 | Utilities | [VueUse](https://vueuse.org/), [Lodash-es](https://lodash.com/) |
 | Syntax Highlighting | [Shiki](https://shiki.style/) (github-light / github-dark) |
-| Deploy | GitHub Actions → rsync over SSH to a Netcup VPS |
+| Deploy | GitHub Actions → atomic tar-over-SSH to a Netcup VPS |
 
 ---
 

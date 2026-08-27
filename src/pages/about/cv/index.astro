@@ -1,0 +1,363 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import siteConfig from '@/site-config'
+import ContactBox from '@/components/ContactBox.astro'
+
+const jobs = [
+  {
+    period: 'Since 2025',
+    title: 'Tech Lead · Deputy CTO',
+    company: 'SnoreFree GmbH',
+    detail:
+      'Lead developer and deputy CTO for the SchnarchFrei stop-snoring therapy app — driving the engineering and security side of the DiGA certification and the BSI TR-03161 assessment. (See the SchnarchFrei project page.)',
+  },
+  {
+    period: '2021 – 2025',
+    title: 'Freelance frontend developer',
+    company: 'Independent · for fox.co.at',
+    detail: 'Freelance frontend development across several projects, most notably for https://fox.co.at/.',
+  },
+  {
+    period: '2019 – 2021',
+    title: 'Frontend article-feature developer',
+    company: 'addendum.org',
+    detail:
+      'addendum.org is an independent newspaper (news) project; I was the frontend developer responsible for the article features.',
+  },
+  {
+    period: 'Since 2011',
+    title: 'Freelance frontend developer & business consultant',
+    company: 'Independent · Vienna & remote',
+    detail:
+      'Frontend development and consulting for a wide range of clients and projects — including record shop minimalsoul.com, familierockt.com, margaretenplatz.wien, feilacher.at, noesi.co.uk, technet21.org and more. Also supported Screenagers (a Vienna-based small ad agency) and worked freelance for Pjure Isobar Vienna on campaigns for Milka, Milupa and UPC.',
+  },
+  {
+    period: '10/2015 – 11/2016',
+    title: 'Senior designer & conception',
+    company: 'nexxar GmbH · Vienna',
+    detail:
+      'nexxar is a global player in digital business reporting, advising and producing business reports for half of the DAX30, including Shell, Bayer and Akzonobel. As Senior Designer and UX conceptor I focused on technical feasibility and process optimisation, bridging communication between PMs, design and development teams.',
+  },
+  {
+    period: '2014 – 08/2015 & 06/2017',
+    title: 'R&D, project management assistant, data analysis',
+    company: 'Grand Challenges in Global Health · Bamako & Koulikoro, Mali',
+    detail:
+      'A Bill & Melinda Gates Foundation funded research project developing a passive solar-thermal architectural standard for vaccine storage rooms. I managed the final construction phase, planned and implemented photovoltaic arrays, set up Berlinger data-collection systems and solar fridges, and carried out the data analysis and evaluations.',
+  },
+  {
+    period: '2013 – 2014',
+    title: 'Co-founder, project management, UI/UX',
+    company: 'SimplyGoLive.com · Vienna / Gdansk',
+    detail:
+      'SimplyGoLive is an online website creator that made website creation genuinely simple. I evaluated technologies, defined UX and UI strategy, managed the cloud-based development team and owned code documentation in the initial phase.',
+  },
+  {
+    period: '2011 – 2014',
+    title: 'Strategy, online marketing, UI/UX — sole developer of the platform',
+    company: 'Familierockt.com · Vienna',
+    detail:
+      'A specialized social network combined with a blog portal for a Vienna family community, built on WordPress Multisite. With 10k+ unique users, 120 blogs and 43k comments it became a thriving parental community. I owned planning, design, strategy and execution of the entire platform, plus SEO and social media marketing.',
+  },
+  {
+    period: '2011',
+    title: 'UI/UX, co-development',
+    company: 'Technet21.org · Vienna / London / Marrakech',
+    detail:
+      'A key platform for immunisation specialists worldwide. I co-developed the first specialized online community and knowledge exchange hub for experts in the field, working on UI/UX, JomSocial integration, media and file sharing on Joomla, and data migration.',
+  },
+  {
+    period: '2010 – 2012',
+    title: 'Manager & construction supervisor',
+    company: 'Bed & Breakfast · Marrakech',
+    detail:
+      'Management and reconstruction of an original Riad and its conversion into a B&B — construction supervision, trip organisation, accounting and resource allocation.',
+  },
+  {
+    period: '11/2009 – 12/2010',
+    title: 'Lead Flash developer',
+    company: 'Masher Ltd. · London',
+    detail:
+      'Masher was one of the first online video-cutter apps, letting you mix any kind of online media with a vast library including BBC Motion Gallery footage. I built the entire framework and application infrastructure, delivered tailor-made versions for Nike’s YouTube channel and the British Amateur Football League, handled internationalization (7 languages, incl. Arabic RTL) and integration into Netlog, and managed two junior developers.',
+  },
+  {
+    period: '02/2007 – 11/2009',
+    title: 'Senior Flash developer',
+    company: 'Delete London · London',
+    detail:
+      'Delete was a fresh, technical digital-advertising agency (named among the UK’s top four upcoming digital agencies by D&AD, 2007). Clients included Game.co.uk, the Mayor of London, Ministry of Sound, Match.com, Saatchi & Saatchi, Renault and Epson.',
+  },
+  {
+    period: '11/2004 – 05/2007',
+    title: 'Junior Flash developer',
+    company: 'Whizz Education · London',
+    detail:
+      'A unique online tutoring system for kids — an engine that monitors student progress and delivers animated lessons according to ability. I developed educational games, the reward system and social features.',
+  },
+  {
+    period: '2001 – 2004',
+    title: 'Web trainer',
+    company: 'Venetia · Vienna',
+    detail: 'Teaching professional digital-media courses at a renowned Viennese college.',
+  },
+]
+
+const skills = [
+  {
+    group: 'Front end',
+    items: [
+      'HTML/5 · CSS/3 · SASS · responsive design',
+      'SEO & semantic paradigms',
+      'JavaScript, jQuery, AJAX, Angular, node.js, JSON',
+      'Animations: scroll.js, Greensock',
+      'Frameworks: Foundation, Bootstrap, HTML5 Boilerplate',
+    ],
+  },
+  {
+    group: 'Back end / CMS',
+    items: [
+      'WordPress — themes, plugins, dashboards, security & performance',
+      'WooCommerce, WPML, Yoast SEO, WP-Multisite, BuddyPress',
+      'Joomla: JomSocial, media management, security',
+      'PHP/MySQL, Drupal, XML/XSLT',
+    ],
+  },
+  {
+    group: 'Design · UI · UX',
+    items: [
+      'IA, wireframes, user journeys, UI/UX concepts',
+      'Adobe Creative Suite: Photoshop, Illustrator, InDesign, Sketch',
+      'Docs, user-journey optimisation and scenarios',
+    ],
+  },
+  {
+    group: 'Workflow & tooling',
+    items: [
+      'Project management, agile practices',
+      'Version control (SVN, Git), unit testing, documentation',
+      'LAMP stacks on UNIX/Linux, Grunt',
+    ],
+  },
+]
+---
+
+<BaseLayout
+  title={`CV — ${siteConfig.author}`}
+  description="A detailed look at my background, experience and skills."
+  pageType="article"
+>
+  <article class="cv">
+    <header class="cv-head">
+      <h1 class="cv-name">Simon Knebel</h1>
+      <p class="cv-tag">design · strategy · code</p>
+      <p class="cv-tagline">
+        Enthusiastic new-media developer and strategist, UI/UX conceptor with a focus on frontend development, led by an
+        entrepreneurial instinct with startup experience.
+      </p>
+    </header>
+
+    <section>
+      <h2 class="cv-h">Profile</h2>
+      <div class="prose">
+        <p>
+          Over the past 20+ years as an IT professional — 8 of them spent on the front line in London — I built a track
+          record of more than 50 completed projects, from online applications to commercial websites across numerous
+          technologies, for clients ranging from startups to digital agencies and international enterprises.
+        </p>
+        <p>
+          Having grown up in the third world explains my drive to work in the humanitarian sector. In 2015 I worked on a
+          research project in Mali financed with a Grand Challenges grant by the Bill &amp; Melinda Gates Foundation —
+          from overseeing the development of solar-thermal, autonomously self-cooling buildings to data analysis and
+          temperature-monitoring technologies.
+        </p>
+        <p>
+          I speak four languages fluently, several computer languages, love to travel and learn about different
+          cultures.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="cv-h">Experience</h2>
+      <ol class="cv-timeline">
+        {
+          jobs.map((job) => (
+            <li class="cv-job">
+              <div class="cv-period">{job.period}</div>
+              <div class="cv-role">{job.title}</div>
+              <div class="cv-company">{job.company}</div>
+              <p class="cv-detail">{job.detail}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section>
+      <h2 class="cv-h">Skills</h2>
+      <div class="cv-skills">
+        {
+          skills.map(({ group, items }) => (
+            <div class="cv-skill-group">
+              <h3 class="cv-skill-name">{group}</h3>
+              <ul class="cv-skill-list">
+                {items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section>
+      <h2 class="cv-h">Contact</h2>
+      <ContactBox />
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .cv {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding-bottom: 2rem;
+  }
+
+  .cv-head {
+    margin-bottom: 2.5rem;
+  }
+
+  .cv-name {
+    font-size: clamp(1.9rem, 5vw, 3rem);
+    font-weight: 800;
+    line-height: 1.05;
+    margin: 0;
+  }
+
+  .cv-tag {
+    margin: 0.5rem 0 0;
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .cv-tagline {
+    margin: 1.25rem 0 0;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    opacity: 0.85;
+    max-width: 44ch;
+  }
+
+  .cv-h {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 2.5rem 0 1rem;
+  }
+
+  .cv-timeline {
+    list-style: none;
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  }
+
+  .cv-job {
+    position: relative;
+    padding: 0.25rem 0 2rem 1.5rem;
+    margin: 0;
+  }
+
+  .cv-job::before {
+    content: '';
+    position: absolute;
+    left: -0.3125rem;
+    top: 0.5rem;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, currentColor 45%, transparent);
+  }
+
+  .cv-period {
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.55;
+  }
+
+  .cv-role {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-top: 0.3rem;
+  }
+
+  .cv-company {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-top: 0.1rem;
+  }
+
+  .cv-detail {
+    margin: 0.5rem 0 0;
+    font-size: 0.93rem;
+    line-height: 1.65;
+    opacity: 0.85;
+  }
+
+  .cv-skills {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 700px) {
+    .cv-skills {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .cv-skill-group {
+    padding: 1.25rem 1.25rem 0.5rem;
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    background: color-mix(in srgb, currentColor 4%, transparent);
+    border-radius: 1rem;
+  }
+
+  .cv-skill-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.75;
+    margin: 0 0 0.5rem;
+  }
+
+  .cv-skill-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cv-skill-list li {
+    position: relative;
+    padding-left: 0.9rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0.3rem 0;
+  }
+
+  .cv-skill-list li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    opacity: 0.6;
+  }
+</style>

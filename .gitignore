@@ -53,3 +53,5 @@ docs
 .vscode/
 ./.vscode.bk/
 *.code-workspace
+# Local CV (not published to git)
+public/CV-Simon_Knebel-2018-en-v2.docx
