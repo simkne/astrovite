@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import ContactBox from '@/components/ContactBox.astro'
 import siteConfig, { withBase } from '@/site-config'
 
 const placeholderBlocks = [
@@ -100,18 +101,6 @@ const placeholderBlocks = [
     </div>
 
     <!-- Contact -->
-    <div class="rounded-lg border border-main !border-op-20 bg-main p-8 text-center">
-      <h2 class="text-xl font-700 mb-3">Get in touch</h2>
-      <p class="opacity-70 mb-6 max-w-md mx-auto leading-6">
-        Have a question or just want to say hi? Lorem ipsum dolor sit amet.
-      </p>
-      <a
-        href={`mailto:${siteConfig.email}`}
-        class="inline-flex items-center gap-2 px-5 py-2 rounded border border-main !border-op-50 hover:!border-op-100"
-      >
-        <i class="i-ri-mail-line"></i>
-        {siteConfig.email}
-      </a>
-    </div>
+    <ContactBox />
   </article>
 </BaseLayout>

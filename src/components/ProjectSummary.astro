@@ -1,0 +1,210 @@
+---
+interface Props {
+  logo?: string
+  logoAlt?: string
+  name?: string
+  url?: string
+  urlLabel?: string
+  client?: string
+  clientUrl?: string
+  date?: string
+  role?: string
+  tech?: string[]
+  quote?: string
+  quoteAuthor?: string
+}
+
+const {
+  logo,
+  logoAlt = '',
+  name,
+  url,
+  urlLabel,
+  client,
+  clientUrl,
+  date,
+  role,
+  tech = [],
+  quote,
+  quoteAuthor,
+} = Astro.props
+---
+
+<aside class="proj-summary" role="complementary" aria-label="Project summary">
+  <div class="panel">
+    {logo && <img class="logo" src={logo} alt={logoAlt} width="96" height="96" />}
+    {name && <h2 class="name">{name}</h2>}
+
+    <dl class="rows">
+      {
+        url && (
+          <div class="row">
+            <dt>URL</dt>
+            <dd>
+              <a href={url} target="_blank" rel="noopener noreferrer">
+                {urlLabel ?? url}
+              </a>
+            </dd>
+          </div>
+        )
+      }
+      {
+        client && (
+          <div class="row">
+            <dt>Client</dt>
+            <dd>
+              {clientUrl ? (
+                <a href={clientUrl} target="_blank" rel="noopener noreferrer">
+                  {client}
+                </a>
+              ) : (
+                client
+              )}
+            </dd>
+          </div>
+        )
+      }
+      {
+        date && (
+          <div class="row">
+            <dt>Date</dt>
+            <dd>{date}</dd>
+          </div>
+        )
+      }
+      {
+        role && (
+          <div class="row">
+            <dt>Role</dt>
+            <dd>{role}</dd>
+          </div>
+        )
+      }
+      {
+        tech.length > 0 && (
+          <div class="row">
+            <dt>Stack</dt>
+            <dd class="tags">
+              {tech.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </dd>
+          </div>
+        )
+      }
+    </dl>
+
+    {
+      quote && (
+        <blockquote class="quote">
+          <p>{quote}</p>
+          {quoteAuthor && <footer>— {quoteAuthor}</footer>}
+        </blockquote>
+      )
+    }
+  </div>
+</aside>
+
+<style>
+  .proj-summary {
+    margin: 0 0 2rem;
+  }
+
+  .panel {
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    background: color-mix(in srgb, currentColor 4%, transparent);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 1.5rem 1.5rem 1.25rem;
+  }
+
+  .logo {
+    display: block;
+    max-width: 8rem;
+    max-height: 3rem;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 0.75rem;
+  }
+
+  .name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 0.5rem;
+  }
+
+  .rows {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .row dt {
+    opacity: 0.55;
+  }
+
+  .row dd {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .row a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    transition: opacity 0.2s ease;
+  }
+
+  .row a:hover {
+    opacity: 0.7;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  .quote {
+    margin: 1rem 0 0;
+    padding: 0.5rem 0 0 0.75rem;
+    border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    border-left: 2px solid color-mix(in srgb, currentColor 25%, transparent);
+    font-size: 0.875rem;
+    font-style: italic;
+    line-height: 1.5;
+    color: inherit;
+  }
+
+  .quote p {
+    margin: 0;
+  }
+
+  .quote footer {
+    margin-top: 0.35rem;
+    font-size: 0.75rem;
+    font-style: normal;
+    opacity: 0.6;
+  }
+</style>

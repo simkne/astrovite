@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import EditLink from '@/components/EditLink.vue'
 import HeroImage from '@/components/HeroImage.astro'
+import ProjectSummary from '@/components/ProjectSummary.astro'
 import { withBase } from '@/site-config'
 
 const featuredImage = {
@@ -20,6 +21,19 @@ const featuredImage = {
     title="ZenSoria"
     description="A small Vue-powered OpenWeather dashboard — live conditions, forecast, and weather-data management."
   />
+
+  <ProjectSummary
+    logo={withBase('/imgs/zensoria-logo.png')}
+    logoAlt="ZenSoria logo"
+    name="ZenSoria"
+    url="https://weltkugl.net/zensoria/dash25/"
+    urlLabel="weltkugl.net/zensoria/dash25"
+    client="Personal project"
+    date="ongoing"
+    role="Design & development"
+    tech={['Vue 3', 'PHP', 'OpenWeather API']}
+  />
+
   <article class="prose">
     <p>
       <a prose-link href="https://weltkugl.net/zensoria/dash25/">weltkugl.net/zensoria/dash25/</a>

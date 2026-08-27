@@ -21,19 +21,21 @@ const { src, alt, title, description } = Astro.props
 <style>
   .hero {
     position: relative;
-    /* break out of the max-w-3xl column to span the viewport */
+    height: 45vh;
+    /* break out of the max-w-3xl column to span the viewport (no transform —
+       a transform ancestor would become the containing block for the fixed pin) */
     width: 100vw;
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0 0 2.5rem;
+    margin-left: calc(50% - 50vw);
+    margin-bottom: 3rem;
     border-radius: 1rem;
     overflow: hidden;
   }
 
   .hero-img {
-    display: block;
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: 45vh;
+    height: 100%;
     object-fit: cover;
     object-position: center 38%;
     /* fade the top edge of the image into the page background */
@@ -45,6 +47,7 @@ const { src, alt, title, description } = Astro.props
   .hero-scrim {
     position: absolute;
     inset: 0;
+    pointer-events: none;
     background: linear-gradient(to top, rgb(0 0 0 / 0.6), transparent 48%);
   }
 
@@ -73,3 +76,63 @@ const { src, alt, title, description } = Astro.props
     max-width: 60ch;
   }
 </style>
+
+<script>
+  // Parallax: the image is pinned fixed at the hero's own position from the very
+  // start, so it never scrolls up with the page — content merely passes over it
+  // while it fades out, and the visible crop drifts slowly downward (a subtle
+  // counter-scroll touch achieved by shifting the object-position).
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let ticking = false
+
+    function update() {
+      ticking = false
+      const img = document.querySelector('.hero-img')
+      if (!img || !img.parentElement) {
+        return
+      }
+      const hero = img.parentElement
+      const scrim = hero.querySelector('.hero-scrim')
+      // pin the image together with its bottom scrim so the dark fade under the
+      // title stays glued to the image instead of scrolling away from it
+      const elements = scrim ? [img, scrim] : [img]
+
+      // document-space top of the hero is constant, so the pinned image keeps the
+      // exact position it had at rest (no movement up, no jump at any threshold)
+      const pinTop = hero.getBoundingClientRect().top + window.scrollY
+      const scrollY = window.scrollY
+      const fade = window.innerHeight * 0.6
+      const opacity = String(Math.max(0, 1 - scrollY / fade))
+      // slow, capped drift: showing a higher crop makes the image content appear
+      // to slide downward inside the fixed window
+      const delta = Math.min(scrollY * 0.02, 11)
+      img.style.objectPosition = `center ${38 - delta}%`
+
+      for (const el of elements) {
+        el.style.position = 'fixed'
+        el.style.top = `${pinTop}px`
+        el.style.left = '0'
+        el.style.right = 'auto'
+        el.style.bottom = 'auto'
+        el.style.width = '100vw'
+        el.style.height = '45vh'
+        el.style.margin = '0'
+        el.style.zIndex = '-1'
+        el.style.opacity = opacity
+        el.style.overflow = 'hidden'
+      }
+    }
+
+    function requestUpdate() {
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(update)
+      }
+    }
+
+    addEventListener('scroll', requestUpdate, { passive: true })
+    addEventListener('resize', requestUpdate, { passive: true })
+    document.addEventListener('astro:page-load', requestUpdate)
+    requestUpdate()
+  }
+</script>

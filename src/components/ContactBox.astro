@@ -1,0 +1,115 @@
+---
+interface Props {
+  title?: string
+  text?: string
+  email?: string
+}
+
+import siteConfig from '@/site-config'
+
+const {
+  title = 'Get in touch',
+  text = 'Questions, ideas, or just want to say hi? I’d love to hear from you.',
+  email = siteConfig.email,
+} = Astro.props
+
+const socials = siteConfig.socialLinks.filter((link) => link.href && link.icon)
+---
+
+<div class="contact" role="region" aria-label="Contact">
+  <h2 class="contact-title">{title}</h2>
+  {text && <p class="contact-text">{text}</p>}
+
+  <a class="contact-email" href={`mailto:${email}`}>
+    <i class="i-ri-mail-line" aria-hidden="true"></i>
+    {email}
+  </a>
+
+  {
+    socials.length > 0 && (
+      <div class="contact-socials">
+        {socials.map((link) => (
+          <a class="social" href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.text}>
+            <i class={link.icon} aria-hidden="true" />
+            {link.text}
+          </a>
+        ))}
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .contact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    background: color-mix(in srgb, currentColor 4%, transparent);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 1.75rem 1.5rem;
+  }
+
+  .contact-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .contact-text {
+    margin: 0;
+    font-size: 0.925rem;
+    line-height: 1.6;
+    opacity: 0.75;
+    max-width: 46ch;
+  }
+
+  .contact-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+    border-radius: 999px;
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      background 0.2s ease;
+  }
+
+  .contact-email:hover {
+    border-color: color-mix(in srgb, currentColor 60%, transparent);
+    background: color-mix(in srgb, currentColor 8%, transparent);
+  }
+
+  .contact-socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .social {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+    border-radius: 999px;
+    color: inherit;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition:
+      border-color 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  .social:hover {
+    border-color: color-mix(in srgb, currentColor 45%, transparent);
+    opacity: 0.8;
+  }
+</style>
