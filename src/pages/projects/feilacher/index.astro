@@ -1,0 +1,65 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import EditLink from '@/components/EditLink.vue'
+import HeroImage from '@/components/HeroImage.astro'
+import ProjectSummary from '@/components/ProjectSummary.astro'
+import { withBase } from '@/site-config'
+
+const featuredImage = {
+  src: withBase('/imgs/feialcher_scrsht.png'),
+  alt: 'Feilacher — artists website',
+}
+const logoImage = {
+  src: withBase('/imgs/feilacher-logo2.png'),
+  alt: 'Feilacher logo',
+}
+---
+
+<BaseLayout title="Feilacher" description="Artist website redesign — rebuilt on WordPress with a custom block theme.">
+  <HeroImage
+    src={featuredImage.src}
+    alt={featuredImage.alt}
+    title="Feilacher"
+    description="Artist website redesign — WordPress, custom block theme."
+  />
+
+  <ProjectSummary
+    logo={logoImage.src}
+    logoAlt={logoImage.alt}
+    logoSize="lg"
+    name="Feilacher"
+    url="https://feilacher.com"
+    urlLabel="feilacher.com"
+    client="Feilacher"
+    clientUrl="https://feilacher.com"
+    date="ongoing"
+    role="WordPress & block theme design"
+    tech={['WordPress', 'Block theme', 'Gutenberg', 'PHP', 'CSS']}
+  />
+
+  <article class="prose">
+    <h2>What it is</h2>
+    <p>
+      A redesign of the artist website <a
+        prose-link
+        href="https://feilacher.com"
+        target="_blank"
+        rel="noopener noreferrer">feilacher.com</a
+      > — rebuilt on <strong>WordPress</strong> with a custom <strong>block theme</strong>. The focus is on letting the
+      work speak: a clean presentation of the art with the craft moved into the design system itself.
+    </p>
+
+    <h2>Approach</h2>
+    <ul>
+      <li>
+        <strong>Block theme design</strong> — the layout lives in theme templates and blocks instead of page-specific hacks.
+      </li>
+      <li><strong>Gutenberg-driven</strong> — content edits and page composition happen in the block editor.</li>
+      <li><strong>Redesign</strong> — a fresh look and structure for the artist's online presence.</li>
+    </ul>
+
+    <h2>Notes</h2>
+    <p>This page is a work in progress — images and full walkthrough are coming.</p>
+    <EditLink client:load path="src/pages/projects/feilacher/index.astro" />
+  </article>
+</BaseLayout>

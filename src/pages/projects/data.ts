@@ -16,6 +16,12 @@ export const projectData: ProjectData = [
         image: '/imgs/zensoria_thumb.png',
         href: '/projects/zensoria',
       },
+      {
+        text: 'Feilacher',
+        description: 'Artist website redesign — WordPress, custom block theme.',
+        image: '/imgs/feilacher-thumb.png',
+        href: '/projects/feilacher',
+      },
     ],
   },
   {
@@ -28,9 +34,5 @@ export const projectData: ProjectData = [
         href: '/projects/iot',
       },
     ],
-  },
-  {
-    title: 'Project Name',
-    projects: [],
   },
 ]

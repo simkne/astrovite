@@ -2,6 +2,7 @@
 interface Props {
   logo?: string
   logoAlt?: string
+  logoSize?: 'md' | 'lg'
   name?: string
   url?: string
   urlLabel?: string
@@ -17,6 +18,7 @@ interface Props {
 const {
   logo,
   logoAlt = '',
+  logoSize = 'md',
   name,
   url,
   urlLabel,
@@ -32,7 +34,7 @@ const {
 
 <aside class="proj-summary" role="complementary" aria-label="Project summary">
   <div class="panel">
-    {logo && <img class="logo" src={logo} alt={logoAlt} width="96" height="96" />}
+    {logo && <img class={`logo logo--${logoSize}`} src={logo} alt={logoAlt} width="96" height="96" />}
     {name && <h2 class="name">{name}</h2>}
 
     <dl class="rows">
@@ -125,6 +127,11 @@ const {
     height: auto;
     object-fit: contain;
     margin-bottom: 0.75rem;
+  }
+
+  .logo--lg {
+    max-width: 13rem;
+    max-height: 5rem;
   }
 
   .name {
