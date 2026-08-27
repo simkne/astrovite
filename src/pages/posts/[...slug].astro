@@ -1,9 +1,11 @@
 ---
 import { render } from 'astro:content'
+import { Picture } from 'astro:assets'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import EditLink from '@/components/EditLink.vue'
 import PrivateGate from '@/components/blog/PrivateGate.vue'
 import { withBase } from '@/site-config'
+import { resolveAsset } from '@/lib/images'
 import { type CollectionPosts } from '@/types'
 import { getPosts, getTags } from '@/utils/posts'
 
@@ -26,6 +28,8 @@ const { title, image, description, date, duration, private: isPrivate, sharePass
 const tags = getTags(post)
 
 const { Content } = await render(post)
+
+const headerAsset = image?.src ? resolveAsset(image.src) : undefined
 
 function getDate(date: string) {
   return new Date(date).toISOString()
@@ -53,7 +57,22 @@ function getDate(date: string) {
       }
     </p>
     {
-      image && (
+      headerAsset && (
+        <p>
+          <Picture
+            src={headerAsset}
+            formats={['avif', 'webp']}
+            widths={[480, 640, 960]}
+            sizes="(min-width: 768px) 640px, 100vw"
+            alt={image?.alt || ''}
+            class="rd-2"
+            loading="lazy"
+          />
+        </p>
+      )
+    }
+    {
+      image && !headerAsset && (
         <p>
           <img width="640" height="360" src={withBase(image.src)} alt={image.alt || ''} />
         </p>

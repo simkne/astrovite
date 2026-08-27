@@ -5,7 +5,6 @@ import EditLink from '@/components/EditLink.vue'
 import ProjectSubnav from '@/components/ProjectSubnav.astro'
 import HeroImage from '@/components/HeroImage.astro'
 import ListIotDocs from '@/components/ListIotDocs.vue'
-import { withBase } from '@/site-config'
 import type { CollectionIot } from '@/types'
 import iotProject from '@/projects/iot-config'
 import { getIotEntries } from '@/utils/iot'
@@ -74,7 +73,7 @@ if (props.kind === 'article') {
       <ProjectSubnav links={[...iotProject.navLinks]} />
       {articleImage && (
         <HeroImage
-          src={withBase(articleImage.src)}
+          src={articleImage.src}
           alt={articleImage.alt}
           title={articleTitle}
           description={articleDescription}

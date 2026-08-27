@@ -1,6 +1,9 @@
 ---
+import type { ImageMetadata } from 'astro'
+import { Image } from 'astro:assets'
+
 interface Props {
-  logo?: string
+  logo?: ImageMetadata | string
   logoAlt?: string
   logoSize?: 'md' | 'lg'
   name?: string
@@ -30,11 +33,35 @@ const {
   quote,
   quoteAuthor,
 } = Astro.props
+
+const logoMeta = typeof logo === 'object' ? logo : undefined
+const logoSrc = typeof logo === 'string' ? logo : undefined
 ---
 
 <aside class="proj-summary" role="complementary" aria-label="Project summary">
   <div class="panel">
-    {logo && <img class={`logo logo--${logoSize}`} src={logo} alt={logoAlt} width="96" height="96" />}
+    {
+      logoMeta && logoMeta.format !== 'svg' ? (
+        <Image
+          class={`logo logo--${logoSize}`}
+          src={logoMeta}
+          alt={logoAlt}
+          width={192}
+          densities={[1, 2]}
+          format="webp"
+        />
+      ) : (
+        (logoMeta || logoSrc) && (
+          <img
+            class={`logo logo--${logoSize}`}
+            src={logoMeta ? logoMeta.src : logoSrc}
+            alt={logoAlt}
+            width="96"
+            height="96"
+          />
+        )
+      )
+    }
     {name && <h2 class="name">{name}</h2>}
 
     <dl class="rows">
@@ -120,16 +147,17 @@ const {
     padding: 1.5rem 1.5rem 1.25rem;
   }
 
-  .logo {
+  .panel :global(.logo) {
     display: block;
     max-width: 8rem;
     max-height: 3rem;
+    width: auto;
     height: auto;
     object-fit: contain;
     margin-bottom: 0.75rem;
   }
 
-  .logo--lg {
+  .panel :global(.logo--lg) {
     max-width: 13rem;
     max-height: 5rem;
   }

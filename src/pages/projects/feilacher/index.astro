@@ -3,30 +3,22 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import EditLink from '@/components/EditLink.vue'
 import HeroImage from '@/components/HeroImage.astro'
 import ProjectSummary from '@/components/ProjectSummary.astro'
-import { withBase } from '@/site-config'
-
-const featuredImage = {
-  src: withBase('/imgs/feialcher_scrsht.png'),
-  alt: 'Feilacher — artists website',
-}
-const logoImage = {
-  src: withBase('/imgs/feilacher-logo2.png'),
-  alt: 'Feilacher logo',
-}
+import featured from '@/assets/imgs/feialcher_scrsht.png'
+import logo from '@/assets/imgs/feilacher-logo2.png'
 ---
 
 <BaseLayout title="Feilacher" description="Artist website redesign — rebuilt on WordPress with a custom block theme.">
   <HeroImage
-    src={featuredImage.src}
-    alt={featuredImage.alt}
+    src={featured}
+    alt="Feilacher — artists website"
     title="Feilacher"
     description="Artist website redesign — WordPress, custom block theme."
     focusY={72}
   />
 
   <ProjectSummary
-    logo={logoImage.src}
-    logoAlt={logoImage.alt}
+    logo={logo}
+    logoAlt="Feilacher logo"
     logoSize="lg"
     name="Feilacher"
     url="https://feilacher.com"

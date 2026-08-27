@@ -1,5 +1,6 @@
 ---
 import siteConfig, { withBase } from '@/site-config'
+import { optimizeAsset } from '@/lib/images'
 import '@/styles/global.css'
 import '@/styles/prose.css'
 import '@/styles/dot.css'
@@ -15,12 +16,19 @@ const { description = '', image = siteConfig.image, pageType = 'website' } = Ast
 
 const title = [Astro.props.title, siteConfig.title].filter(Boolean).join(' | ')
 
-const resolvedImage = image?.src
+const optimizedOg = image?.src ? await optimizeAsset(image.src, { width: 1200, format: 'jpeg' }) : undefined
+
+const resolvedImage = optimizedOg
   ? {
-      src: new URL(image.src, Astro.site).toString(),
-      alt: image.alt,
+      src: new URL(optimizedOg.src, Astro.site).toString(),
+      alt: image?.alt,
     }
-  : undefined
+  : image?.src
+    ? {
+        src: new URL(withBase(image.src), Astro.site).toString(),
+        alt: image.alt,
+      }
+    : undefined
 
 const canonicalURL = new URL(Astro.request.url, Astro.site)
 

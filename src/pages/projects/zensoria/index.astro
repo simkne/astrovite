@@ -3,12 +3,8 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import EditLink from '@/components/EditLink.vue'
 import HeroImage from '@/components/HeroImage.astro'
 import ProjectSummary from '@/components/ProjectSummary.astro'
-import { withBase } from '@/site-config'
-
-const featuredImage = {
-  src: withBase('/imgs/zensoria-screenshot.png'),
-  alt: 'ZenSoria weather dashboard',
-}
+import featured from '@/assets/imgs/zensoria-screenshot.png'
+import logo from '@/assets/imgs/zensoria-logo.png'
 ---
 
 <BaseLayout
@@ -16,14 +12,14 @@ const featuredImage = {
   description="A small Vue-powered OpenWeather dashboard — live conditions, forecast, and weather-data management."
 >
   <HeroImage
-    src={featuredImage.src}
-    alt={featuredImage.alt}
+    src={featured}
+    alt="ZenSoria weather dashboard"
     title="ZenSoria"
     description="A small Vue-powered OpenWeather dashboard — live conditions, forecast, and weather-data management."
   />
 
   <ProjectSummary
-    logo={withBase('/imgs/zensoria-logo.png')}
+    logo={logo}
     logoAlt="ZenSoria logo"
     name="ZenSoria"
     url="https://weltkugl.net/zensoria/dash25/"

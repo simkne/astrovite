@@ -55,7 +55,7 @@ Your content here.
 Notes:
 
 - Only `title` and `description` are required; everything else is optional.
-- `image.src` is relative to `public/`, e.g. `imgs/hero.jpg`.
+- `image.src` is relative to `src/assets/imgs/` via the `imgs/…` path form, e.g. `imgs/hero.jpg`.
 - `tags` is an array — use `[dev, devops]` or a block list. A single `tag` string also still works as a fallback.
 - `private: true` gates the content behind a login or `sharePassword`.
 - `draft: true` hides the post from the live site (kept in the repo).

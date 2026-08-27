@@ -1,7 +1,9 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import ContactBox from '@/components/ContactBox.astro'
-import siteConfig, { withBase } from '@/site-config'
+import { Image } from 'astro:assets'
+import siteConfig from '@/site-config'
+import logo from '@/assets/imgs/noesi-logo.png'
 
 const placeholderBlocks = [
   {
@@ -26,11 +28,13 @@ const placeholderBlocks = [
   <article class="not-prose">
     <!-- Hero -->
     <div class="flex flex-col items-center gap-6 mb-14 mt-2">
-      <img
-        width="120"
-        height="120"
+      <Image
+        width={120}
+        height={120}
+        densities={[1, 2]}
+        format="webp"
         class="rounded-full border border-main !border-op-40 object-cover"
-        src={withBase(siteConfig.header.logo.src)}
+        src={logo}
         alt={siteConfig.header.logo.alt}
       />
       <div class="text-center">

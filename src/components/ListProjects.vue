@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { withBase } from '@/site-config'
+import { BASE_PATH, withBase } from '@/site-config'
 import { getLinkTarget, isExternalLink } from '@/utils/link'
 
 defineProps<{
@@ -11,6 +11,13 @@ defineProps<{
     href: string
   }[]
 }>()
+
+function resolveImageSrc(src: string) {
+  // Already absolute or emitted by astro:assets (e.g. /www/_astro/…)
+  if (/(?:https?:)?\/\//.test(src) || src.startsWith('/') || src.startsWith(BASE_PATH))
+    return src
+  return withBase(src)
+}
 </script>
 
 <template>
@@ -31,7 +38,7 @@ defineProps<{
       >
         <div ml-2 mr-4 pt-2 flex items-center justify-center shrink-0>
           <img
-            v-if="project.image" width="82" height="82" class="rd-1.5" :src="withBase(project.image)"
+            v-if="project.image" width="82" height="82" loading="lazy" class="rd-1.5" :src="resolveImageSrc(project.image)"
             :alt="project.text"
           >
           <i v-else text-6xl inline-block :class="project.icon || 'i-carbon-unknown'" />

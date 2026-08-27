@@ -3,20 +3,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import EditLink from '@/components/EditLink.vue'
 import HeroImage from '@/components/HeroImage.astro'
 import ProjectSummary from '@/components/ProjectSummary.astro'
-import { withBase } from '@/site-config'
-
-const featuredImage = {
-  src: withBase('/imgs/scrsht-snorefree.png'),
-  alt: 'SchnarchFrei screen',
-}
-const certImage = {
-  src: withBase('/imgs/app-en-screen-arrangement.png'),
-  alt: 'SchnarchFrei — DiGA and BSI TR-03161 certification',
-}
-const logoImage = {
-  src: withBase('/imgs/schnarchfrei-logo.svg'),
-  alt: 'SchnarchFrei logo',
-}
+import { Picture } from 'astro:assets'
+import featured from '@/assets/imgs/scrsht-snorefree.png'
+import cert from '@/assets/imgs/app-en-screen-arrangement.png'
+import logo from '@/assets/imgs/schnarchfrei-logo.svg'
 ---
 
 <BaseLayout
@@ -24,15 +14,15 @@ const logoImage = {
   description="First stop-snoring training app with medically proven logopedic exercises — DiGA certification in progress, BSI TR-03161 passed."
 >
   <HeroImage
-    src={featuredImage.src}
-    alt={featuredImage.alt}
+    src={featured}
+    alt="SchnarchFrei screen"
     title="SchnarchFrei"
     description="First stop-snoring training app with medically proven logopedic exercises."
   />
 
   <ProjectSummary
-    logo={logoImage.src}
-    logoAlt={logoImage.alt}
+    logo={logo}
+    logoAlt="SchnarchFrei logo"
     name="SchnarchFrei"
     url="https://schnarchfrei.de"
     urlLabel="schnarchfrei.de"
@@ -94,7 +84,15 @@ const logoImage = {
     </ul>
 
     <p>
-      <img width="640" height="336" class="rd-2" src={certImage.src} alt={certImage.alt} />
+      <Picture
+        src={cert}
+        formats={['avif', 'webp']}
+        widths={[480, 640, 960]}
+        sizes="(min-width: 768px) 640px, 100vw"
+        alt="SchnarchFrei — DiGA and BSI TR-03161 certification"
+        class="rd-2"
+        loading="lazy"
+      />
     </p>
     <EditLink client:load path="src/pages/projects/schnarchfrei/index.astro" />
   </article>

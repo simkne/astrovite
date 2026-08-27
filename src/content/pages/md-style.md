@@ -119,23 +119,12 @@ export const posts = []
 
 ## Images
 
-Images live in `public/imgs/`. Because the site runs under a base path (`/www/`), inline markdown images should use
-the **absolute base path** so they resolve on any page (post pages are at `/posts/...`, not the root):
+Raster images for heroes and project screenshots live in `src/assets/imgs/` and are optimized at build time
+(WebP/AVIF + responsive `srcset`) via Astro’s `<Picture>` / `<Image>` components.
 
-```md
-![alt text](/www/imgs/hero01.png)
-```
+Small logos used from Vue (`Header`) can stay in `public/imgs/` and are referenced with `withBase()`.
 
-An image with a title:
-
-```md
-![alt text](/www/imgs/hero01.png "Optional title")
-```
-
-### Frontmatter featured image
-
-For a **blog post**, use the `image` frontmatter — the template renders it at the top of the article and it feeds SEO.
-Here `src` is relative to `public/` (the base is applied automatically):
+Blog frontmatter `image.src` still uses the `imgs/…` path form — the post template resolves it from `src/assets/imgs/`:
 
 ```text
 ---
@@ -146,12 +135,10 @@ image:
 ---
 ```
 
-### Sizing
+For rare inline markdown images that must stay as plain URLs, put a copy under `public/` and use the absolute base path:
 
-Inline images accept HTML with attributes:
-
-```html
-<img src="/www/imgs/hero01.png" alt="alt text" width="640" height="360" />
+```md
+![alt text](/www/imgs/example.png)
 ```
 
 ## Horizontal rules
