@@ -4,13 +4,23 @@ interface Props {
   alt: string
   title: string
   description?: string
+  /** vertical focus of the crop, 0 (top) – 100 (bottom). default 38. */
+  focusY?: number
 }
 
-const { src, alt, title, description } = Astro.props
+const { src, alt, title, description, focusY = 38 } = Astro.props
 ---
 
 <section class="hero" aria-label={alt}>
-  <img class="hero-img" src={src} alt={alt} width="1600" height="900" />
+  <img
+    class="hero-img"
+    src={src}
+    alt={alt}
+    width="1600"
+    height="900"
+    data-focus-y={focusY}
+    style={`object-position: center ${focusY}%`}
+  />
   <div class="hero-scrim" aria-hidden="true"></div>
   <div class="hero-overlay">
     <h1 class="hero-title">{title}</h1>
@@ -106,7 +116,8 @@ const { src, alt, title, description } = Astro.props
       // slow, capped drift: showing a higher crop makes the image content appear
       // to slide downward inside the fixed window
       const delta = Math.min(scrollY * 0.02, 11)
-      img.style.objectPosition = `center ${38 - delta}%`
+      const baseY = Number(img.dataset.focusY ?? 38)
+      img.style.objectPosition = `center ${Math.max(0, baseY - delta)}%`
 
       for (const el of elements) {
         el.style.position = 'fixed'
