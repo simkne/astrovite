@@ -1,30 +1,79 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import ContactBox from '@/components/ContactBox.astro'
+import CvAccess from '@/components/CvAccess.vue'
 import { Image } from 'astro:assets'
 import siteConfig from '@/site-config'
 import logo from '@/assets/imgs/noesi-logo.png'
 
-const placeholderBlocks = [
+const aboutBlocks = [
   {
     icon: 'i-game-icons-love-howl',
-    title: 'hi, I’m SimKne',
-    text: 'A short intro about who I am, what I do, and what this site is about. This is placeholder copy.',
+    title: 'hi, I’m Simon Knebel',
+    text: 'A developer and strategist working from Vienna. I’ve spent 20+ years building digital things — from startups to international enterprises.',
   },
   {
     icon: 'i-ant-design-code-outlined',
     title: 'What I build',
-    text: 'Embedded systems, IoT, web apps, and everything in between. Placeholder for a real summary.',
+    text: 'Web apps, embedded systems, IoT platforms, and the UI/UX glue in between. Currently leading engineering on the SchnarchFrei medical app at SnoreFree GmbH.',
   },
   {
     icon: 'i-icon-park-outline-death-star',
     title: 'Beyond the code',
-    text: 'A bit about hobbies, interests, or whatever makes the person behind the projects tick.',
+    text: 'I speak four languages fluently, love to travel and learn about different cultures — and care about tech that actually helps.',
+  },
+]
+
+const jobs = [
+  {
+    period: 'Since 2025',
+    title: 'Tech Lead · Deputy CTO',
+    company: 'SnoreFree GmbH',
+    detail:
+      'Lead developer and deputy CTO for the SchnarchFrei stop-snoring therapy app — driving the engineering and security side of the DiGA certification and the BSI TR-03161 assessment.',
+  },
+  {
+    period: '2021 – 2025',
+    title: 'Freelance frontend developer',
+    company: 'Independent · for fox.co.at',
+    detail: 'Freelance frontend development across several projects, most notably for fox.co.at/.',
+  },
+  {
+    period: 'Since 2011',
+    title: 'Freelance frontend developer & business consultant',
+    company: 'Independent · Vienna & remote',
+    detail:
+      'Frontend development and consulting for a wide range of clients — including minimalsoul.com, familierockt.com, dolomitenstadt.at, feilacher.com and fox.co.at. Also supported Screenagers (Vienna) and worked freelance for Pjure Isobar Vienna on campaigns for Milka, Milupa and UPC.',
+  },
+  {
+    period: '2014 – 08/2015 & 06/2017',
+    title: 'R&D, project management, data analysis',
+    company: 'Grand Challenges in Global Health · Bamako & Koulikoro, Mali',
+    detail:
+      'A Bill & Melinda Gates Foundation-funded research project developing a passive solar-thermal architectural standard for vaccine storage rooms. I managed the final construction phase, planned photovoltaic arrays, set up Berlinger data-collection systems and solar fridges, and carried out the data analysis.',
+  },
+  {
+    period: '2011 – 2014',
+    title: 'Strategy, online marketing, UI/UX — sole developer',
+    company: 'Familierockt.com · Vienna',
+    detail:
+      'A specialised social network + blog portal for a Vienna family community, built on WordPress Multisite. Reached 10k+ unique users, 120 blogs and 43k comments. I owned planning, design, strategy, execution, SEO and social-media marketing.',
+  },
+  {
+    period: '2013 – 2014',
+    title: 'Co-founder, project management, UI/UX',
+    company: 'SimplyGoLive.com · Vienna / Gdansk',
+    detail:
+      'An online website creator that made website creation genuinely simple. I evaluated technologies, defined UX and UI strategy, managed the cloud-based development team and owned code documentation in the initial phase.',
   },
 ]
 ---
 
-<BaseLayout title="About" description={`About ${siteConfig.author} — a placeholder introduction.`} pageType="website">
+<BaseLayout
+  title="About"
+  description={`About ${siteConfig.author} — developer, designer and strategist behind weltkugl.net.`}
+  pageType="website"
+>
   <article class="not-prose">
     <!-- Hero -->
     <div class="flex flex-col items-center gap-6 mb-14 mt-2">
@@ -52,19 +101,22 @@ const placeholderBlocks = [
         A quick introduction
       </h2>
       <p class="opacity-80 leading-7">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. This is placeholder text for a short personal
-        introduction. It will describe what I care about, why I run this site, and what readers can expect to find here.
+        Over the past 20+ years as an IT professional — 8 of them spent on the front line in London — I’ve built a track
+        record of more than 50 completed projects, from online applications to commercial websites across numerous
+        technologies, for clients ranging from startups to digital agencies and international enterprises.
       </p>
       <p class="opacity-80 leading-7 mt-4">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua.
+        Having grown up in the global south explains my drive to work in the humanitarian sector. In 2014–2017 I worked
+        on a research project in Mali financed with a Grand Challenges grant by the Bill &amp; Melinda Gates Foundation
+        — from overseeing solar-thermal, self-cooling vaccine storage buildings to data analysis and
+        temperature-monitoring technologies.
       </p>
     </div>
 
     <!-- Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-14">
       {
-        placeholderBlocks.map((block) => (
+        aboutBlocks.map((block) => (
           <div class="container-link rounded-lg border border-main !border-op-20 bg-main p-6 flex flex-col gap-3 transition-all hover:!border-op-50">
             <i class={`${block.icon} text-3xl opacity-70`} />
             <h3 class="font-700 text-lg">{block.title}</h3>
@@ -74,33 +126,29 @@ const placeholderBlocks = [
       }
     </div>
 
-    <!-- Experience placeholder -->
+    <!-- Detailed CV access -->
+    <div class="mb-14">
+      <CvAccess client:load />
+    </div>
+
+    <!-- Experience -->
     <div class="mb-14">
       <h2 class="text-xl font-700 mb-6 flex items-center gap-2">
         <i class="i-famicons-diamond-sharp text-2xl"></i>
         Experience
       </h2>
       <ol class="flex flex-col gap-6 border-l border-main !border-op-30 pl-6">
-        <li>
-          <div class="opacity-50 text-sm mb-1">2025 — Present · SnoreFree GmbH</div>
-          <div class="font-600">Tech Lead, DCTO</div>
-          <p class="opacity-70 text-sm mt-1 leading-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </li>
-        <li>
-          <div class="opacity-50 text-sm mb-1">2022 — 2025 · Freelance</div>
-          <div class="font-600">Freelance Developer</div>
-          <p class="opacity-70 text-sm mt-1 leading-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </li>
-        <li>
-          <div class="opacity-50 text-sm mb-1">2019 — 2020 · Addendum.org</div>
-          <div class="font-600">frontend developer</div>
-          <p class="opacity-70 text-sm mt-1 leading-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </li>
-        <li>
-          <div class="opacity-50 text-sm mb-1">2017 — 2018 · nexxar.com</div>
-          <div class="font-600">frontend developer</div>
-          <p class="opacity-70 text-sm mt-1 leading-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </li>
+        {
+          jobs.map((job) => (
+            <li>
+              <div class="opacity-50 text-sm mb-1">
+                {job.period} · {job.company}
+              </div>
+              <div class="font-600">{job.title}</div>
+              <p class="opacity-70 text-sm mt-1 leading-6">{job.detail}</p>
+            </li>
+          ))
+        }
       </ol>
     </div>
 
