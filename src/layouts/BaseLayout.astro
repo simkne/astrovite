@@ -1,14 +1,22 @@
 ---
 import { fade } from 'astro:transitions'
 import { ClientRouter } from 'astro:transitions'
+import { getImage } from 'astro:assets'
 import BaseHead from '@/components/BaseHead.astro'
 import AuraBackground from '@/components/AuraBackground.astro'
 import DotBackground from '@/components/blog/DotBackground.vue'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import ScrollToTop from '@/components/ScrollToTop.vue'
+import siteConfig from '@/site-config'
+import { resolveAsset } from '@/lib/images'
+import type { ImageMetadata } from 'astro'
 
 const { aura, ...head } = Astro.props
+
+const headerLogo = resolveAsset(siteConfig.header.logo.src) as ImageMetadata | undefined
+const logoWebp = headerLogo ? await getImage({ src: headerLogo, width: 64, height: 64, format: 'webp' }) : undefined
+const logoAvif = headerLogo ? await getImage({ src: headerLogo, width: 64, height: 64, format: 'avif' }) : undefined
 ---
 
 <!doctype html>
@@ -25,7 +33,7 @@ const { aura, ...head } = Astro.props
   >
     <AuraBackground violet={aura?.violet} cyan={aura?.cyan} pink={aura?.pink} />
     <DotBackground client:load />
-    <Header client:load />
+    <Header client:load logoSrc={logoWebp?.src} logoSrcset={`${logoAvif?.src} 1x, ${logoWebp?.src} 2x`} />
     <main
       class="grow max-w-3xl mx-auto sm:pt-36 pt-26 pb-16 px-6 relative z-10"
       transition:animate={fade({ duration: '0.4s' })}

@@ -39,10 +39,12 @@ export const siteConfig = {
       {
         text: 'Blog',
         href: '/blog/',
+        matchPaths: ['/posts/'],
       },
       {
         text: 'Notes',
         href: '/blog/notes/',
+        matchPaths: ['/posts/notes/'],
       },
       {
         text: 'Projects',

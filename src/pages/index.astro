@@ -4,6 +4,7 @@ import ListProjects from '@/components/ListProjects.vue'
 import siteConfig from '@/site-config'
 import { withBase } from '@/site-config'
 import { getPosts } from '@/utils/posts'
+import ContactBox from '@/components/ContactBox.astro'
 
 const latest = (await getPosts()).slice(0, 2)
 const latestEntries = latest.map((entry, i) => ({
@@ -69,8 +70,8 @@ const startBlocks = [
     <ListProjects list={latestEntries} />
 
     <p class="closing">
-      Found a bug, have a better approach, or just want to argue about tabs vs spaces? Hit me at
-      <a prose-link aria-label={siteConfig.email} href={`mailto:${siteConfig.email}`}> weltkugl</a>.
+      Found a bug, have a better approach, or just want to argue about tabs vs spaces?
+      <ContactBox />
       <span class="note">Work in progress — sometimes it really is just nonsense.</span>
     </p>
   </article>

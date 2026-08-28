@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import PrivateGate from '@/components/blog/PrivateGate.vue'
 import siteConfig from '@/site-config'
 import ContactBox from '@/components/ContactBox.astro'
 
@@ -146,76 +147,78 @@ const skills = [
   description="A detailed look at my background, experience and skills."
   pageType="article"
 >
-  <article class="cv">
-    <header class="cv-head">
-      <h1 class="cv-name">Simon Knebel</h1>
-      <p class="cv-tag">design · strategy · code</p>
-      <p class="cv-tagline">
-        Enthusiastic new-media developer and strategist, UI/UX conceptor with a focus on frontend development, led by an
-        entrepreneurial instinct with startup experience.
-      </p>
-    </header>
-
-    <section>
-      <h2 class="cv-h">Profile</h2>
-      <div class="prose">
-        <p>
-          Over the past 20+ years as an IT professional — 8 of them spent on the front line in London — I built a track
-          record of more than 50 completed projects, from online applications to commercial websites across numerous
-          technologies, for clients ranging from startups to digital agencies and international enterprises.
+  <PrivateGate client:load private slug="about/cv">
+    <article class="cv">
+      <header class="cv-head">
+        <h1 class="cv-name">Simon Knebel</h1>
+        <p class="cv-tag">design · strategy · code</p>
+        <p class="cv-tagline">
+          Enthusiastic new-media developer and strategist, UI/UX conceptor with a focus on frontend development, led by
+          an entrepreneurial instinct with startup experience.
         </p>
-        <p>
-          Having grown up in the third world explains my drive to work in the humanitarian sector. In 2015 I worked on a
-          research project in Mali financed with a Grand Challenges grant by the Bill &amp; Melinda Gates Foundation —
-          from overseeing the development of solar-thermal, autonomously self-cooling buildings to data analysis and
-          temperature-monitoring technologies.
-        </p>
-        <p>
-          I speak four languages fluently, several computer languages, love to travel and learn about different
-          cultures.
-        </p>
-      </div>
-    </section>
+      </header>
 
-    <section>
-      <h2 class="cv-h">Experience</h2>
-      <ol class="cv-timeline">
-        {
-          jobs.map((job) => (
-            <li class="cv-job">
-              <div class="cv-period">{job.period}</div>
-              <div class="cv-role">{job.title}</div>
-              <div class="cv-company">{job.company}</div>
-              <p class="cv-detail">{job.detail}</p>
-            </li>
-          ))
-        }
-      </ol>
-    </section>
+      <section>
+        <h2 class="cv-h">Profile</h2>
+        <div class="prose">
+          <p>
+            Over the past 20+ years as an IT professional — 8 of them spent on the front line in London — I built a
+            track record of more than 50 completed projects, from online applications to commercial websites across
+            numerous technologies, for clients ranging from startups to digital agencies and international enterprises.
+          </p>
+          <p>
+            Having grown up in the third world explains my drive to work in the humanitarian sector. In 2015 I worked on
+            a research project in Mali financed with a Grand Challenges grant by the Bill &amp; Melinda Gates Foundation
+            — from overseeing the development of solar-thermal, autonomously self-cooling buildings to data analysis and
+            temperature-monitoring technologies.
+          </p>
+          <p>
+            I speak four languages fluently, several computer languages, love to travel and learn about different
+            cultures.
+          </p>
+        </div>
+      </section>
 
-    <section>
-      <h2 class="cv-h">Skills</h2>
-      <div class="cv-skills">
-        {
-          skills.map(({ group, items }) => (
-            <div class="cv-skill-group">
-              <h3 class="cv-skill-name">{group}</h3>
-              <ul class="cv-skill-list">
-                {items.map((item) => (
-                  <li>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ))
-        }
-      </div>
-    </section>
+      <section>
+        <h2 class="cv-h">Experience</h2>
+        <ol class="cv-timeline">
+          {
+            jobs.map((job) => (
+              <li class="cv-job">
+                <div class="cv-period">{job.period}</div>
+                <div class="cv-role">{job.title}</div>
+                <div class="cv-company">{job.company}</div>
+                <p class="cv-detail">{job.detail}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
 
-    <section>
-      <h2 class="cv-h">Contact</h2>
-      <ContactBox />
-    </section>
-  </article>
+      <section>
+        <h2 class="cv-h">Skills</h2>
+        <div class="cv-skills">
+          {
+            skills.map(({ group, items }) => (
+              <div class="cv-skill-group">
+                <h3 class="cv-skill-name">{group}</h3>
+                <ul class="cv-skill-list">
+                  {items.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section>
+        <h2 class="cv-h">Contact</h2>
+        <ContactBox />
+      </section>
+    </article>
+  </PrivateGate>
 </BaseLayout>
 
 <style>

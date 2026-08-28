@@ -6,16 +6,27 @@ import siteConfig, { BASE_PATH, withBase } from '@/site-config'
 import { getLinkTarget, isExternalLink } from '@/utils/link'
 import ThemeToggle from './ThemeToggle.vue'
 
+const props = defineProps<{
+  logoSrc?: string
+  logoSrcset?: string
+}>()
+
 const navLinks = siteConfig.header.navLinks || []
+
+const resolvedLogoSrc = computed(() => props.logoSrc ?? withBase(siteConfig.header.logo.src))
 
 function getActiveHref() {
   if (typeof location === 'undefined')
     return ''
   const path = `${location.pathname}/`
-  return navLinks
-    .map(link => withBase(link.href))
-    .filter(href => path.startsWith(href))
-    .sort((a, b) => b.length - a.length)[0] ?? ''
+  const matching = navLinks
+    .filter((link) => {
+      const primary = withBase(link.href)
+      const extras = (link as any).matchPaths?.map((p: string) => withBase(p)) ?? []
+      return [primary, ...extras].some(href => path.startsWith(href))
+    })
+    .sort((a, b) => b.href.length - a.href.length)[0]
+  return matching ? withBase(matching.href) : ''
 }
 
 function refreshActivePage() {
@@ -117,7 +128,7 @@ function toggleNavDrawer() {
   >
     <div class="flex items-center h-full">
       <a :href="BASE_PATH" mr-6 aria-label="Header Logo Image">
-        <img width="32" height="32" :src="withBase(siteConfig.header.logo.src)" :alt="siteConfig.header.logo.alt">
+        <img width="32" height="32" :src="resolvedLogoSrc" :srcset="props.logoSrcset || undefined" :alt="siteConfig.header.logo.alt">
       </a>
       <nav class="sm:flex hidden flex-wrap gap-x-6 position-initial flex-row">
         <a

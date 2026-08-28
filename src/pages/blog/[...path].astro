@@ -22,7 +22,12 @@ const { path } = Astro.params
 const posts = (await getPosts(path)).filter((post) => path || !post.id.startsWith('notes/'))
 
 function activeLink(pathname: string) {
-  return Astro.url.pathname.replace(/\/+/g, '/').replace(/\/$/, '') === pathname
+  const current = Astro.url.pathname.replace(/\/+/g, '/').replace(/\/$/, '')
+  const targets = siteConfig.page.blogLinks.map((link) => withBase(link.href).replace(/\/+/g, '/').replace(/\/$/, ''))
+  const matched = targets
+    .filter((t) => current === t || current.startsWith(`${t}/`))
+    .sort((a, b) => b.length - a.length)
+  return matched[0] === withBase(pathname).replace(/\/+/g, '/').replace(/\/$/, '')
 }
 ---
 

@@ -91,6 +91,10 @@ const fallbackSrc = typeof rawSrc === 'string' ? withBase(rawSrc) : rawSrc.src
     position: absolute;
     inset: 0;
     pointer-events: none;
+    background: linear-gradient(to top, rgb(238 245 252 / 0.72), transparent 48%);
+  }
+
+  :global(html.dark) .hero-scrim {
     background: linear-gradient(to top, rgb(0 0 0 / 0.6), transparent 48%);
   }
 
@@ -100,6 +104,10 @@ const fallbackSrc = typeof rawSrc === 'string' ? withBase(rawSrc) : rawSrc.src
     right: 0;
     bottom: 0;
     padding: 1.5rem 2rem 1.75rem;
+    color: #484848;
+  }
+
+  :global(html.dark) .hero-overlay {
     color: #fff;
   }
 
@@ -108,6 +116,10 @@ const fallbackSrc = typeof rawSrc === 'string' ? withBase(rawSrc) : rawSrc.src
     font-weight: 800;
     line-height: 1.1;
     margin: 0;
+    text-shadow: 0 1px 2px rgb(255 255 255 / 0.55);
+  }
+
+  :global(html.dark) .hero-title {
     text-shadow: 0 1px 2px rgb(0 0 0 / 0.45);
   }
 
