@@ -3,7 +3,7 @@ import { z } from 'astro/zod'
 import { defineCollection } from 'astro:content'
 
 const pages = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/pages' }),
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './content/pages' }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -17,7 +17,7 @@ const pages = defineCollection({
 })
 
 const blog = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/blog' }),
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './content/blog' }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -48,7 +48,7 @@ const blog = defineCollection({
 })
 
 const iot = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/iot' }),
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './content/iot' }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),

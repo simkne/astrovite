@@ -19,11 +19,7 @@ const resolvedLogoSrc = computed(() => props.logoSrc ?? withBase(siteConfig.head
 function getActiveHref() {
   if (typeof location === 'undefined')
     return ''
-  const hrefs = navLinks.flatMap(link => [
-    link.href,
-    ...((link as any).matchPaths ?? []),
-  ])
-  return findActiveHref(hrefs, location.pathname)
+  return findActiveHref(navLinks, location.pathname)
 }
 
 function refreshActivePage() {

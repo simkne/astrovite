@@ -24,7 +24,7 @@ function getHref(doc: IotDoc) {
   <ul sm:min-h-20 min-h-16 mb-12>
     <template v-if="!list || list.length === 0">
       <div my-8 opacity-50>
-        No articles here yet — add a Markdown file under <code>src/content/iot/</code>.
+        No articles here yet — add a Markdown file under <code>content/iot/</code>.
       </div>
     </template>
     <li v-for="doc in list" :key="doc.id" mb-6>

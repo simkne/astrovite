@@ -16,9 +16,9 @@ export const DEFAULT_REPO: Repo = {
   branch: 'main',
 }
 
-export const NOTES_PATH = 'src/content/blog/notes'
+export const NOTES_PATH = 'content/blog/notes'
 
-export const BLOG_PATH = 'src/content/blog'
+export const BLOG_PATH = 'content/blog'
 
 export interface GithubFile {
   content: string

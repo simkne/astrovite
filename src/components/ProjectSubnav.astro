@@ -12,7 +12,6 @@ interface Props {
 }
 
 const { links } = Astro.props
-const allHrefs = links.map((link) => link.href)
 ---
 
 <div class="flex flex-col gap-2 sm:flex-row sm:gap-4 flex-wrap mb-8">
@@ -20,7 +19,7 @@ const allHrefs = links.map((link) => link.href)
     links.map((nav) => (
       <a
         aria-label={nav.text}
-        class={`nav-link text-3xl font-bold ${isActiveHref(nav.href, allHrefs, Astro.url.pathname) ? 'opacity-80' : 'opacity-30 hover:opacity-50'}`}
+        class={`nav-link text-3xl font-bold ${isActiveHref(nav.href, links, Astro.url.pathname) ? 'opacity-80' : 'opacity-30 hover:opacity-50'}`}
         href={withBase(nav.href)}
       >
         {nav.text}

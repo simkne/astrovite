@@ -87,7 +87,7 @@ if (props.kind === 'article') {
           </>
         )}
         <ArticleContent />
-        <EditLink client:load path={`src/content/iot/${props.entry.id}.md`} />
+        <EditLink client:load path={`content/iot/${props.entry.id}.md`} />
       </article>
     </BaseLayout>
   )

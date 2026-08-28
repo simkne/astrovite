@@ -316,7 +316,7 @@ ls -la ~/site-backups/
 
 Edit any `.md` file directly on GitHub (or locally and push):
 
-1. Go to GitHub → `src/content/iot/esp32/getting-started.md`
+1. Go to GitHub → `content/iot/esp32/getting-started.md`
 2. Click the pencil icon (Edit)
 3. Change one word, scroll down, click **Commit changes...**
 4. Select **Commit directly to the `main` branch**
@@ -402,5 +402,5 @@ After setup, your server should look like this:
 - [ ] Add your portal page files to `/var/www/weltkugl.net/` (not in `www/`)
 - [ ] Edit `src/projects/iot-config.ts` to add more wiki sections
 - [ ] Replace dummy projects in `src/pages/projects/data.ts` with real ones
-- [ ] Clean up old placeholder blog posts in `src/content/blog/`
-- [ ] Consider adding a `README.md` to `src/content/` explaining the content structure for future reference
+- [ ] Clean up old placeholder blog posts in `content/blog/`
+- [ ] ~~Consider adding a `README.md` to `src/content/`~~ — content now lives at the top-level `content/` (see `content/README.md`).

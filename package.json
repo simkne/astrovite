@@ -14,7 +14,7 @@
     "template"
   ],
   "engines": {
-    "node": ">=v18.17.1 || >=v20.3.0 || >=21"
+    "node": ">=v20.3.0 || >=22"
   },
   "scripts": {
     "prepare": "simple-git-hooks",

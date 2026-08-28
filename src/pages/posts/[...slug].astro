@@ -57,6 +57,6 @@ function getDate(date: string) {
     <PrivateGate client:load private={isPrivate} sharePassword={sharePassword} slug={post.id}>
       <Content />
     </PrivateGate>
-    <EditLink client:load path={`src/content/blog/${post.id}.md`} />
+    <EditLink client:load path={`content/blog/${post.id}.md`} />
   </article>
 </BaseLayout>

@@ -17,7 +17,7 @@ A place for longer-form thoughts and observations from working on different proj
 
 Content lives as plain Markdown in this repo. Push to `main` → site builds and deploys in ~60 seconds.
 
-> **IoT & home-automation reference docs live in this repo** — `src/content/iot/`, published at `/projects/iot/`. A separate Nuxt-based companion for broader structured, reference-style documentation (devops, software architecture, and other topics) is still in the works. This Astro site focuses on the experience side of things.
+> **IoT & home-automation reference docs live in this repo** — `content/iot/`, published at `/projects/iot/`. A separate Nuxt-based companion for broader structured, reference-style documentation (devops, software architecture, and other topics) is still in the works. This Astro site focuses on the experience side of things.
 
 ---
 
@@ -50,13 +50,13 @@ Content lives as plain Markdown in this repo. Push to `main` → site builds and
 
 ## Content Collections
 
-Content is organized in Astro collections under `src/content/`:
+Content is organized in Astro collections under `content/`:
 
 | Collection | Location | Purpose |
 |-----------|----------|---------|
-| `blog` | `src/content/blog/` | Blog posts, notes, talks |
-| `pages` | `src/content/pages/` | Static pages (e.g. `/md-style`) |
-| `iot` | `src/content/iot/` | IoT / home-automation reference docs (published at `/projects/iot/`) |
+| `blog` | `content/blog/` | Blog posts, notes, talks |
+| `pages` | `content/pages/` | Static pages (e.g. `/md-style`) |
+| `iot` | `content/iot/` | IoT / home-automation reference docs (published at `/projects/iot/`) |
 
 All three collections are actively used. The `iot` collection is the reference-style docs hub rendered by `src/pages/projects/iot/[...slug].astro`. A separate Nuxt knowledge base for broader reference topics is still in the works (see above).
 
@@ -132,7 +132,7 @@ tar -xzf ~/site-backups/20260822-121500.tar.gz -C /path/to/DEPLOY_PATH
 │   ├── pages/                     # Astro routing (incl. /projects/*)
 │   ├── projects/                  # Section configs (iot-config.ts)
 │   ├── styles/                    # prose.css, global.css, dot.css
-│   └── utils/                     # Content helpers
+│   └── utils/                     # Content & nav helpers (posts.ts, nav.ts, link.ts, iot.ts)
 ├── public/                        # Static assets (images)
 ├── astro.config.ts                # Astro config (base: '/www')
 └── uno.config.ts                  # UnoCSS shortcuts & presets
@@ -144,7 +144,7 @@ tar -xzf ~/site-backups/20260822-121500.tar.gz -C /path/to/DEPLOY_PATH
 
 ### New Blog Post
 
-Create a file in `src/content/blog/` or a subfolder:
+Create a file in `content/blog/` or a subfolder:
 
 ```md
 ---
@@ -165,7 +165,7 @@ Your content here.
 ### Web-based markdown editor
 
 A browser-based editor lives at `https://www.weltkugl.net/www/editor/` (mobile-friendly). It writes notes to
-`src/content/blog/notes/` via the GitHub REST API, so saving triggers the normal push-to-main deploy.
+`content/blog/notes/` via the GitHub REST API, so saving triggers the normal push-to-main deploy.
 
 - **GitHub token:** enter a fine-grained PAT with `contents: write` on this repo once. It is stored only in the
   browser's `localStorage` (`astrovite_gh_token`) and never sent anywhere except `api.github.com`. It is never
