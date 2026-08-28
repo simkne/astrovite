@@ -4,6 +4,7 @@ import ListPosts from '@/components/ListPosts.vue'
 import siteConfig from '@/site-config'
 import { withBase } from '@/site-config'
 import { getPosts } from '@/utils/posts'
+import { isActiveHref } from '@/utils/nav'
 
 export async function getStaticPaths() {
   const paths = siteConfig.page.blogLinks.map((nav) => {
@@ -21,14 +22,7 @@ const { path } = Astro.params
 
 const posts = (await getPosts(path)).filter((post) => path || !post.id.startsWith('notes/'))
 
-function activeLink(pathname: string) {
-  const current = Astro.url.pathname.replace(/\/+/g, '/').replace(/\/$/, '')
-  const targets = siteConfig.page.blogLinks.map((link) => withBase(link.href).replace(/\/+/g, '/').replace(/\/$/, ''))
-  const matched = targets
-    .filter((t) => current === t || current.startsWith(`${t}/`))
-    .sort((a, b) => b.length - a.length)
-  return matched[0] === withBase(pathname).replace(/\/+/g, '/').replace(/\/$/, '')
-}
+const blogHrefs = siteConfig.page.blogLinks.map((link) => link.href)
 ---
 
 <BaseLayout title="Blog" description="List of all the blog posts." pageNav={true} pageOperate={true}>
@@ -37,7 +31,7 @@ function activeLink(pathname: string) {
       siteConfig.page.blogLinks.map((nav) => (
         <a
           aria-label={nav.text}
-          class={`nav-link text-3xl font-bold ${activeLink(nav.href) ? 'opacity-80' : 'opacity-30 hover:opacity-50'}`}
+          class={`nav-link text-3xl font-bold ${isActiveHref(nav.href, blogHrefs, Astro.url.pathname) ? 'opacity-80' : 'opacity-30 hover:opacity-50'}`}
           href={withBase(nav.href)}
         >
           {nav.text}

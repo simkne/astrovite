@@ -1,10 +1,8 @@
 ---
 import { getCollection, render } from 'astro:content'
-import { Picture } from 'astro:assets'
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import ContentHero from '@/components/ContentHero.astro'
 import EditLink from '@/components/EditLink.vue'
-import { resolveAsset } from '@/lib/images'
-import { withBase } from '@/site-config'
 import type { CollectionPages } from '@/types'
 
 export async function getStaticPaths() {
@@ -21,7 +19,6 @@ type Props = { page: CollectionPages }
 
 const { page } = Astro.props
 const { title, description, image } = page.data
-const headerAsset = image?.src ? resolveAsset(image.src) : undefined
 
 const { Content } = await render(page)
 ---
@@ -29,28 +26,7 @@ const { Content } = await render(page)
 <BaseLayout title={title} description={description} image={image}>
   <article class="prose">
     <h1>{title}</h1>
-    {
-      headerAsset && (
-        <p>
-          <Picture
-            src={headerAsset}
-            formats={['avif', 'webp']}
-            widths={[480, 640, 960]}
-            sizes="(min-width: 768px) 640px, 100vw"
-            alt={image?.alt || ''}
-            class="rd-2"
-            loading="lazy"
-          />
-        </p>
-      )
-    }
-    {
-      image && !headerAsset && (
-        <p>
-          <img width="640" height="360" src={withBase(image.src)} alt={image.alt || ''} />
-        </p>
-      )
-    }
+    <ContentHero image={image} />
     <Content />
     <EditLink client:load path={`src/content/pages/${page.id}.md`} />
   </article>

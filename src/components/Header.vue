@@ -4,6 +4,7 @@ import { computed, onMounted, ref, unref } from 'vue'
 import { isAdmin, logoutAdmin } from '@/lib/auth'
 import siteConfig, { BASE_PATH, withBase } from '@/site-config'
 import { getLinkTarget, isExternalLink } from '@/utils/link'
+import { findActiveHref } from '@/utils/nav'
 import ThemeToggle from './ThemeToggle.vue'
 
 const props = defineProps<{
@@ -18,15 +19,11 @@ const resolvedLogoSrc = computed(() => props.logoSrc ?? withBase(siteConfig.head
 function getActiveHref() {
   if (typeof location === 'undefined')
     return ''
-  const path = `${location.pathname}/`
-  const matching = navLinks
-    .filter((link) => {
-      const primary = withBase(link.href)
-      const extras = (link as any).matchPaths?.map((p: string) => withBase(p)) ?? []
-      return [primary, ...extras].some(href => path.startsWith(href))
-    })
-    .sort((a, b) => b.href.length - a.href.length)[0]
-  return matching ? withBase(matching.href) : ''
+  const hrefs = navLinks.flatMap(link => [
+    link.href,
+    ...((link as any).matchPaths ?? []),
+  ])
+  return findActiveHref(hrefs, location.pathname)
 }
 
 function refreshActivePage() {

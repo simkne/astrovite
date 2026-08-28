@@ -1,0 +1,33 @@
+---
+import { Picture } from 'astro:assets'
+import { resolveAsset } from '@/lib/images'
+import { withBase } from '@/site-config'
+
+interface Props {
+  image?: { src: string; alt?: string }
+}
+
+const { image } = Astro.props
+const asset = image?.src ? resolveAsset(image.src) : undefined
+const alt = image?.alt || ''
+---
+
+{
+  image && (
+    <p>
+      {asset ? (
+        <Picture
+          src={asset}
+          formats={['avif', 'webp']}
+          widths={[480, 640, 960]}
+          sizes="(min-width: 768px) 640px, 100vw"
+          alt={alt}
+          class="rd-2"
+          loading="lazy"
+        />
+      ) : (
+        <img width="640" height="360" src={withBase(image.src)} alt={alt} />
+      )}
+    </p>
+  )
+}

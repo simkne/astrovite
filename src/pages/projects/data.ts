@@ -1,5 +1,4 @@
 import type { ImageMetadata } from 'astro'
-import type { ProjectData } from '@/types'
 import feilacherThumb from '@/assets/imgs/feilacher-thumb.png'
 import schnarchfreiLogo from '@/assets/imgs/schnarchfrei-logo.svg'
 import zensoriaThumb from '@/assets/imgs/zensoria_thumb.png'
@@ -53,6 +52,3 @@ export const projectData: ProjectGroups = [
     ],
   },
 ]
-
-// Keep legacy type export happy for any remaining string-based consumers.
-export type { ProjectData }
