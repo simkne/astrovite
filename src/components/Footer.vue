@@ -21,7 +21,7 @@ onMounted(async () => {
 
 <template>
   <footer
-    class="w-full mt-18 pt-6 pb-8 max-w-3xl text-sm flex flex-col gap-4 border-main border-t !border-op-50 text-dark dark:text-white"
+    class="w-full mt-18 pt-6 pb-8 max-w-3xl text-sm flex flex-col gap-4 border-main border-t !border-op-50 text-link"
   >
     <div v-if="navLinks.length > 0" class="flex flex-wrap gap-4">
       <template v-for="(link, index) in navLinks" :key="link.text">

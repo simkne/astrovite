@@ -1,18 +1,47 @@
 <script lang="ts" setup>
-import { useDark } from '@vueuse/core'
-import { onMounted } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
-const isDark = useDark()
+const STORAGE_KEY = 'astrovite-theme'
+const isDark = ref(true)
 
-function setDarkMode(document: Document) {
-  if (isDark.value)
-    document.documentElement.classList.add('dark')
-  else
-    document.documentElement.classList.remove('dark')
+function readStored(): boolean {
+  try {
+    const v = localStorage.getItem(STORAGE_KEY)
+    if (v === 'light') {
+      return false
+    }
+  }
+  catch (error) {
+    void error
+  }
+  // Default to dark — ignore system preference entirely.
+  return true
 }
+
+function persist(dark: boolean) {
+  try {
+    localStorage.setItem(STORAGE_KEY, dark ? 'dark' : 'light')
+  }
+  catch (error) {
+    void error
+  }
+}
+
+function applyClass(dark: boolean, doc: Document = document) {
+  doc.documentElement.classList.toggle('dark', dark)
+}
+
 onMounted(() => {
+  isDark.value = readStored()
+  applyClass(isDark.value)
+
+  watch(isDark, (v) => {
+    applyClass(v)
+    persist(v)
+  })
+
   document.addEventListener('astro:before-swap', (event) => {
-    setDarkMode(event.newDocument)
+    applyClass(isDark.value, event.newDocument)
   })
 })
 
@@ -26,6 +55,13 @@ function toggleTheme(event: MouseEvent) {
 
   // Capture direction BEFORE toggling to avoid reactivity timing issues
   const turningDark = !isDark.value
+
+  // No animated transition while save-energy is active — the theme class still
+  // toggles, but it has no visible effect until energy saving is turned off.
+  if (document.documentElement.classList.contains('save-energy')) {
+    isDark.value = turningDark
+    return
+  }
 
   // @ts-expect-error: Transition API
   if (!document.startViewTransition) {
@@ -60,5 +96,5 @@ function toggleTheme(event: MouseEvent) {
 </script>
 
 <template>
-  <button :aria-label="isDark ? 'Dark Theme' : 'Light Theme'" nav-link dark:i-ri-moon-line i-ri-sun-line @click="toggleTheme" />
+  <button class="theme-toggle" :aria-label="isDark ? 'Dark Theme' : 'Light Theme'" nav-link dark:i-ri-moon-line i-ri-sun-line @click="toggleTheme" />
 </template>

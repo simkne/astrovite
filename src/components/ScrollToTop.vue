@@ -220,6 +220,12 @@ onBeforeUnmount(() => {
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html.save-energy .scroll-top--bottom {
+    animation: none;
+  }
+}
+
 @media print {
   .scroll-top {
     display: none;

@@ -29,8 +29,48 @@
   font-display: swap;
 }
 
+/* Theme-aware surface variables. Save-energy overrides these with a
+   high-contrast dark palette regardless of the light/dark setting. */
+:root {
+  --bg-main: #eef5fc;
+  --text-main: #222222;
+  --text-heading: #1a1a1a;
+  --text-link: #1a1a1a;
+  --border-main: #d4d4d4;
+  --hover-glow: rgba(66, 133, 244, 0.5);
+  --muted: #666666;
+  --accent: #2563eb;
+  color-scheme: light;
+}
+
+html.dark {
+  --bg-main: #0d1117;
+  --text-main: #bbbbbb;
+  --text-heading: #ffffff;
+  --text-link: #ffffff;
+  --border-main: #525252;
+  --hover-glow: rgba(138, 180, 255, 0.5);
+  --muted: #b3b3b3;
+  --accent: #ffd60a;
+  color-scheme: dark;
+}
+
+html.save-energy {
+  --bg-main: #000000;
+  --text-main: #ffffff;
+  --text-heading: #ffffff;
+  --text-link: #8ab4ff;
+  --border-main: #2b2b2b;
+  --hover-glow: rgba(138, 180, 255, 0.5);
+  --muted: #b3b3b3;
+  --accent: #ffd60a;
+  color-scheme: dark;
+}
+
 html.dark .astro-code,
-html.dark .astro-code span {
+html.dark .astro-code span,
+html.save-energy .astro-code,
+html.save-energy .astro-code span {
   color: var(--shiki-dark) !important;
   background-color: #161b22 !important;
   font-style: var(--shiki-dark-font-style) !important;
@@ -38,35 +78,38 @@ html.dark .astro-code span {
   text-decoration: var(--shiki-dark-text-decoration) !important;
 }
 
-html.dark {
-  --hover-glow: rgba(138, 180, 255, 0.5);
-}
-
-html:not(.dark) {
-  --hover-glow: rgba(66, 133, 244, 0.5);
-}
-
-a,
-button {
+/* Default (light and dark): subtle lift + glow on interactive elements. */
+:where(html:not(.save-energy)) a,
+:where(html:not(.save-energy)) button {
   transition:
     transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
     filter 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-a:hover,
-a:focus-visible,
-button:hover,
-button:focus-visible {
+:where(html:not(.save-energy)) a:hover,
+:where(html:not(.save-energy)) a:focus-visible,
+:where(html:not(.save-energy)) button:hover,
+:where(html:not(.save-energy)) button:focus-visible {
   transform: translateY(-1px);
   filter: drop-shadow(0 0 6px var(--hover-glow));
 }
 
-html.dark {
-  color-scheme: dark;
+/* Save energy: no lift, no glow — just a calm color/border transition. */
+html.save-energy a,
+html.save-energy button {
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
 }
 
-html:not(.dark) {
-  color-scheme: light;
+html.save-energy a:hover,
+html.save-energy a:focus-visible,
+html.save-energy button:hover,
+html.save-energy button:focus-visible {
+  transform: none;
+  filter: none;
 }
 
 #nprogress {
@@ -82,6 +125,10 @@ html:not(.dark) {
   left: 0;
   width: 100%;
   height: 2px;
+}
+
+html.save-energy #nprogress {
+  display: none;
 }
 
 img {
@@ -115,4 +162,16 @@ html.dark::view-transition-old(root) {
 }
 html.dark::view-transition-new(root) {
   z-index: 1;
+}
+
+/* Save energy: suppress Astro's page-level crossfade. */
+html.save-energy::view-transition-old(*),
+html.save-energy::view-transition-new(*) {
+  animation: none !important;
+}
+
+/* Save energy: hide the theme toggle (it has no visible effect while energy
+   mode is forcing the high-contrast dark palette). */
+html.save-energy .theme-toggle {
+  display: none;
 }

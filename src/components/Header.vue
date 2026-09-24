@@ -5,6 +5,7 @@ import { isAdmin, logoutAdmin } from '@/lib/auth'
 import siteConfig, { BASE_PATH, withBase } from '@/site-config'
 import { getLinkTarget, isExternalLink } from '@/utils/link'
 import { findActiveHref } from '@/utils/nav'
+import SaveEnergyToggle from './SaveEnergyToggle.vue'
 import ThemeToggle from './ThemeToggle.vue'
 
 const props = defineProps<{
@@ -151,6 +152,7 @@ function toggleNavDrawer() {
       <a
         v-else nav-link aria-label="Log in" title="Log in" :href="withBase('/login/')" i-ri-login-box-line
       />
+      <SaveEnergyToggle />
       <ThemeToggle />
     </div>
   </header>
@@ -174,14 +176,23 @@ function toggleNavDrawer() {
   transition: transform 0.4s ease;
 }
 
-.nav-active {
+:where(html:not(.save-energy)) .nav-active {
   opacity: 1;
   transform: translateY(-1px);
   filter: drop-shadow(0 0 6px var(--hover-glow));
 }
 
+html.save-energy .nav-active {
+  opacity: 1;
+}
+
 .header-bg-blur {
   --at-apply: backdrop-blur-sm;
+}
+
+html.save-energy .header-bg-blur {
+  backdrop-filter: none;
+  background: rgb(0 0 0 / 0.98);
 }
 
 .nav-drawer {

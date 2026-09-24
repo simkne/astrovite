@@ -492,7 +492,8 @@
   margin-bottom: 0;
 }
 
-html.dark .prose {
+html.dark .prose,
+html.save-energy .prose {
   --un-prose-body: var(--un-prose-invert-body);
   --un-prose-headings: var(--un-prose-invert-headings);
   --un-prose-lead: var(--un-prose-invert-lead);

@@ -21,15 +21,15 @@ export default defineConfig({
   },
   shortcuts: [
     {
-      'bg-main': 'bg-hex-eef5fc dark:bg-hex-0d1117',
-      'text-main': 'text-hex-555555 dark:text-hex-bbbbbb',
-      'text-link': 'text-dark dark:text-white ',
-      'border-main': 'border-truegray-300 dark:border-truegray-600',
+      'bg-main': 'bg-[var(--bg-main)]',
+      'text-main': 'text-[var(--text-main)]',
+      'text-link': 'text-[var(--text-link)]',
+      'border-main': 'border-[var(--border-main)]',
     },
     {
-      'text-title': 'text-link text-4xl font-800',
-      'home-title': 'text-link text-8xl font-800',
-      'nav-link': 'text-link opacity-70 hover:opacity-100 transition-all duration-200 cursor-pointer',
+      'text-title': 'text-[var(--text-heading)] text-4xl font-800',
+      'home-title': 'text-[var(--text-heading)] text-8xl font-800',
+      'nav-link': 'text-[var(--text-heading)] opacity-70 hover:opacity-100 transition-all duration-200 cursor-pointer',
       'prose-link': 'text-link text-nowrap cursor-pointer border-b-1 !border-opacity-30 hover:!border-opacity-100 border-neutral-500 hover:border-truegray-600 dark:border-neutral-500 hover:dark:border-truegray-400 transition-all duration-200 decoration-none',
       'container-link': 'p-2 opacity-60 hover:opacity-100 cursor-pointer hover:bg-truegray-500 !bg-opacity-10 transition-all duration-200',
     },
@@ -64,5 +64,7 @@ export default defineConfig({
     'i-simple-icons-github',
     'i-ri-github-line',
     'i-carbon-chip',
+    'i-carbon-flash',
+    'i-carbon-flash-filled',
   ],
 })

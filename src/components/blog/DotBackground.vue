@@ -38,6 +38,7 @@ const target: { x: number, y: number, active: boolean } = { x: 0, y: 0, active: 
 
 let focusEl: Element | null = null
 let focusHref = ''
+let interactionsAttached = false
 
 function onFocusEvent(e: Event) {
   const detail = (e as CustomEvent).detail
@@ -73,10 +74,62 @@ function hexToRgb(hex: string): [number, number, number] {
   return [74, 74, 74]
 }
 
+function isSaveEnergy() {
+  return document.documentElement.classList.contains('save-energy')
+}
+
 function readColors() {
   const s = getComputedStyle(document.documentElement)
   colorRgb = hexToRgb(s.getPropertyValue('--dot-color').trim() || '#a5aeb8')
   litRgb = hexToRgb(s.getPropertyValue('--dot-lit-color').trim() || '#4b5563')
+}
+
+function attachInteractions() {
+  if (interactionsAttached) {
+    return
+  }
+  interactionsAttached = true
+  window.addEventListener('pointermove', onPointerMove, { passive: true })
+  window.addEventListener('pointerout', onPointerOut)
+  window.addEventListener('pointerover', onPointerOver)
+  document.documentElement.addEventListener('mouseleave', onPointerLeave)
+  window.addEventListener('dot:focus', onFocusEvent)
+}
+
+function detachInteractions() {
+  if (!interactionsAttached) {
+    return
+  }
+  interactionsAttached = false
+  window.removeEventListener('pointermove', onPointerMove)
+  window.removeEventListener('pointerout', onPointerOut)
+  window.removeEventListener('pointerover', onPointerOver)
+  document.documentElement.removeEventListener('mouseleave', onPointerLeave)
+  window.removeEventListener('dot:focus', onFocusEvent)
+}
+
+function drawStatic() {
+  if (!ctx) {
+    return
+  }
+  ctx.clearRect(0, 0, width, height)
+  ctx.fillStyle = `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`
+  for (const p of particles) {
+    ctx.fillRect(p.homeX - DOT_R, p.homeY - DOT_R, DOT_R * 2, DOT_R * 2)
+  }
+}
+
+function syncEnergyState() {
+  readColors()
+  if (isSaveEnergy()) {
+    stop()
+    detachInteractions()
+    drawStatic()
+  }
+  else {
+    attachInteractions()
+    start()
+  }
 }
 
 function resize() {
@@ -94,6 +147,9 @@ function resize() {
   for (let y = GRID / 2; y < height; y += GRID) {
     for (let x = GRID / 2; x < width; x += GRID)
       particles.push({ homeX: x, homeY: y, x, y, vx: 0, vy: 0 })
+  }
+  if (isSaveEnergy()) {
+    drawStatic()
   }
 }
 
@@ -219,26 +275,18 @@ onMounted(() => {
   readColors()
   resize()
   window.addEventListener('resize', resize)
-  window.addEventListener('pointermove', onPointerMove, { passive: true })
-  window.addEventListener('pointerout', onPointerOut)
-  window.addEventListener('pointerover', onPointerOver)
-  document.documentElement.addEventListener('mouseleave', onPointerLeave)
-  window.addEventListener('dot:focus', onFocusEvent)
-  start()
+  syncEnergyState()
 
-  // Re-read colors when the theme (dark/light) class changes
-  colorObserver = new MutationObserver(readColors)
+  // React to energy/theme changes (and any html [class] driven dot colors):
+  // start/stop the interaction + animation loop and refresh the drawing.
+  colorObserver = new MutationObserver(syncEnergyState)
   colorObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 })
 
 onBeforeUnmount(() => {
   stop()
+  detachInteractions()
   window.removeEventListener('resize', resize)
-  window.removeEventListener('pointermove', onPointerMove)
-  window.removeEventListener('pointerout', onPointerOut)
-  window.removeEventListener('pointerover', onPointerOver)
-  document.documentElement.removeEventListener('mouseleave', onPointerLeave)
-  window.removeEventListener('dot:focus', onFocusEvent)
   colorObserver?.disconnect()
 })
 </script>

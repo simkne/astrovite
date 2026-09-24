@@ -123,6 +123,49 @@ const fallbackSrc = typeof rawSrc === 'string' ? withBase(rawSrc) : rawSrc.src
     text-shadow: 0 1px 2px rgb(0 0 0 / 0.45);
   }
 
+  /* Save energy: static, in-flow hero image with no parallax, scrim, mask or glow. */
+  html.save-energy .hero {
+    position: relative;
+    height: auto;
+    width: 100%;
+    margin-left: 0;
+    margin-bottom: 2.5rem;
+    border-radius: 0;
+    overflow: visible;
+    aspect-ratio: 16 / 9;
+  }
+
+  html.save-energy .hero :global(picture),
+  html.save-energy .hero :global(.hero-img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  html.save-energy .hero :global(.hero-img) {
+    object-fit: cover;
+    object-position: center 38%;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  html.save-energy .hero-scrim {
+    display: none;
+  }
+
+  html.save-energy .hero-overlay {
+    position: static;
+    padding: 1rem 0 0;
+    color: #ffffff;
+  }
+
+  html.save-energy .hero-title {
+    text-shadow: none;
+  }
+
   .hero-desc {
     margin: 0.5rem 0 0;
     font-size: 0.95rem;
@@ -137,62 +180,146 @@ const fallbackSrc = typeof rawSrc === 'string' ? withBase(rawSrc) : rawSrc.src
   // start, so it never scrolls up with the page — content merely passes over it
   // while it fades out, and the visible crop drifts slowly downward (a subtle
   // counter-scroll touch achieved by shifting the object-position).
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    let ticking = false
+  // Active in both light and dark; disabled in save-energy mode.
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
+  let ticking = false
+  let raf = 0
+  let listenersAttached = false
 
-    function update() {
-      ticking = false
-      const img = document.querySelector('.hero-img')
-      if (!img || !img.parentElement) {
-        return
-      }
-      const hero = img.closest('.hero')
-      if (!hero) {
-        return
-      }
-      const scrim = hero.querySelector('.hero-scrim')
-      // pin the image together with its bottom scrim so the dark fade under the
-      // title stays glued to the image instead of scrolling away from it
-      const picture = img.parentElement?.tagName === 'PICTURE' ? img.parentElement : null
-      const elements = [picture || img, scrim].filter(Boolean) as HTMLElement[]
+  function isSaveEnergy() {
+    return document.documentElement.classList.contains('save-energy')
+  }
 
-      // document-space top of the hero is constant, so the pinned image keeps the
-      // exact position it had at rest (no movement up, no jump at any threshold)
-      const pinTop = hero.getBoundingClientRect().top + window.scrollY
-      const scrollY = window.scrollY
-      const fade = window.innerHeight * 0.6
-      const opacity = String(Math.max(0, 1 - scrollY / fade))
-      // slow, capped drift: showing a higher crop makes the image content appear
-      // to slide downward inside the fixed window
-      const delta = Math.min(scrollY * 0.02, 11)
-      const baseY = Number(img.dataset.focusY ?? 38)
-      img.style.objectPosition = `center ${Math.max(0, baseY - delta)}%`
+  function active() {
+    return !isSaveEnergy() && !reducedMotion.matches
+  }
 
-      for (const el of elements) {
-        el.style.position = 'fixed'
-        el.style.top = `${pinTop}px`
-        el.style.left = '0'
-        el.style.right = 'auto'
-        el.style.bottom = 'auto'
-        el.style.width = '100vw'
-        el.style.height = '45vh'
-        el.style.margin = '0'
-        el.style.zIndex = '-1'
-        el.style.opacity = opacity
-        el.style.overflow = 'hidden'
-      }
+  function resetStyles(el: HTMLElement | null) {
+    if (!el) {
+      return
     }
+    el.style.position = ''
+    el.style.top = ''
+    el.style.left = ''
+    el.style.right = ''
+    el.style.bottom = ''
+    el.style.width = ''
+    el.style.height = ''
+    el.style.margin = ''
+    el.style.zIndex = ''
+    el.style.opacity = ''
+    el.style.overflow = ''
+  }
 
-    function requestUpdate() {
-      if (!ticking) {
-        ticking = true
-        requestAnimationFrame(update)
-      }
+  function cleanup() {
+    const img = document.querySelector('.hero-img')
+    if (!img) {
+      return
     }
+    const hero = img.closest('.hero')
+    if (!hero) {
+      return
+    }
+    const scrim = hero.querySelector('.hero-scrim')
+    const picture = img.parentElement?.tagName === 'PICTURE' ? img.parentElement : null
+    resetStyles((picture || img) as HTMLElement)
+    resetStyles(scrim as HTMLElement)
+    img.style.objectPosition = ''
+  }
 
-    addEventListener('scroll', requestUpdate, { passive: true })
-    addEventListener('resize', requestUpdate, { passive: true })
+  function update() {
+    ticking = false
+    if (!active()) {
+      cleanup()
+      return
+    }
+    const img = document.querySelector('.hero-img')
+    if (!img || !img.parentElement) {
+      return
+    }
+    const hero = img.closest('.hero')
+    if (!hero) {
+      return
+    }
+    const scrim = hero.querySelector('.hero-scrim')
+    // pin the image together with its bottom scrim so the dark fade under the
+    // title stays glued to the image instead of scrolling away from it
+    const picture = img.parentElement?.tagName === 'PICTURE' ? img.parentElement : null
+    const elements = [picture || img, scrim].filter(Boolean) as HTMLElement[]
+
+    // document-space top of the hero is constant, so the pinned image keeps the
+    // exact position it had at rest (no movement up, no jump at any threshold)
+    const pinTop = hero.getBoundingClientRect().top + window.scrollY
+    const scrollY = window.scrollY
+    const fade = window.innerHeight * 0.6
+    const opacity = String(Math.max(0, 1 - scrollY / fade))
+    // slow, capped drift: showing a higher crop makes the image content appear
+    // to slide downward inside the fixed window
+    const delta = Math.min(scrollY * 0.02, 11)
+    const baseY = Number(img.dataset.focusY ?? 38)
+    img.style.objectPosition = `center ${Math.max(0, baseY - delta)}%`
+
+    for (const el of elements) {
+      el.style.position = 'fixed'
+      el.style.top = `${pinTop}px`
+      el.style.left = '0'
+      el.style.right = 'auto'
+      el.style.bottom = 'auto'
+      el.style.width = '100vw'
+      el.style.height = '45vh'
+      el.style.margin = '0'
+      el.style.zIndex = '-1'
+      el.style.opacity = opacity
+      el.style.overflow = 'hidden'
+    }
+  }
+
+  function requestUpdate() {
+    if (!ticking) {
+      ticking = true
+      raf = requestAnimationFrame(update)
+    }
+  }
+
+  function attach() {
+    if (listenersAttached) {
+      return
+    }
+    listenersAttached = true
+    window.addEventListener('scroll', requestUpdate, { passive: true })
+    window.addEventListener('resize', requestUpdate, { passive: true })
     document.addEventListener('astro:page-load', requestUpdate)
-    requestUpdate()
+  }
+
+  function detach() {
+    if (!listenersAttached) {
+      return
+    }
+    listenersAttached = false
+    window.removeEventListener('scroll', requestUpdate)
+    window.removeEventListener('resize', requestUpdate)
+    document.removeEventListener('astro:page-load', requestUpdate)
+    if (raf) {
+      cancelAnimationFrame(raf)
+      raf = 0
+    }
+    ticking = false
+    cleanup()
+  }
+
+  function sync() {
+    if (active()) {
+      attach()
+      requestUpdate()
+    }
+    if (!active()) {
+      detach()
+    }
+  }
+
+  sync()
+  new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+  if (reducedMotion.addEventListener) {
+    reducedMotion.addEventListener('change', sync)
   }
 </script>

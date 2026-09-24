@@ -124,6 +124,10 @@ const auraStyle = [violet && `--aura-violet:${violet}`, cyan && `--aura-cyan:${c
     --aura-pink: hsl(330 82% 62%);
   }
 
+  :global(html.save-energy) .aura {
+    display: none;
+  }
+
   @media (max-width: 640px) {
     .aura {
       --aura-blur: 50px;

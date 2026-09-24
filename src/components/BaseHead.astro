@@ -54,6 +54,41 @@ function formatCanonicalURL(url: string | URL) {
 <link rel="canonical" href={formatCanonicalURL(canonicalURL)} />
 <meta name="description" content={description} />
 
+<!-- Theme bootstrap: apply dark class pre-paint to avoid FOUC.
+     Mirrors the storage key + default in ThemeToggle.vue.
+     Save-energy bootstrap mirrors SaveEnergyToggle.vue; mobile default is
+     inlined here and kept in sync with src/utils/device.ts. -->
+<script is:inline>
+  ;(function () {
+    // Keep this detection in sync with src/utils/device.ts.
+    function isMobileDevice() {
+      if (typeof navigator === 'undefined') {
+        return false
+      }
+      const ua = navigator.userAgent || ''
+      if (/Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(ua)) {
+        return true
+      }
+      if (navigator.maxTouchPoints > 1) {
+        if (typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches) {
+          if (typeof window !== 'undefined' && window.innerWidth <= 820) {
+            return true
+          }
+        }
+      }
+      return false
+    }
+
+    if (localStorage.getItem('astrovite-theme') !== 'light') {
+      document.documentElement.classList.add('dark')
+    }
+
+    const savedEnergy = localStorage.getItem('astrovite-save-energy')
+    if (savedEnergy === 'on' || (savedEnergy === null && isMobileDevice())) {
+      document.documentElement.classList.add('save-energy')
+    }
+  })()
+</script>
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={pageType} />
 <meta property="og:url" content={formatCanonicalURL(canonicalURL)} />
@@ -73,11 +108,44 @@ function formatCanonicalURL(url: string | URL) {
 <script>
   import nprogress from 'nprogress'
 
-  document.addEventListener('astro:before-preparation', () => {
-    nprogress.start()
-  })
+  let started = false
+  let listenersAttached = false
 
-  document.addEventListener('astro:page-load', () => {
+  function isSaveEnergy() {
+    return document.documentElement.classList.contains('save-energy')
+  }
+
+  function onBeforePreparation() {
+    started = true
+    nprogress.start()
+  }
+
+  function onPageLoad() {
+    if (!started) {
+      return
+    }
+    started = false
     nprogress.done()
-  })
+  }
+
+  function sync() {
+    const saveEnergy = isSaveEnergy()
+    if (!saveEnergy && !listenersAttached) {
+      document.addEventListener('astro:before-preparation', onBeforePreparation)
+      document.addEventListener('astro:page-load', onPageLoad)
+      listenersAttached = true
+    }
+    if (saveEnergy && listenersAttached) {
+      document.removeEventListener('astro:before-preparation', onBeforePreparation)
+      document.removeEventListener('astro:page-load', onPageLoad)
+      listenersAttached = false
+      if (started) {
+        started = false
+        nprogress.done()
+      }
+    }
+  }
+
+  sync()
+  new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 </script>
