@@ -5,7 +5,6 @@ date: 2026-09-24
 lang: en
 tags: [dev, meta]
 duration: 9min
-draft: true
 ---
 
 Light and dark mode are usually treated as one decision: which colors do you want? Pick one, invert the palette, done. But there's a second axis almost nobody names — **how much work the page is allowed to do.** Animations, blur, transitions, and JavaScript loops all cost CPU, GPU, and battery, and none of them are things you actually asked for when you clicked "light."

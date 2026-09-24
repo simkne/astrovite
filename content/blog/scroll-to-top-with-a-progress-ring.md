@@ -5,7 +5,6 @@ date: 2026-09-24
 lang: en
 tags: [dev]
 duration: 6min
-draft: true
 ---
 
 Most scroll-to-top buttons are a one-trick pony. You scroll down, a small arrow fades in, you click it, you're back at the top. Useful, but it tells you nothing the rest of the time — it just floats there, waiting.
