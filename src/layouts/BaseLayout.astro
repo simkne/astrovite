@@ -33,7 +33,12 @@ const logoAvif = headerLogo ? await getImage({ src: headerLogo, width: 64, heigh
   >
     <AuraBackground violet={aura?.violet} cyan={aura?.cyan} pink={aura?.pink} />
     <DotBackground client:load />
-    <Header client:load logoSrc={logoWebp?.src} logoSrcset={`${logoAvif?.src} 1x, ${logoWebp?.src} 2x`} />
+    <Header
+      client:load
+      transition:persist="header"
+      logoSrc={logoWebp?.src}
+      logoSrcset={`${logoAvif?.src} 1x, ${logoWebp?.src} 2x`}
+    />
     <main
       class="grow max-w-3xl mx-auto sm:pt-36 pt-26 pb-16 px-6 relative z-10"
       transition:animate={fade({ duration: '0.4s' })}

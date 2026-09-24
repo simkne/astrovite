@@ -66,7 +66,12 @@ const oldScroll = ref(unref(scroll))
 onMounted(() => {
   checkAdmin()
   refreshActivePage()
-  document.addEventListener('astro:page-load', refreshActivePage)
+  // The header island is persisted across view-transition navigations, so it
+  // only mounts once — re-check the admin state on every page load.
+  document.addEventListener('astro:page-load', () => {
+    refreshActivePage()
+    checkAdmin()
+  })
 
   const navMask = document.querySelector('.nav-drawer-mask') as HTMLElement
 
