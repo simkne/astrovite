@@ -86,11 +86,11 @@ That first branch is the important detail. It isn't enough to hide a canvas with
 
 ## Using the module
 
-The whole thing ships as a small, dependency-free ES module you can drop into any site. It isn't tied to Astro, Vue, or this theme — the idea is that "save energy" should be something you can add to *your* site in a few minutes.
+The whole thing ships as a small, dependency-free ES module you can drop into any site — it lives at [**simkne/save-energy**](https://github.com/simkne/save-energy) on GitHub. It isn't tied to Astro, Vue, or this theme — the idea is that "save energy" should be something you can add to *your* site in a few minutes.
 
 ### Get it
 
-Fork or copy the `save-energy` repo, or just copy the files into your project. There's no build step: `save-energy.js` is plain ESM and the CSS files are plain CSS.
+Fork or copy the [`save-energy` repo](https://github.com/simkne/save-energy), or just copy the files into your project. There's no build step: `save-energy.js` is plain ESM and the CSS files are plain CSS.
 
 ### Quick start
 
@@ -181,7 +181,7 @@ const { isOn, toggle } = useSaveEnergy()
 
 ### Try it
 
-The repo's `index.html` is a self-contained demo — open it directly, no build step. It runs both controls side by side, with a live panel reporting the `<html>` class list and a frame counter that actually stops when energy mode is on.
+The repo's [`index.html`](https://github.com/simkne/save-energy/blob/main/index.html) is a self-contained demo — open it directly, no build step. It runs both controls side by side, with a live panel reporting the `<html>` class list and a frame counter that actually stops when energy mode is on.
 
 ## How this differs from a plain light/dark switch
 
@@ -207,7 +207,7 @@ This is the part I find genuinely interesting, because the two controls *look* i
 
 The broader idea is the part I'd actually like to see catch on. Every site has a theme toggle now; almost none have an energy toggle. But the things that drain a battery are the same everywhere — autoplaying motion, blurred layers, endless loops.
 
-Imagine a standard, boring, universally understood control: **save energy.** Not a settings maze, just a button next to the theme switch that lets the page stop working so hard. It helps people on low batteries, old phones, and slow connections — and it helps everyone who just wants to read. That's why I packaged this one as a module instead of an in-joke: fork it, point it at your own effects, and ship the button.
+Imagine a standard, boring, universally understood control: **save energy.** Not a settings maze, just a button next to the theme switch that lets the page stop working so hard. It helps people on low batteries, old phones, and slow connections — and it helps everyone who just wants to read. That's why I packaged this one as a module instead of an in-joke: [fork it](https://github.com/simkne/save-energy), point it at your own effects, and ship the button.
 
 ## Lessons in one line each
 

@@ -103,7 +103,7 @@ The wobble lives inside `@media (prefers-reduced-motion: no-preference)`. If you
 - **A threshold you can tune.** `showAfter` (default 300px) is a prop, along with `size`, `wobbleDeg`, `right`, and `bottom`.
 - **Smooth scroll, not a jump.** The click handler is `window.scrollTo({ top: 0, behavior: 'smooth' })`.
 - **Hidden in print.** A floating button has no business on paper: `@media print { display: none; }`.
-- **Respects the resource-light mode.** In this site's plain light mode, the wobble is switched off with `html:not(.dark) .scroll-top--bottom { animation: none; }` — a static button for a static page. I wrote about that split in the [next post](../beyond-light-and-dark-mode/).
+- **Respects the resource-light mode.** In this site's ⚡ save-energy mode, the wobble is switched off with `html.save-energy .scroll-top--bottom { animation: none; }` — a static button for a static page. That mode is a small forkable module ([save-energy](https://github.com/simkne/save-energy)); I wrote about the split in the [next post](../beyond-light-and-dark-mode/).
 
 ## Drop it in
 
